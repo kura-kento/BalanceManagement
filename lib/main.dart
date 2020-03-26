@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'screens/create_form.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,21 +31,20 @@ class _MyHomePageState extends State<MyHomePage> {
   //以下BottomNavigationBar設定
   int _currentIndex = 0;
   final _pageWidgets = [
-    PageWidget(),
-    ThirdPage(),
     PageWidget(color:Colors.orange, title:'Chat'),
+    GraphPage(),
+    SettingPage(),
   ];
-
+//メインのページ
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: _pageWidgets.elementAt(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-          BottomNavigationBarItem(icon: Icon(Icons.photo_album), title: Text('Album')),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), title: Text('Chat')),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
+          BottomNavigationBarItem(icon: Icon(Icons.equalizer), title: Text('グラフ')),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('設定')),
         ],
         currentIndex: _currentIndex,
         fixedColor: Colors.blueAccent,
@@ -54,32 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
   void _onItemTapped(int index) => setState(() => _currentIndex = index );
-}
-
-class CreatePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("追加フォーム"),
-          bottom: TabBar(
-            tabs: <Widget>[Tab(text: "プラス"), Tab(text: "マイナス")],
-            unselectedLabelColor: Colors.grey,
-          ),
-        ),
-        body: TabBarView(children: <Widget>[
-          Container(
-            color: Colors.white,
-          ),
-          Container(
-            color: Colors.white,
-          ),
-        ]),
-      ),
-    );
-  }
 }
 
 class SettingsPage extends StatefulWidget {
@@ -108,6 +82,65 @@ class PageWidget extends StatelessWidget {
     Colors.grey[300],
     Colors.grey[300],
     Colors.blue[200]];
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+        appBar: AppBar(title: Text("タイトル"), actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return CreateForm();
+                  },
+                ),
+              );
+            },
+            tooltip: 'Increment',
+            icon: Icon(Icons.add),
+          ),
+        ]),
+      body: Column(
+        //上から合計額、カレンダー、メモ
+        children: <Widget>[
+          Container(
+            height:50,
+            child: Row(children: <Widget>[
+              Expanded(
+                flex:1,
+                //アイコン
+                child: Text("←"),
+              ),
+              Expanded(
+                flex:5,
+                //アイコン
+                child: Text("合計金額"),
+              ),
+              Expanded(
+                flex:1,
+                //アイコン
+                child: Text("→"),
+              ),
+            ]),
+          ),
+          Column(
+            children: <Widget>[
+              //曜日用に1行作る。
+              Row(children: WeekList(),),
+              //columnlist()で繰り返す。
+              Column( children: columnList() )
+            ],
+          ),
+          //メモ（カラムで行を取る）
+          Column(
+
+          )
+        ],
+      ),
+    );
+  }
 
 //カンマ区切り
   String CommaSeparated(number){
@@ -139,7 +172,7 @@ class PageWidget extends StatelessWidget {
     final int _EndOfMonth = int.parse(Endofmonth.day.toString());
     return _EndOfMonth;
   }
-
+//カレンダーの曜日部分（1行目）
   List<Widget> WeekList() {
     List<Widget> _list = [];
     for (int i = 0; i < 7; i++) {
@@ -156,7 +189,7 @@ class PageWidget extends StatelessWidget {
     }
     return _list;
   }
-
+  //カレンダーの日付部分（2行目以降）
   List<Widget> columnList() {
     List<Widget> _list = [];
     for (int j = 0; j < 6; j++) {
@@ -256,63 +289,65 @@ class PageWidget extends StatelessWidget {
     }
     return _list;
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      //上から合計額、カレンダー、メモ
-      children: <Widget>[
-        Container(
-          height:50,
-          child: Row(children: <Widget>[
-            Expanded(
-              flex:1,
-              //アイコン
-              child: Text("←"),
-            ),
-            Expanded(
-              flex:5,
-              //アイコン
-              child: Text("合計金額"),
-            ),
-            Expanded(
-              flex:1,
-              //アイコン
-              child: Text("→"),
-            ),
-          ]),
-        ),
-        Column(
-          children: <Widget>[
-            //曜日用に1行作る。
-            Row(children: WeekList(),),
-            //columnlist()で繰り返す。
-            Column( children: columnList() )
-          ],
-        ),
-        //メモ（カラムで行を取る）
-        Column(
-
-        )
-      ],
-    );
-  }
 }
 
-class ThirdPage extends StatefulWidget {
+class GraphPage extends StatefulWidget {
   @override
-  _ThirdPageState createState() => _ThirdPageState();
+  _GraphPageState createState() => _GraphPageState();
 }
 
-class _ThirdPageState extends State<ThirdPage> {
+class _GraphPageState extends State<GraphPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('iiiii'),
+        title: Text('グラフ'),
       ),
-      body: Text('iiiii'),
+      body: Text('グラフ'),
     );
   }
 }
 
+class SettingPage extends StatefulWidget {
+  @override
+  _SettingPageState createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('設定'),
+      ),
+      body: Text('設定'),
+    );
+  }
+}
+
+//作成フォーム（削除予定）
+class CreatePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("追加フォーム"),
+          bottom: TabBar(
+            tabs: <Widget>[Tab(text: "プラス"), Tab(text: "マイナス")],
+            unselectedLabelColor: Colors.grey,
+          ),
+        ),
+        body: TabBarView(children: <Widget>[
+          Container(
+            color: Colors.white,
+          ),
+          Container(
+            color: Colors.white,
+          ),
+        ]),
+      ),
+    );
+  }
+}
