@@ -29,7 +29,9 @@ dependencies:
   shared_preferences: ^0.4.1
   intl: ^0.16.1
   auto_size_text: ^2.1.0
-  slide_button: ^0.2.8
+#  slide_button: ^0.2.8
+  path_provider: 0.4.1
+
 
 dev_dependencies:
   flutter_test:

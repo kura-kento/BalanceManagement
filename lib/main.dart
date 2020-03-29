@@ -1,6 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balancemanagement_app/models/calendar.dart';
+import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 import 'screens/create_form.dart';
 
 void main() => runApp(MyApp());
@@ -69,6 +72,14 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 class PageWidget extends StatelessWidget {
+
+  Calendar calendar;
+  DatabaseHelper helper = DatabaseHelper();
+
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  List<Calendar> calendarList;
+  int count = 0;
+
   final Color color;
   final String title;
 
@@ -139,9 +150,41 @@ class PageWidget extends StatelessWidget {
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          //テーブルに値を入力
+          calendar = Calendar(100,'title','title',DateFormat.yMMMd().format(DateTime.now()) ) ;
+          _save();
+        },
+      ),
     );
   }
 
+  void updateListView() {
+
+    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+    dbFuture.then((database) {
+
+      Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
+      calendarListFuture.then((calendarList) {
+
+          this.calendarList = calendarList;
+          this.count = calendarList.length;
+
+      });
+    });
+  }
+
+  void _save() async {
+
+    int result;
+    if (calendar.id != null) {  // Case 1: Update operation
+      result = await helper.updateCalendar(calendar);
+    } else { // Case 2: Insert Operation
+      result = await helper.insertCalendar(calendar);
+    }
+    print(calendar.date);
+  }
 //カンマ区切り
   String CommaSeparated(number){
     final formatter = NumberFormat("#,###");
