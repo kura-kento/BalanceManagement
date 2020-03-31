@@ -98,11 +98,43 @@ class DatabaseHelper {
     int count = calendarMapList.length;         // Count the number of map entries in db table
 
     List<Calendar> calendarList = List<Calendar>();
+    for (int i = 0; i < count; i++) {
+      calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
+    }
+    return calendarList;
+  }
+//月のDB引き出す
+  Future<List<Calendar>> getCalendarmonthList() async {
+    var calendarMapList = await getCalendarMonthMapList(); // Get 'Map List' from database
+    int count = calendarMapList.length;         // Count the number of map entries in db table
+
+    List<Calendar> calendarList = List<Calendar>();
     // For loop to create a 'Note List' from a 'Map List'
     for (int i = 0; i < count; i++) {
       calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
     }
     return calendarList;
   }
+  Future<List<Map<String, dynamic>>> getCalendarMonthMapList() async {
+    Database db = await this.database;
+    var result = await db.query(tableName, orderBy: '$colId ASC');
+    return result;
+  }
 
+  Future<List<Calendar>> getCalendarDayList(selectDay) async {
+    var calendarMapList = await getCalendarDayMapList(selectDay); // Get 'Map List' from database
+    int count = calendarMapList.length;         // Count the number of map entries in db table
+
+    List<Calendar> calendarList = List<Calendar>();
+    // For loop to create a 'Note List' from a 'Map List'
+    for (int i = 0; i < count; i++) {
+      calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
+    }
+    return calendarList;
+  }
+  Future<List<Map<String, dynamic>>> getCalendarDayMapList(selectDay) async {
+    Database db = await this.database;
+    var result = await db.query(tableName,where: 'date <= ?' ,whereArgs: selectDay, orderBy: '$colId ASC');
+    return result;
+  }
 }

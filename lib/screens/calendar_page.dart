@@ -9,8 +9,8 @@ import 'package:sqflite/sqflite.dart';
 import 'create_form.dart';
 
 class CalendarPage extends StatefulWidget {
-  CalendarPage({Key key}) : super(key: key);
 
+  CalendarPage({Key key}) : super(key: key);
   @override
   _CalendarPageState createState() => _CalendarPageState();
 }
@@ -20,6 +20,10 @@ class _CalendarPageState extends State<CalendarPage> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
 
+  //表示月
+  int selectMonthValue = 0;
+  String selectMonth = DateFormat.yMMMd().format(DateTime.now());
+  //選択している日
   DateTime selectDay = DateTime.now();
 
   var _week = ["日", "月", "火", "水", "木", "金", "土"];
@@ -67,7 +71,11 @@ class _CalendarPageState extends State<CalendarPage> {
                 flex:1,
                 //アイコン
                 child: IconButton(
-                  onPressed: null,
+                  onPressed: (){
+                    setState(() {
+                      selectMonthValue--;
+                    });
+                  },
                   iconSize:40,
                   icon: Icon(Icons.arrow_left),
                 ),
@@ -75,13 +83,17 @@ class _CalendarPageState extends State<CalendarPage> {
               Expanded(
                 flex:5,
                 //アイコン
-                child: Text("合計金額"),
+                child: Text("${DateFormat.yMMMd().format(selectOfMonth(selectMonthValue))}"),
               ),
               Expanded(
                 flex:1,
                 //アイコン
                 child: IconButton(
-                  onPressed: null,
+                  onPressed: (){
+                    setState(() {
+                      selectMonthValue++;
+                    });
+                  },
                   iconSize:40,
                   icon: Icon(Icons.arrow_right),
                   //onPressed: ,
@@ -93,7 +105,6 @@ class _CalendarPageState extends State<CalendarPage> {
             children: <Widget>[
               //曜日用に1行作る。
               Row(children: weekList(),),
-              //columnlist()で繰り返す。
               Column( children: columnList() )
             ],
           ),
@@ -106,6 +117,7 @@ class _CalendarPageState extends State<CalendarPage> {
           //テーブルに値を入力
           setState(() {
             _save(Calendar(100,'title','title',DateTime.now() ));
+            updateListView();
           });
         },
       ),
@@ -113,13 +125,12 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   void updateListView() {
-
+//データベースと接続するパスを取得する（起動時１回のみ処理）
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {
-
+//全てのDBを取得
       Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
       calendarListFuture.then((calendarList) {
-
         setState(() {
           this.calendarList = calendarList;
         });
@@ -127,8 +138,7 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-  void _save(Calendar calendar) async {
-
+  Future <void> _save(Calendar calendar) async {
     int result;
     if (calendar.id != null) {  // Case 1: Update operation
       result = await databaseHelper.updateCalendar(calendar);
@@ -141,7 +151,7 @@ class _CalendarPageState extends State<CalendarPage> {
 //iとjから日程のデータを出す（Date型）
   DateTime calendarDay(i, j) {
     final DateTime _date = DateTime.now();
-    var startDay = DateTime(_date.year, _date.month, 1);
+    var startDay = DateTime(_date.year, _date.month + selectMonthValue, 1);
     int weekNumber = startDay.weekday;
     DateTime calendarStartDay =
     startDay.add(Duration(days: -(weekNumber % 7) + (i + 7 * j)));
@@ -150,10 +160,15 @@ class _CalendarPageState extends State<CalendarPage> {
 //月末の日を取得（来月の１日を取得して１引く）
   int endOfMonth() {
     final DateTime _date = DateTime.now();
-    var startDay = DateTime(_date.year, _date.month + 1, 1);
-    DateTime endofmonth = startDay.add(Duration(days: -1));
-    final int _endOfMonth = int.parse(endofmonth.day.toString());
+    var startDay = DateTime(_date.year, _date.month + 1 + selectMonthValue, 1);
+    DateTime endOfMonth = startDay.add(Duration(days: -1));
+    final int _endOfMonth = Utils.toInt(endOfMonth.day);
     return _endOfMonth;
+  }
+  DateTime selectOfMonth(value) {
+    final DateTime _date = DateTime.now();
+    var _selectOfMonth = DateTime(_date.year, _date.month + value, 1);
+    return  _selectOfMonth;
   }
 //カレンダーの曜日部分（1行目）
   List<Widget> weekList() {
@@ -172,15 +187,21 @@ class _CalendarPageState extends State<CalendarPage> {
     }
     return _list;
   }
-
-  String plusMoney(){
-    String _money;
-    if(calendarList.length == 0 ){
-      _money = "0円";
-    }else{
-      _money = "${Utils.commaSeparated(150000)}円";
+//カレンダー表示している日の合計
+  String moneyOfDay(value,i, j) {
+    int _plusMoney = 0;
+    int _minusMoney = 0;
+    for (var index = 0; index < calendarList.length; index++) {
+      if (DateFormat.yMMMd().format(calendarList[index].date) == DateFormat.yMMMd().format(calendarDay(i, j))) {
+        if (calendarList[index].money > 0) {
+          _plusMoney += calendarList[index].money;
+        } else {
+          _minusMoney += calendarList[index].money;
+        }
+      }
     }
-    return  _money;
+    return   "${Utils.commaSeparated(value == "plus" ? _plusMoney : _minusMoney*(-1) )}円";
+
   }
   //カレンダーの日付部分（2行目以降）
   List<Widget> columnList() {
@@ -192,7 +213,7 @@ class _CalendarPageState extends State<CalendarPage> {
           Expanded(
             flex: 1,
             child: Container(
-              color: calendarDay(i, j).month == DateTime.now().month ? Colors.grey[100] : Colors.grey[300],
+              color: calendarDay(i, j).month == selectOfMonth(selectMonthValue).month ? Colors.grey[100] : Colors.grey[300],
               height: 50.0,
               child: Stack(
                 children: <Widget>[
@@ -215,8 +236,9 @@ class _CalendarPageState extends State<CalendarPage> {
                           Expanded(
                               flex: 1,
                               child: Container(
-                                child:Text(
-                                    "${Utils.commaSeparated(2500)}円",
+                                child:AutoSizeText(
+                                    moneyOfDay("plus",i, j),
+                                    maxLines: 1,
                                     style: TextStyle(
                                         color: Colors.lightBlueAccent[200]
                                     )
@@ -227,7 +249,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               flex: 1,
                               child: Container(
                                 child:AutoSizeText(
-                                    plusMoney(),
+                                    moneyOfDay("minus",i, j),
                                     maxLines: 1,
                                     style: TextStyle(
                                       color: Colors.redAccent[200],
@@ -249,13 +271,13 @@ class _CalendarPageState extends State<CalendarPage> {
                           Expanded(
                             flex: 1,
                             child: Container(
-                              color: calendarDay(i, j).day ==  DateTime.now().day ? Colors.red[500] : Colors.transparent ,
+                              color: DateFormat.yMMMd().format(calendarDay(i, j)) == DateFormat.yMMMd().format(DateTime.now()) ? Colors.red[500] : Colors.transparent ,
                               child: Text(
                                 "${Utils.toInt(calendarDay(i, j).day)}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 13.0,
-                                  color: calendarDay(i, j).day ==  DateTime.now().day ? Colors.white : Colors.black ,
+                                  color: DateFormat.yMMMd().format(calendarDay(i, j)) ==  DateFormat.yMMMd().format(DateTime.now()) ? Colors.white : Colors.black ,
                                 ),
                               ),
                             ),
@@ -265,7 +287,6 @@ class _CalendarPageState extends State<CalendarPage> {
                             flex: 2,
                           )
                         ],
-
                       ),
                     ),
                   ),
@@ -286,7 +307,8 @@ class _CalendarPageState extends State<CalendarPage> {
         );
       }
       _list.add(Row(children: _listCache));
-      if (Utils.toInt(calendarDay(6, j).month) > DateTime.now().month ||
+      //土曜日の月が選択月でない　または、月末の場合は終わる。
+      if (Utils.toInt(calendarDay(6, j).month) != selectOfMonth(selectMonthValue).month ||
           endOfMonth() == Utils.toInt(calendarDay(6, j).day)) {
         break;
       }
@@ -294,7 +316,6 @@ class _CalendarPageState extends State<CalendarPage> {
     return _list;
   }
   List<Widget> memoList(){
-
     List<Widget> _list = [];
     for(int i = 0; i < calendarList.length ; i++) {
       if(DateFormat.yMMMd().format(this.calendarList[i].date) == DateFormat.yMMMd().format(selectDay)){
@@ -302,7 +323,7 @@ class _CalendarPageState extends State<CalendarPage> {
             Row(children: <Widget>[
               Text( "${this.calendarList[i].title}",
                   style: TextStyle(
-                      fontSize: 50
+                      //fontSize: 50
                   )
               ),
               Text( "${this.calendarList[i].money}"),
@@ -311,7 +332,6 @@ class _CalendarPageState extends State<CalendarPage> {
             )
         );
       }
-
     }
     return _list;
   }
