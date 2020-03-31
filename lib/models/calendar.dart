@@ -1,10 +1,12 @@
+import 'package:intl/intl.dart';
+
 class Calendar {
 
   int _id;
   int _money;
   String _title;
   String _memo;
-  String _date;
+  DateTime _date;
 
   Calendar(this._money, this._title, this._memo, this._date);
 
@@ -18,7 +20,7 @@ class Calendar {
 
   String get memo => _memo;
 
-  String get date => _date;
+  DateTime get date => _date;
 
   set money(int newMoney) {
     if ( newMoney.toString().length <=  7 ){
@@ -38,7 +40,7 @@ class Calendar {
     }
   }
 
-  set date(String newDate) {
+  set date(DateTime newDate) {
     this._date = newDate;
   }
 
@@ -51,7 +53,7 @@ class Calendar {
     map['money'] = _money;
     map['title'] = _title;
     map['memo'] = _memo;
-    map['date'] = _date;
+    map['date'] = DateFormat('yyyy-MM-dd HH:mm').format(_date);
 
     return map;
   }
@@ -62,6 +64,6 @@ class Calendar {
     this._money = map['money'];
     this._title = map['title'];
     this._memo = map['memo'];
-    this._date = map['date'];
+    this._date = DateTime.parse(map['date']);
   }
 }

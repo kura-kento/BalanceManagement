@@ -98,14 +98,14 @@ class _CalendarPageState extends State<CalendarPage> {
             ],
           ),
           //メモ（カラムで行を取る）memoList名前変更予定
-          Column( children: memoList() )
+          Expanded(child: SingleChildScrollView(child: Column( children: memoList() )))
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           //テーブルに値を入力
           setState(() {
-            _save(Calendar(100,'title','title',DateFormat.yMMMd().format(DateTime.now()) ));
+            _save(Calendar(100,'title','title',DateTime.now() ));
           });
         },
       ),
@@ -201,7 +201,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Colors.white),
-                      color:  selectDay.day ==  calendarDay(i, j).day && selectDay.month ==  calendarDay(i, j).month ? Colors.yellow : Colors.transparent ,
+                      color:  DateFormat.yMMMd().format(selectDay) ==  DateFormat.yMMMd().format(calendarDay(i, j))  ? Colors.yellow : Colors.transparent ,
                     ),
                     child: Column(
                         children: <Widget>[
@@ -297,13 +297,21 @@ class _CalendarPageState extends State<CalendarPage> {
 
     List<Widget> _list = [];
     for(int i = 0; i < calendarList.length ; i++) {
-      _list.add(
-          Row(children: <Widget>[
-            Text( "${this.calendarList[i].title}"),
-            Text( "${this.calendarList[i].money}")
-          ],
-          )
-      );
+      if(DateFormat.yMMMd().format(this.calendarList[i].date) == DateFormat.yMMMd().format(selectDay)){
+        _list.add(
+            Row(children: <Widget>[
+              Text( "${this.calendarList[i].title}",
+                  style: TextStyle(
+                      fontSize: 50
+                  )
+              ),
+              Text( "${this.calendarList[i].money}"),
+              Text( "${this.calendarList[i].date}")
+            ],
+            )
+        );
+      }
+
     }
     return _list;
   }
