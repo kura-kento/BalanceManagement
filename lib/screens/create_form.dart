@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CreateForm extends StatefulWidget {
+
+  CreateForm({Key key, this.selectDay}) : super(key: key);
+  final DateTime selectDay;
+
   @override
   _CreateFormState createState() => _CreateFormState();
 }
@@ -14,17 +19,9 @@ class _CreateFormState extends State<CreateForm> {
 
   @override
   Widget build(BuildContext context) {
-
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
-    return WillPopScope(
-
-        onWillPop: (){
-          //
-          moveToLastScreen();
-        },
-
-        child: Scaffold(
+    return Scaffold(
           appBar: AppBar(
             title: Text("新規追加フォーム"),
             leading: IconButton(icon: Icon(
@@ -75,26 +72,40 @@ class _CreateFormState extends State<CreateForm> {
                             )
                         ),
                       )
-
                   ),
                   //third element
                   Padding(
                       padding: EdgeInsets.only(top:15,bottom:15),
-                      child: TextField(
+                      child:TextFormField(
+                      controller: descriptionController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly
+                      ],
+                      decoration: InputDecoration(
+                          labelText: '収支',
+                          labelStyle: textStyle,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0)
+                          )
+                      )
+                      )
+/*
+                       TextField(
                         controller: descriptionController,
                         style: textStyle,
                         onChanged: (value){
                           debugPrint('Something changed in Description Text Field');
                         },
                         decoration: InputDecoration(
-                            labelText: 'メモ',
+                            labelText: '収支',
                             labelStyle: textStyle,
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0)
                             )
                         ),
                       )
-
+*/
                   ),
 
                   //Fourth Element
@@ -140,10 +151,38 @@ class _CreateFormState extends State<CreateForm> {
                 ],
               )
           ),
-        ));
+        );
   }
 
   void moveToLastScreen(){
     Navigator.pop(context);
+  }
+}
+
+
+//作成フォーム（削除予定）
+class CreatePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("追加フォーム"),
+          bottom: TabBar(
+            tabs: <Widget>[Tab(text: "プラス"), Tab(text: "マイナス")],
+            unselectedLabelColor: Colors.grey,
+          ),
+        ),
+        body: TabBarView(children: <Widget>[
+          Container(
+            color: Colors.white,
+          ),
+          Container(
+            color: Colors.white,
+          ),
+        ]),
+      ),
+    );
   }
 }

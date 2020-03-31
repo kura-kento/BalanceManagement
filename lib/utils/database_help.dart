@@ -41,8 +41,8 @@ class DatabaseHelper {
     String path = directory.path + 'calendar.db';
 
     // Open/指定されたパスにデータベースを作成する
-    var notesDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
-    return notesDatabase;
+    var calendarsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
+    return calendarsDatabase;
   }
 
   void _createDb(Database db, int newVersion) async {
@@ -51,7 +51,7 @@ class DatabaseHelper {
         '$colMoney INTEGER, $colMemo TEXT, $colDate TEXT)');
   }
 
-  // Fetch Operation: データベースからすべてのノートオブジェクトを取得します
+  // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCalendarMapList() async {
     Database db = await this.database;
 
@@ -91,18 +91,17 @@ class DatabaseHelper {
     return result;
   }
 
-  // Get the 'Map List' [ List<Map> ] and convert it to 'Note List' [ List<Note> ]
+  // 'Map List' [List <Map>]を取得し、それを 'Calendar List' [List <Note>]に変換します
   Future<List<Calendar>> getCalendarList() async {
-
-    var CalendarMapList = await getCalendarMapList(); // Get 'Map List' from database
-    int count = CalendarMapList.length;         // Count the number of map entries in db table
+    //全てのデータを取得
+    var calendarMapList = await getCalendarMapList(); // Get 'Map List' from database
+    int count = calendarMapList.length;         // Count the number of map entries in db table
 
     List<Calendar> calendarList = List<Calendar>();
     // For loop to create a 'Note List' from a 'Map List'
     for (int i = 0; i < count; i++) {
-      calendarList.add(Calendar.fromMapObject(CalendarMapList[i]));
+      calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
     }
-
     return calendarList;
   }
 
