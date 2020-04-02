@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'create_form.dart';
+import 'edit_form.dart';
 
 class CalendarPage extends StatefulWidget {
 
@@ -19,7 +20,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
-
   //表示月
   int selectMonthValue = 0;
   String selectMonth = DateFormat.yMMMd().format(DateTime.now());
@@ -83,7 +83,10 @@ class _CalendarPageState extends State<CalendarPage> {
               Expanded(
                 flex:5,
                 //アイコン
-                child: Text("${DateFormat.yMMMd().format(selectOfMonth(selectMonthValue))}"),
+                child:Align(
+                  alignment: Alignment.center,
+                  child: Text("${selectOfMonth(selectMonthValue).year}年${selectOfMonth(selectMonthValue).month}月"),
+                ),
               ),
               Expanded(
                 flex:1,
@@ -96,7 +99,6 @@ class _CalendarPageState extends State<CalendarPage> {
                   },
                   iconSize:40,
                   icon: Icon(Icons.arrow_right),
-                  //onPressed: ,
                 ),
               ),
             ]),
@@ -111,15 +113,6 @@ class _CalendarPageState extends State<CalendarPage> {
           //メモ（カラムで行を取る）memoList名前変更予定
           Expanded(child: SingleChildScrollView(child: Column( children: memoList() )))
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          //テーブルに値を入力
-          setState(() {
-            _save(Calendar(100,'title','title',DateTime.now() ));
-            updateListView();
-          });
-        },
       ),
     );
   }
@@ -136,16 +129,6 @@ class _CalendarPageState extends State<CalendarPage> {
         });
       });
     });
-  }
-
-  Future <void> _save(Calendar calendar) async {
-    int result;
-    if (calendar.id != null) {  // Case 1: Update operation
-      result = await databaseHelper.updateCalendar(calendar);
-    } else { // Case 2: Insert Operation
-      result = await databaseHelper.insertCalendar(calendar);
-    }
-    print(result);
   }
 
 //iとjから日程のデータを出す（Date型）
@@ -315,24 +298,57 @@ class _CalendarPageState extends State<CalendarPage> {
     }
     return _list;
   }
+  //一日のリスト（カレンダー下）
   List<Widget> memoList(){
     List<Widget> _list = [];
     for(int i = 0; i < calendarList.length ; i++) {
       if(DateFormat.yMMMd().format(this.calendarList[i].date) == DateFormat.yMMMd().format(selectDay)){
         _list.add(
-            Row(children: <Widget>[
-              Text( "${this.calendarList[i].title}",
-                  style: TextStyle(
-                      //fontSize: 50
-                  )
+            FlatButton(
+              child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey[200]),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                      Text( "${this.calendarList[i].title}"),
+                        moneyTextColor(i),
+                    ],
+                    ),
               ),
-              Text( "${this.calendarList[i].money}"),
-              Text( "${this.calendarList[i].date}")
-            ],
-            )
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return EditForm(selectCalendarList: this.calendarList[i]);
+                    },
+                  ),
+                );
+              },
+            ),
         );
       }
     }
     return _list;
+  }
+  //＋ーで色を変える。
+  Widget moneyTextColor(index){
+    if(this.calendarList[index].money >= 0){
+      return Text(
+          "${this.calendarList[index].money}円",
+          style: TextStyle(
+              color: Colors.lightBlueAccent[200]
+          )
+      );
+    }else{
+      return Text(
+          "${this.calendarList[index].money}円",
+          style: TextStyle(
+              color: Colors.redAccent[200]
+          )
+      );
+    }
+
   }
 }

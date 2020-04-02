@@ -23,7 +23,7 @@ class Calendar {
   DateTime get date => _date;
 
   set money(int newMoney) {
-    if ( newMoney.toString().length <=  7 ){
+    if ( newMoney.toString().length <=  6 ){
       this._money = newMoney;
     }
   }
