@@ -20,20 +20,23 @@ class _EditFormState extends State<EditForm> {
   DatabaseHelper databaseHelper = DatabaseHelper();
 
   List<String> _items = ["プラス","マイナス"];
-  String _selectedItem = "プラス" ;
-
+  String _selectedItem = "プラス";
   List<Calendar> calendarList = List<Calendar>();
+
+  TextEditingController titleController = TextEditingController();
+  TextEditingController numberController = TextEditingController();
 
   @override
   void initState() {
     updateListView();
+    _selectedItem = widget.selectCalendarList.money >= 0 ? _items[0]:_items[1];
+    numberController = TextEditingController(text: '${widget.selectCalendarList.money * (widget.selectCalendarList.money < 0 ? -1:1 )}');
+    titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     //ここに入れてもいいのか？
-    TextEditingController titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
-    TextEditingController numberController = TextEditingController(text: '${widget.selectCalendarList.money}');
 
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
@@ -53,35 +56,7 @@ class _EditFormState extends State<EditForm> {
                 padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
                 child: ListView(
                   children: <Widget>[
-                    ListTile(
-                      title: DropdownButton<String>(
-                        value: _selectedItem,
-                        onChanged: (String newValue){
-                          setState(() {
-                            _selectedItem = newValue;
-                          });
-                        },
-                        selectedItemBuilder: (context){
-                          return _items.map((String item) {
-                            return Text(
-                              item,
-                              style: TextStyle(color: Colors.pink),
-                            );
-                          }).toList();
-                        },
-                        items: _items.map((String item) {
-                          return DropdownMenuItem(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: item == _selectedItem
-                                  ? TextStyle(fontWeight: FontWeight.bold)
-                                  : TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                    Row(children: btnPlusMinus()),
                     Padding(
                         padding: EdgeInsets.only(top:15,bottom:15),
                         child: TextField(
@@ -108,7 +83,7 @@ class _EditFormState extends State<EditForm> {
                               WhitelistingTextInputFormatter.digitsOnly
                             ],
                             decoration: InputDecoration(
-                                labelText: '収支',
+                                labelText: _selectedItem == _items[0] ? "収入":"支出",
                                 labelStyle: textStyle,
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5.0)
@@ -149,9 +124,9 @@ class _EditFormState extends State<EditForm> {
                                   onPressed: (){
                                     setState(() {
                                       //debugPrint("Save button clicked");
-                                      _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date) );
-                                      updateListView();
+                                      _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date) );
                                       moveToLastScreen();
+                                      updateListView();
                                     });
                                   },
                                 )
@@ -166,7 +141,26 @@ class _EditFormState extends State<EditForm> {
         )
     );
   }
-
+  List<Widget> btnPlusMinus(){
+    List<Widget> _list = [];
+    _items.forEach((value){
+      _list.add(Expanded(
+        flex: 1,
+        child: RaisedButton(
+          child: Text(value),
+          color: (value == _items[0]? Colors.blue : Colors.red)[100+ (_selectedItem == value ? 300 : 0)],
+          textColor: _selectedItem == value ? Colors.white : Colors.grey[400],
+          onPressed: () {
+            setState(() {
+              _selectedItem = value ;
+            });
+          },
+        ),
+      ),
+      );
+    });
+    return _list;
+  }
   void moveToLastScreen(){
     Navigator.pop(context);
   }
@@ -195,19 +189,3 @@ class _EditFormState extends State<EditForm> {
     });
   }
 }
-/*
-DropdownButton(
-items: _fluctuation.map((String dropDownStirngItem){
-return DropdownMenuItem<String>(
-value: dropDownStirngItem,
-child: Text(dropDownStirngItem),
-);
-}).toList(),
-style: textStyle,
-value: 'プラス',
-onChanged: (valueSelectedByUser){
-debugPrint('User selected $valueSelectedByUser');
-}
-),
-
- */
