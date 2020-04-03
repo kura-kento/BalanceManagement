@@ -37,16 +37,26 @@ class _EditFormState extends State<EditForm> {
   @override
   Widget build(BuildContext context) {
     //ここに入れてもいいのか？
-
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
     return Scaffold(
         appBar: AppBar(
           title: Text("編集フォーム"),
           leading: IconButton(icon: Icon(
-              Icons.arrow_back),
-            onPressed: () => moveToLastScreen(),
+             Icons.arrow_back),
+             onPressed: () => moveToLastScreen(),
           ),
+            actions: <Widget>[
+              IconButton(
+                onPressed: () {
+                    setState(() {
+                      _delete(widget.selectCalendarList.id);
+                      moveToLastScreen();
+                    });
+                },
+                icon: Icon(Icons.delete),
+              ),
+            ]
         ),
         body: Container(
           //他の画面をタップすると入力画面が閉じる。
@@ -172,6 +182,11 @@ class _EditFormState extends State<EditForm> {
     } else { // Case 2: Insert Operation
       result = await databaseHelper.insertCalendar(calendar);
     }
+    print(result);
+  }
+  Future <void> _delete(int id) async{
+    int result;
+      result = await databaseHelper.deleteCalendar(id);
     print(result);
   }
 

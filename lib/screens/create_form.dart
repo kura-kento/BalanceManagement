@@ -16,8 +16,6 @@ class CreateForm extends StatefulWidget {
 
 class _CreateFormState extends State<CreateForm> {
 
-  static var _fluctuation = ['プラス','マイナス'];
-
   List<String> _items = ["プラス","マイナス"];
   String _selectedItem = "プラス" ;
 

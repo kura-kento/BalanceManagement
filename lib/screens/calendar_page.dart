@@ -45,20 +45,20 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(title: Text("タイトル"), actions: <Widget>[
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return CreateForm(selectDay: selectDay);
-                },
-              ),
-            );
-          },
-          //長押しすると表示する。tooltip:
-          //tooltip: 'Increment',
-          icon: Icon(Icons.add),
+      appBar: AppBar(
+          title: Text("合計：${monthSum()}円"),
+          actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return CreateForm(selectDay: selectDay);
+                  },
+                ),
+              );
+            },
+            icon: Icon(Icons.add),
         ),
       ]),
       body: Column(
@@ -74,6 +74,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   onPressed: (){
                     setState(() {
                       selectMonthValue--;
+                      selectDay = selectOfMonth(selectMonthValue);
                     });
                   },
                   iconSize:40,
@@ -95,6 +96,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   onPressed: (){
                     setState(() {
                       selectMonthValue++;
+                      selectDay = selectOfMonth(selectMonthValue);
                     });
                   },
                   iconSize:40,
@@ -148,10 +150,21 @@ class _CalendarPageState extends State<CalendarPage> {
     final int _endOfMonth = Utils.toInt(endOfMonth.day);
     return _endOfMonth;
   }
+//選択中の月をdate型で出す。
   DateTime selectOfMonth(value) {
     final DateTime _date = DateTime.now();
     var _selectOfMonth = DateTime(_date.year, _date.month + value, 1);
     return  _selectOfMonth;
+  }
+  //カレンダの月合計
+  int monthSum(){
+    int _moneySum =0;
+    for(int i = 0; i < calendarList.length; i++){
+      if(selectOfMonth(selectMonthValue).month == calendarList[i].date.month){
+        _moneySum += calendarList[i].money;
+      }
+    }
+    return _moneySum;
   }
 //カレンダーの曜日部分（1行目）
   List<Widget> weekList() {
@@ -205,7 +218,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Colors.white),
-                      color:  DateFormat.yMMMd().format(selectDay) ==  DateFormat.yMMMd().format(calendarDay(i, j))  ? Colors.yellow : Colors.transparent ,
+                      color:  DateFormat.yMMMd().format(selectDay) ==  DateFormat.yMMMd().format(calendarDay(i, j))  ? Colors.yellow[300] : Colors.transparent ,
                     ),
                     child: Column(
                         children: <Widget>[
@@ -219,24 +232,29 @@ class _CalendarPageState extends State<CalendarPage> {
                           Expanded(
                               flex: 1,
                               child: Container(
-                                child:AutoSizeText(
-                                    moneyOfDay("plus",i, j),
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        color: Colors.lightBlueAccent[200]
-                                    )
-                                ),
+                                 child: Align(
+                                    alignment: Alignment.centerRight,
+                                      child:AutoSizeText(
+                                          moneyOfDay("plus",i, j),
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              color: Colors.lightBlueAccent[200]
+                                          )
+                                      )
+                                  )
                               )
                           ),
                           Expanded(
                               flex: 1,
                               child: Container(
-                                child:AutoSizeText(
-                                    moneyOfDay("minus",i, j),
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      color: Colors.redAccent[200],
-                                      //fontSize: 30,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                    child:AutoSizeText(
+                                        moneyOfDay("minus",i, j),
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          color: Colors.redAccent[200],
+                                        )
                                     )
                                 ),
                               )
@@ -254,12 +272,12 @@ class _CalendarPageState extends State<CalendarPage> {
                           Expanded(
                             flex: 1,
                             child: Container(
-                              color: DateFormat.yMMMd().format(calendarDay(i, j)) == DateFormat.yMMMd().format(DateTime.now()) ? Colors.red[500] : Colors.transparent ,
+                              color: DateFormat.yMMMd().format(calendarDay(i, j)) == DateFormat.yMMMd().format(DateTime.now()) ? Colors.red[300] : Colors.transparent ,
                               child: Text(
                                 "${Utils.toInt(calendarDay(i, j).day)}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 13.0,
+                                  fontSize: 10.0,
                                   color: DateFormat.yMMMd().format(calendarDay(i, j)) ==  DateFormat.yMMMd().format(DateTime.now()) ? Colors.white : Colors.black ,
                                 ),
                               ),
@@ -267,7 +285,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           ),
                           Expanded(
                             child: Container(),
-                            flex: 2,
+                            flex: 3,
                           )
                         ],
                       ),
