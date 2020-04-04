@@ -3,7 +3,6 @@ import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite/sqflite.dart';
 
 class CreateForm extends StatefulWidget {
 
@@ -27,11 +26,6 @@ class _CreateFormState extends State<CreateForm> {
 
   List<Calendar> calendarList = List<Calendar>();
 
-  @override
-  void initState() {
-    updateListView();
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
@@ -122,7 +116,6 @@ class _CreateFormState extends State<CreateForm> {
                                       //debugPrint("Save button clicked");
                                       _save(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectDay) );
                                       moveToLastScreen();
-                                      updateListView();
                                     });
                                   },
                                 )
@@ -172,17 +165,4 @@ class _CreateFormState extends State<CreateForm> {
     print(result);
   }
 
-  void updateListView() {
-//データベースを取得する。（起動時と変更時処理）
-    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
-    dbFuture.then((database) {
-//全てのDBを取得
-      Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
-      calendarListFuture.then((calendarList) {
-        setState(() {
-          this.calendarList = calendarList;
-        });
-      });
-    });
-  }
 }

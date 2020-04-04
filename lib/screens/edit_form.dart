@@ -191,9 +191,7 @@ class _EditFormState extends State<EditForm> {
   }
 
   void updateListView() {
-//データベースと接続するパスを取得する（起動時１回のみ処理）
-    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
-    dbFuture.then((database) {
+
 //全てのDBを取得
       Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
       calendarListFuture.then((calendarList) {
@@ -201,6 +199,5 @@ class _EditFormState extends State<EditForm> {
           this.calendarList = calendarList;
         });
       });
-    });
   }
 }

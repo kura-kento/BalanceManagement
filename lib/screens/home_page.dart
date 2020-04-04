@@ -1,5 +1,6 @@
 import 'package:balancemanagement_app/screens/calendar_page.dart';
 import 'package:balancemanagement_app/screens/stting_page.dart';
+import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'graph_page.dart';
@@ -20,6 +21,7 @@ class _HomePageState extends State<HomePage> {
     GraphPage(),
     SettingPage(),
   ];
+
 //メインのページ
   @override
   Widget build(BuildContext context) {

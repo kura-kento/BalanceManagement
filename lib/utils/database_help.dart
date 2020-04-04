@@ -7,14 +7,14 @@ import 'package:path_provider/path_provider.dart';
 class DatabaseHelper {
 
   static DatabaseHelper _databaseHelper;    // Singleton DatabaseHelper
-  static Database _database;                // Singleton Database
+  static Database db;                // Singleton Database
 
-  String tableName = 'claendar';
-  String colId = 'id';
-  String colMoney = 'money';
-  String colTitle = 'title';
-  String colMemo = 'memo';
-  String colDate = 'date';
+  static String tableName = 'claendar';
+  static String colId = 'id';
+  static String colMoney = 'money';
+  static String colTitle = 'title';
+  static String colMemo = 'memo';
+  static String colDate = 'date';
 
 
   DatabaseHelper._createInstance(); // DatabaseHelperのインスタンスを作成するための名前付きコンストラクタ
@@ -27,15 +27,11 @@ class DatabaseHelper {
     return _databaseHelper;
   }
 
-  Future<Database> get database async {
-
-    if (_database == null) {
-      _database = await initializeDatabase();
-    }
-    return _database;
+  Database get database{
+    return db;
   }
 
-  Future<Database> initializeDatabase() async {
+  static Future<Database> initializeDatabase() async {
     // データベースを保存するためのAndroidとiOSの両方のディレクトリパスを取得する
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'calendar.db';
@@ -45,7 +41,7 @@ class DatabaseHelper {
     return calendarsDatabase;
   }
 
-  void _createDb(Database db, int newVersion) async {
+  static void _createDb(Database db, int newVersion) async {
 
     await db.execute('CREATE TABLE $tableName($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
         '$colMoney INTEGER, $colMemo TEXT, $colDate TEXT)');
@@ -53,37 +49,35 @@ class DatabaseHelper {
 
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCalendarMapList() async {
-    Database db = await this.database;
-
 //		var result = await db.rawQuery('SELECT * FROM $noteTable order by $colPriority ASC');
-    var result = await db.query(tableName, orderBy: '$colId ASC');
+    var result = await this.database.query(tableName, orderBy: '$colId ASC');
     return result;
   }
 //挿入　更新　削除
   // Insert Operation: Insert a Note object to database
   Future<int> insertCalendar(Calendar calendar) async {
-    Database db = await this.database;
+    Database db = this.database;
     var result = await db.insert(tableName, calendar.toMap());
     return result;
   }
 
   // Update Operation: Update a Note object and save it to database
   Future<int> updateCalendar(Calendar calendar) async {
-    var db = await this.database;
+    var db =  this.database;
     var result = await db.update(tableName, calendar.toMap(), where: '$colId = ?', whereArgs: [calendar.id]);
     return result;
   }
 
   // Delete Operation: Delete a Note object from database
   Future<int> deleteCalendar(int id) async {
-    var db = await this.database;
+    var db =  this.database;
     int result = await db.rawDelete('DELETE FROM $tableName WHERE $colId = $id');
     return result;
   }
 
   //データベース内のNoteオブジェクトの数を取得します
   Future<int> getCount() async {
-    Database db = await this.database;
+    Database db =  this.database;
     //rawQuery括弧ないにSQL文が使える。
     List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $tableName');
     //firstIntValueはlist型からint型に変更している。
@@ -116,7 +110,7 @@ class DatabaseHelper {
     return calendarList;
   }
   Future<List<Map<String, dynamic>>> getCalendarMonthMapList() async {
-    Database db = await this.database;
+    Database db =  this.database;
     var result = await db.query(tableName, orderBy: '$colId ASC');
     return result;
   }
@@ -133,7 +127,7 @@ class DatabaseHelper {
     return calendarList;
   }
   Future<List<Map<String, dynamic>>> getCalendarDayMapList(selectDay) async {
-    Database db = await this.database;
+    Database db =  this.database;
     var result = await db.query(tableName,where: 'date <= ?' ,whereArgs: selectDay, orderBy: '$colId ASC');
     return result;
   }
