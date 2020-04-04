@@ -3,7 +3,6 @@ import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite/sqflite.dart';
 
 class EditForm extends StatefulWidget {
 
@@ -21,14 +20,12 @@ class _EditFormState extends State<EditForm> {
 
   List<String> _items = ["プラス","マイナス"];
   String _selectedItem = "プラス";
-  List<Calendar> calendarList = List<Calendar>();
 
   TextEditingController titleController = TextEditingController();
   TextEditingController numberController = TextEditingController();
 
   @override
   void initState() {
-    updateListView();
     _selectedItem = widget.selectCalendarList.money >= 0 ? _items[0]:_items[1];
     numberController = TextEditingController(text: '${widget.selectCalendarList.money * (widget.selectCalendarList.money < 0 ? -1:1 )}');
     titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
@@ -136,7 +133,6 @@ class _EditFormState extends State<EditForm> {
                                       //debugPrint("Save button clicked");
                                       _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date) );
                                       moveToLastScreen();
-                                      updateListView();
                                     });
                                   },
                                 )
@@ -190,14 +186,4 @@ class _EditFormState extends State<EditForm> {
     print(result);
   }
 
-  void updateListView() {
-
-//全てのDBを取得
-      Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
-      calendarListFuture.then((calendarList) {
-        setState(() {
-          this.calendarList = calendarList;
-        });
-      });
-  }
 }

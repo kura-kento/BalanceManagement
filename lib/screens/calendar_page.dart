@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
+import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'create_form.dart';
 import 'edit_form.dart';
 
 class CalendarPage extends StatefulWidget {
-
   CalendarPage({Key key}) : super(key: key);
   @override
   _CalendarPageState createState() => _CalendarPageState();
@@ -56,14 +56,14 @@ class _CalendarPageState extends State<CalendarPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("合計(年)："),
-                        Text("${yearSum()}円",),
+                        Text("${yearSum()}${SharedPrefs.getUnit()}",),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("合計(月)："),
-                        Text("${monthSum()}円"),
+                        Text("${monthSum()}${SharedPrefs.getUnit()}"),
                       ],
                     ),
                   ],
@@ -301,14 +301,15 @@ class _CalendarPageState extends State<CalendarPage> {
                     ],
                     ),
               ),
-              onPressed: () {
-                Navigator.of(context).push(
+              onPressed: () async{
+                await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
                       return EditForm(selectCalendarList: this.calendarList[i]);
                     },
                   ),
                 );
+                updateListView();
               },
             ),
         );
@@ -360,7 +361,7 @@ class _CalendarPageState extends State<CalendarPage> {
         }
       }
     }
-    return   "${Utils.commaSeparated(value == "plus" ? _plusMoney : _minusMoney*(-1) )}円";
+    return   "${Utils.commaSeparated(value == "plus" ? _plusMoney : _minusMoney*(-1) )}${SharedPrefs.getUnit()}";
   }
 //iとjから日程のデータを出す（Date型）
   DateTime calendarDay(i, j) {
@@ -389,14 +390,14 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget moneyTextColor(index){
     if(this.calendarList[index].money >= 0){
       return Text(
-          "${this.calendarList[index].money}円",
+          "${this.calendarList[index].money}${SharedPrefs.getUnit()}",
           style: TextStyle(
               color: Colors.lightBlueAccent[200]
           )
       );
     }else{
       return Text(
-          "${this.calendarList[index].money}円",
+          "${this.calendarList[index].money}${SharedPrefs.getUnit()}",
           style: TextStyle(
               color: Colors.redAccent[200]
           )
@@ -412,5 +413,4 @@ class _CalendarPageState extends State<CalendarPage> {
         )
     );
   }
-
 }
