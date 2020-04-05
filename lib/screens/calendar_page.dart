@@ -68,24 +68,26 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                   ],
                 ),
-              )
+              ),
+              Expanded(
+                flex: 1,
+                child: IconButton(
+                  onPressed: ()async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return CreateForm(selectDay: selectDay);
+                        },
+                      ),
+                    );
+                    updateListView();
+                  },
+                  icon: Icon(Icons.add),
+                ),
+              ),
             ],
           ),
-          actions: <Widget>[
-          IconButton(
-            onPressed: ()async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return CreateForm(selectDay: selectDay);
-                  },
-                ),
-              );
-              updateListView();
-            },
-            icon: Icon(Icons.add),
-        ),
-      ]),
+      ),
       body: Column(
         //上から合計額、カレンダー、メモ
         children: <Widget>[
@@ -110,7 +112,13 @@ class _CalendarPageState extends State<CalendarPage> {
                 //アイコン
                 child:Align(
                   alignment: Alignment.center,
-                  child: Text("${selectOfMonth(selectMonthValue).year}年${selectOfMonth(selectMonthValue).month}月"),
+                  child: AutoSizeText(
+                        "${selectOfMonth(selectMonthValue).year}年${selectOfMonth(selectMonthValue).month}月",
+                        style: TextStyle(
+                          fontSize: 30
+                        ),
+                    ),
+
                 ),
               ),
               Expanded(
@@ -207,10 +215,11 @@ class _CalendarPageState extends State<CalendarPage> {
                                 alignment: Alignment.centerRight,
                                 child:AutoSizeText(
                                     moneyOfDay("plus",date),
-                                    maxLines: 1,
                                     style: TextStyle(
-                                        color: Colors.lightBlueAccent[200]
-                                    )
+                                      color: Colors.lightBlueAccent[200]
+                                    ),
+                                    minFontSize: 4,
+                                    maxLines: 1,
                                 )
                             )
                         )
@@ -222,6 +231,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               alignment: Alignment.centerRight,
                               child:AutoSizeText(
                                   moneyOfDay("minus",date),
+                                  minFontSize: 4,
                                   maxLines: 1,
                                   style: TextStyle(
                                     color: Colors.redAccent[200],

@@ -2,29 +2,28 @@
 class Category {
 
   int _id;
-  String _spending;
-  String _income;
+  String _title;
+  bool _plus;
 
-  Category(this._income, this._spending);
 
-  Category.withId(this._id, this._income, this._spending);
+  Category(this._title, this._plus);
+
+  Category.withId(this._id, this._title, this._plus);
 
   int get id => _id;
 
-  String get income => _income;
+  String get title => _title;
 
-  String get spending => _spending;
+  bool get plus => _plus;
 
-  set income(String newIncome) {
-    if ( newIncome.length <=  20 ){
-      this._income = newIncome;
+  set title(String newTitle) {
+    if ( newTitle.length <=  20 ){
+      this._title = newTitle;
     }
   }
 
-  set spending(String newSpending) {
-    if ( newSpending.length <=  20 ){
-      this._income = newSpending;
-    }
+  set plus(bool newPlus) {
+      this._plus = newPlus;
   }
 
   // Convert a Note object into a Map object
@@ -33,17 +32,17 @@ class Category {
     Map<String, dynamic> map = {};
 
     map['id'] = _id;
-    map['income'] = _income;
-    map['spending'] = _spending;
+    map['title'] = _title;
+    map['plus'] = _plus.toString();
 
     return map;
   }
 
-  // MapオブジェクトからCalendarオブジェクトを抽出する
+  // Mapオブジェクトからオブジェクトを抽出する
   Category.fromMapObject(Map<String, dynamic> map) {
-    //print(map);
+    print(map);
     this._id = map['id'];
-    this._income = map['income'];
-    this._spending = map['spending'];
+    this._title = map['title'];
+    this._plus = map['plus'] == "true" ? true:false;
   }
 }

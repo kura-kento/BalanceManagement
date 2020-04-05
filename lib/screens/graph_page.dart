@@ -54,6 +54,7 @@ class _GraphPageState extends State<GraphPage> {
       ),
     );
   }
+
   void updateListView() {
 //全てのDBを取得
     Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
@@ -64,6 +65,13 @@ class _GraphPageState extends State<GraphPage> {
     });
   }
   int textCalendar(){
-    return this.calendarList[0].money;
+    int _moneySum =0;
+    for(int i = 0; i < calendarList.length; i++){
+      if(i==0) {
+        _moneySum += calendarList[i].money;
+      }
+    }
+    return _moneySum;
   }
+
 }

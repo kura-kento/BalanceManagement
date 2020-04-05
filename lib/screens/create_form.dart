@@ -22,8 +22,6 @@ class _CreateFormState extends State<CreateForm> {
   TextEditingController numberController = TextEditingController();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
-
-
   List<Calendar> calendarList = List<Calendar>();
 
   @override
@@ -41,7 +39,7 @@ class _CreateFormState extends State<CreateForm> {
           body: Container(
             //他の画面をタップすると入力画面が閉じる。
              child: GestureDetector(
-                onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+                onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
               child: Padding(
                 padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
                 child: ListView(

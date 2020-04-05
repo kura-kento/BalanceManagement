@@ -1,5 +1,6 @@
 import 'package:balancemanagement_app/screens/home_page.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
+import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
   Future<Widget> method()async{
     await SharedPrefs.setInstance();
 
-    DatabaseHelper.db = await DatabaseHelper.initializeDatabase() ;
+    DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
+    DatabaseHelperCategory.db = await DatabaseHelperCategory.initializeDatabase();
     return HomePage();
   }
 }
