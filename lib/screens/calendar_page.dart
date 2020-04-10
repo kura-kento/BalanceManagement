@@ -50,19 +50,21 @@ class _CalendarPageState extends State<CalendarPage> {
               expandedNull(1),
               Expanded(
                 flex: 5,
-                child:Column(
+                child:Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text("合計(年)："),
-                        Text("${yearSum()}${SharedPrefs.getUnit()}",),
+                        Text("合計(月)：")
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        Text("合計(月)："),
+                        Text("${yearSum()}${SharedPrefs.getUnit()}",),
                         Text("${monthSum()}${SharedPrefs.getUnit()}"),
                       ],
                     ),
@@ -423,4 +425,5 @@ class _CalendarPageState extends State<CalendarPage> {
         )
     );
   }
+
 }

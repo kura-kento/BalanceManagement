@@ -38,12 +38,17 @@ class DatabaseHelperCategory {
     var categoriesDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
     return categoriesDatabase;
   }
-//ユニークにする。被りがないようにする。
   static void _createDb(Database db, int newVersion) async {
 
     await db.execute('CREATE TABLE $tableName($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
-  }
 
+    await db.insert(tableName,Category("購入",true).toMap());
+    await db.insert(tableName,Category("売上",false).toMap());
+    for(var i=0;i<6;i++){
+      await db.insert(tableName,Category("その他${i+1}",true).toMap());
+      await db.insert(tableName,Category("その他${i+1}",false).toMap());
+    }
+  }
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCategoryMapList() async {
 //		var result = await db.rawQuery('SELECT * FROM $noteTable order by $colPriority ASC');

@@ -25,14 +25,15 @@ class _SettingPageState extends State<SettingPage> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
 
-  TextEditingController titleController = TextEditingController();
+  TextEditingController incomeTitleController = TextEditingController();
+  TextEditingController spendingTitleController = TextEditingController();
   TextEditingController unitController = TextEditingController();
 
-  String _selectCategory = "購入";
+  String _selectCategoryIncome = "";
+  String _selectCategorySpending = "";
 
-  String _value = '';
 
-  void _setValue(String value) => setState(() => _value = value);
+  void _setValue(String value) => setState((){});
 
   @override
   void initState(){
@@ -50,64 +51,161 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
         appBar: AppBar(
             title: Text("編集フォーム"),
-            leading: IconButton(icon: Icon(
-                Icons.arrow_back),
-              onPressed: () => moveToLastScreen(),
-            ),
         ),
         body: GestureDetector(
             onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-            child: Padding(
-                padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
-                child: Column(
-                  children: <Widget>[
-                    Row(children: <Widget>[
-                        Padding(
+            child: SingleChildScrollView(
+              child: Padding(
+                  padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
+                  child: Column(
+                    children: <Widget>[
+                      Row(children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(top:15,bottom:15),
+                          )
+                      ],
+                      ),
+                      Padding(
                           padding: EdgeInsets.only(top:15,bottom:15),
-                        )
-                    ],
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(top:15,bottom:15),
-                        child: Column(
-                          children: <Widget>[
-                            Text("カテゴリー編集"),
-                            Row(
-                              children: <Widget>[
+                          child: Column(
+                            children: <Widget>[
+                              Text("カテゴリー編集(収入)"),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 1,
+                                    child: DropdownButton<String>(
+                                      value: dropDownButton(true),
+                                      onChanged: (String newValue){
+                                        setState(() {
+                                          _selectCategoryIncome = newValue;
+                                        });
+                                      },
+                                      //閉じているとき
+                                      selectedItemBuilder: (context){
+                                          return categories(true).map((Category category){
+                                          return Text("選択");
+                                        }).toList();
+                                      },
+                                      //開いている時
+                                      items: categories(true).map((Category category){
+                                        //ドロップダウンボタンの押したときのデータ（value）表示（text）
+                                        return DropdownMenuItem(
+                                          value: category.id.toString(),
+                                          child:Text(category.title),
+                                        );
+                                      }).toList(),
+                                    )
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: TextField(
+                                      controller: incomeTitleController,
+                                      style: textStyle,
+                                      decoration: InputDecoration(
+                                          labelText: labelText(_selectCategoryIncome,true),
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5.0)
+                                          )
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(10.0),
+                                      child: FlatButton(
+                                        padding: EdgeInsets.all(20.0),
+                                        color: Colors.grey[400],
+                                        onPressed: (){
+                                          setState(() {
+                                            _update(_selectCategoryIncome,incomeTitleController.text,true);
+                                          });
+                                        },child: Text("更新"),
+                                      ),
+                                    )
+                                  )
+                                ],
+                              ),
+                              Text("カテゴリー編集(支出)"),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      flex: 1,
+                                      child: DropdownButton<String>(
+                                        value: dropDownButton(false),
+                                        onChanged: (String newValue){
+                                          setState(() {
+                                            _selectCategorySpending = newValue;
+                                          });
+                                        },
+                                        selectedItemBuilder: (context){
+                                          return categories(false).map((Category category){
+                                            return Text("選択");
+                                          }).toList();
+                                        },
+                                        items: categories(false).map((Category category){
+                                          return DropdownMenuItem(
+                                            value: category.id.toString(),
+                                            child:Text(category.title),
+                                          );
+                                        }).toList(),
+                                      )
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: TextField(
+                                      controller: spendingTitleController,
+                                      style: textStyle,
+                                      decoration: InputDecoration(
+                                          labelText: labelText(_selectCategorySpending,false),
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5.0)
+                                          )
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                      flex: 1,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: FlatButton(
+                                          padding: EdgeInsets.all(20.0),
+                                          color: Colors.grey[400],
+                                          onPressed: (){
+                                            setState(() {
+                                              _update(_selectCategorySpending,spendingTitleController.text,false);
+                                            });
+                                          },child: Text("更新"),
+                                        ),
+                                      )
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(top:15,bottom:15),
+                          child:Column(
+                            children: <Widget>[
+                              Text("単位編集"),
+                              Row(
+                                children: <Widget>[
                                 Expanded(
                                   flex: 1,
-                                  child: DropdownButton<String>(
-                                    value: _selectCategory,
-                                    onChanged: (String newValue){
-                                      setState(() {
-                                        _selectCategory = newValue;
-                                      });
-                                    },
-                                    selectedItemBuilder: (context){
-                                      return categories(true).map((String title){
-                                        return Text(
-                                          title,
-                                        );
-                                      }).toList();
-                                    },
-                                    items: categories(true).map((title){
-                                      return DropdownMenuItem(
-                                        value: title,
-                                        child:Text(title),
-                                      );
-                                    }).toList(),
-                                  )
+                                  child: Text("単位：",
+                                    style: TextStyle(fontSize: 20,),
+                                  ),
                                 ),
                                 Expanded(
-                                  flex: 2,
+                                  flex:2,
                                   child: TextField(
-                                    controller: titleController,
+                                    controller: unitController,
                                     style: textStyle,
-                                    onChanged: (value){
-                                      debugPrint('Something changed in Title Text Field');
-                                    },
                                     decoration: InputDecoration(
-                                        labelText: _selectCategory,
+                                        labelText: '${SharedPrefs.getUnit()}',
+                                        labelStyle: textStyle,
                                         border: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(5.0)
                                         )
@@ -115,106 +213,49 @@ class _SettingPageState extends State<SettingPage> {
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: FlatButton(
-                                      padding: EdgeInsets.all(20.0),
-                                      color: Colors.grey[400],
-                                      onPressed: (){
-                                        setState(() {
-                                        });
-                                      },child: Text("更新"),
-                                    ),
-                                  )
+                                    flex: 1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: FlatButton(
+                                        padding: EdgeInsets.all(20.0),
+                                        color: Colors.grey[400],
+                                        onPressed: (){
+                                          setState(() {
+                                            SharedPrefs.setUnit("${unitController.text}");
+                                          });
+                                        },child: Text("更新"),
+                                      ),
+                                    )
                                 )
-                              ],
-                            ),
-                          ],
-                        )
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(top:15,bottom:15),
-                        child:Column(
-                          children: <Widget>[
-                            Text("単位編集"),
-                            Row(
-                              children: <Widget>[
-                              Expanded(
-                                flex: 1,
-                                child: Text("単位：",
-                                  style: TextStyle(fontSize: 20,),
-                                ),
+                                ],
                               ),
-                              Expanded(
-                                flex:2,
-                                child: TextField(
-                                  controller: unitController,
-                                  style: textStyle,
-                                  onChanged: (value){
-                                    debugPrint('Something changed in Title Text Field');
-                                  },
-                                  decoration: InputDecoration(
-                                      labelText: '${SharedPrefs.getUnit()}',
-                                      labelStyle: textStyle,
-                                      border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(5.0)
-                                      )
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: FlatButton(
-                                      padding: EdgeInsets.all(20.0),
-                                      color: Colors.grey[400],
-                                      onPressed: (){
-                                        setState(() {
-                                          SharedPrefs.setUnit("${unitController.text}");
-                                        });
-                                      },child: Text("更新"),
-                                    ),
-                                  )
-                              )
-                              ],
-                            ),
-                          ],
-                        )
-                    ),
-                    Padding(
-                      padding:EdgeInsets.only(top:15.0,bottom:15.0),
-                    ),
-                    Padding(
-                        padding:EdgeInsets.only(top:15.0,bottom:15.0),
-                          child: RaisedButton(
-                            color: Theme.of(context).primaryColorDark,
-                            textColor: Theme.of(context).primaryColorLight,
-                            child: Text(
-                              '全てのデータ削除',
-                              textScaleFactor: 1.5,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                openDialog(context);
-                                //_save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date) );
-                              });
-                            },
+                            ],
                           )
                       ),
-                  ],
-                )
+                      Padding(
+                        padding:EdgeInsets.only(top:15.0,bottom:15.0),
+                      ),
+                      Padding(
+                          padding:EdgeInsets.only(top:15.0,bottom:15.0),
+                            child: RaisedButton(
+                              color: Theme.of(context).primaryColorDark,
+                              textColor: Theme.of(context).primaryColorLight,
+                              child: Text(
+                                '全てのデータ削除',
+                                textScaleFactor: 1.5,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  openDialog(context);
+                                });
+                              },
+                            )
+                        ),
+                    ],
+                  )
+              ),
             ),
           ),
-
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            setState(() {
-              _save(Category("その他",true));
-            });
-          },
-        ),
     );
   }
   void moveToLastScreen(){
@@ -229,6 +270,20 @@ class _SettingPageState extends State<SettingPage> {
         )
     );
   }
+
+  Future <void> _update(before,after,value) async {
+    int _id;
+    //削除予定
+    for(var i=0;i<categoryList.length;i++) {
+      if (categoryList[i].id == int.parse(before)){
+        _id = categoryList[i].id;
+        break;
+      }
+    }
+    await databaseHelperCategory.updateCategory(Category.withId(_id,after,value));
+    print(_id);
+  }
+
 
   Future <void> _save(Category category) async {
     int result;
@@ -266,7 +321,7 @@ class _SettingPageState extends State<SettingPage> {
     }
     return _labelTextCategory;
   }
-
+//ダイアログ
   void openDialog(BuildContext context) {
     showDialog<Answers>(
       context: context,
@@ -314,14 +369,44 @@ class _SettingPageState extends State<SettingPage> {
     result = await databaseHelper.deleteCalendar(id);
     print(result);
   }
-
-  List<String> categories(value){
-    List<String> _categories = List<String>();
-    for(var i=0;i<categoryList.length;i++){
-      if(value){
-        _categories.add(categoryList[i].title);
+//カテゴリーの名前を取得。
+  List<Category> categories(value){
+    List<Category> _categories = List<Category>();
+    if(value){
+      for(var i = 0; i < categoryList.length; i++){
+        if(categoryList[i].plus == value){
+          _categories.add(categoryList[i]);
+        }
+      }
+    }else{
+      for(var i = 0; i < categoryList.length; i++){
+        if(categoryList[i].plus == value){
+          _categories.add(categoryList[i]);
+        }
       }
     }
     return _categories;
+  }
+  String dropDownButton(value){
+    for(var i=0;i<categoryList.length;i++){
+      if(categoryList[i].plus == value){
+        return categoryList[i].id.toString();
+      }
+    }
+  }
+  String labelText(number,value){
+      if(number == ""){
+        for(var i = 0; i < categoryList.length; i++){
+          if(categoryList[i].plus == value){
+            return categoryList[i].title;
+          }
+        }
+      }else{
+        for(var i = 0 ;i < categoryList.length; i++) {
+          if(categoryList[i].id == int.parse(number)){
+            return categoryList[i].title;
+          }
+        }
+      }
   }
 }

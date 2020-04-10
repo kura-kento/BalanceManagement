@@ -1,3 +1,5 @@
+import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -186,7 +188,7 @@ class ChartContainer extends StatelessWidget {
 
     for (var i = 0; i < _horizontalBarNum; i++) {
       Widget widget = (Container(
-        child: Text(_scaleNumbers[i],
+        child: Text("${Utils.commaSeparated(int.parse(_scaleNumbers[i]))}${SharedPrefs.getUnit()}",
             style: TextStyle(
                 fontSize: 13.0,
                 color: Colors.grey
@@ -224,11 +226,10 @@ class ChartContainer extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(child:Row(children: <Widget>[
             Container(
               alignment: Alignment.topCenter,
-              width: 30,
+              width: 80,
               child: Container(
                 margin: const EdgeInsets.only(top: 10.0),
                 child: _getChartNumberLayout(),
@@ -247,7 +248,6 @@ class ChartContainer extends StatelessWidget {
                     margin: EdgeInsets.symmetric(horizontal: _chartSideMargin),
                     child: _getDateLayout(_chartDataList)
                 ),),
-
               ],
             ),
             ),

@@ -34,9 +34,9 @@ class MyApp extends StatelessWidget {
   }
   Future<Widget> method()async{
     await SharedPrefs.setInstance();
-
     DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
     DatabaseHelperCategory.db = await DatabaseHelperCategory.initializeDatabase();
+
     return HomePage();
   }
 }

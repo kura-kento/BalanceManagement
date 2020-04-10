@@ -2,6 +2,7 @@ import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../chart.dart';
 
 class GraphPage extends StatefulWidget {
@@ -14,8 +15,9 @@ class _GraphPageState extends State<GraphPage> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
 
-  final List<ChartData> _debugChartList = [
+  List<ChartData> _debugChartList = [
     ChartData("4/15", 60.0),
+    ChartData("4/16", 100.toDouble()),
   ];
 
   @override
@@ -28,7 +30,7 @@ class _GraphPageState extends State<GraphPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(textCalendar().toString(), style: TextStyle(color: Colors.black),),
+        title: Text((calendarList.length != 0) ?  calendarList[0].title : "s", style: TextStyle(color: Colors.black),),
       ),
       body: Container(
           margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -37,7 +39,7 @@ class _GraphPageState extends State<GraphPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      height: 300,
+                      height: 350,
                       margin: EdgeInsets.only(top: 10.0),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -45,7 +47,7 @@ class _GraphPageState extends State<GraphPage> {
                       ),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
-                          child: ChartContainer(_debugChartList, "合計値")
+                          child: ChartContainer(_debugChartList, "合計値：月")
                       ),
                     ),
                   ]
@@ -55,15 +57,14 @@ class _GraphPageState extends State<GraphPage> {
     );
   }
 
-  void updateListView() {
+  Future<void> updateListView() async{
 //全てのDBを取得
-    Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
-    calendarListFuture.then((calendarList) {
-      setState(() {
-        this.calendarList = calendarList;
-      });
-    });
+    List<Calendar> _calendarList = await databaseHelper.getCalendarList();
+    this.calendarList = _calendarList;
+    _debugChartList = mapToList();
+    setState(() {});
   }
+
   int textCalendar(){
     int _moneySum =0;
     for(int i = 0; i < calendarList.length; i++){
@@ -73,5 +74,58 @@ class _GraphPageState extends State<GraphPage> {
     }
     return _moneySum;
   }
+//
+  Map<DateTime, int> graphMonth(){
+    Map<DateTime, int> map = {};
 
+    DateTime _date;
+    for(var i = 0; i < calendarList.length; i++){
+      _date = calendarList[i].date;
+
+      if( map.containsKey(DateTime(_date.year,_date.month)) ){
+        map[DateTime(_date.year,_date.month)] += calendarList[i].money;
+    }else{
+        map.addAll({DateTime(_date.year,_date.month) : calendarList[i].money});
+      }
+    }
+
+    return map;
+  }
+  List<ChartData> mapToList(){
+    List<ChartData> _list = List<ChartData>();
+    List<DateTime> _listCache = List<DateTime>();
+    Map<DateTime,int> _map = graphMonth();
+
+    _map.forEach((DateTime key,int value){
+      print(value);
+      _listCache.add(key);
+    });
+    _listCache.sort((a,b){
+     return a.difference(b).inDays;
+    });
+    int durationMonth ;
+    if(DateTime.now().year == _listCache[0].year){
+      durationMonth = DateTime.now().month - _listCache[0].month;
+    }else{
+      durationMonth = DateTime.now().month +12*(DateTime.now().year - _listCache[0].year) -_listCache[0].month;
+    }
+    print(_listCache[0].month);
+    for(int i=0;i <= durationMonth;i++){
+      if(_map.containsKey(DateTime(_listCache[0].year,_listCache[0].month + i))){
+        if((_listCache[0].month+i)%12 == 1){
+          _list.add(ChartData(DateFormat("yyyy年M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble()));
+        }else{
+          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble()));
+        }
+      }else{
+        if((_listCache[0].month+i)%12 == 1){
+          _list.add(ChartData(DateFormat("yyyy年M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0));
+        }
+        _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0));
+      }
+    }
+    return _list;
+  }
 }
+
+//FutureBuilder
