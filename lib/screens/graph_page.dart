@@ -15,7 +15,10 @@ class _GraphPageState extends State<GraphPage> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
 
-  List<ChartData> _debugChartList = [];
+  List<ChartData> _debugChartList = [
+    ChartData("4/15", 60.0,"　","0"),
+    ChartData("4/16", 100.toDouble(),"　","0"),
+  ];
 
   @override
   void initState(){
@@ -36,7 +39,7 @@ class _GraphPageState extends State<GraphPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      height: 350,
+                      height: 320,
                       margin: EdgeInsets.only(top: 10.0),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -108,27 +111,26 @@ class _GraphPageState extends State<GraphPage> {
     }
     print(_listCache[0].month);
     for(int i=0;i <= durationMonth;i++){
-      //その月があれば
       if(_map.containsKey(DateTime(_listCache[0].year,_listCache[0].month + i))){
-        //１月なら
         if((_listCache[0].month+i)%12 == 1){
           _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
-                              _map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),
-
+              _map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),
+                 DateFormat("yyyy年").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
+                "${_map[DateTime(_listCache[0].year,_listCache[0].month + i)]}"
           ));
         }else{
-          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble() ));
+          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),"",
+              "${_map[DateTime(_listCache[0].year,_listCache[0].month + i)]}"
+                   ));
         }
-        //なければ
       }else{
         if((_listCache[0].month+i)%12 == 1){
-          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
-                              0.0
+          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0,
+              DateFormat("yyyy年").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
+              "0"
           ));
-        }else{
-          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0));
-
         }
+        _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0,"","0"));
       }
     }
     return _list;

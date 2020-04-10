@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,11 @@ import 'dart:math' as math;
 class ChartData {
   double y;
   String x;
+  String z;
+  String textMoney;
 
 
-  ChartData(this.x, this.y,): super();
+  ChartData(this.x, this.y,this.z,this.textMoney): super();
 }
 
 // チャートの描写をする為に位置計算などして表示するクラス
@@ -29,7 +32,7 @@ class ChartContainer extends StatelessWidget {
   final List<ChartData> _charDataList;
   // チャートのタイトル
   final _chartTitle;
-  
+
   ChartContainer(this._charDataList, this._chartTitle): super();
 
   // チャートのデータを生成し返す（グラフに共通地に変換）
@@ -115,7 +118,7 @@ class ChartContainer extends StatelessWidget {
     List<ChartData> _chartList = List<ChartData>();
     for (var chatData in _charDataList) {
       double _newY= (100.0 - (((chatData.y * math.pow(10, (coareseDigit - 1))) - scaleYMin) * _unitPoint)) / 100.0;
-      _chartList.add(new ChartData(chatData.x, _newY));
+      _chartList.add(new ChartData(chatData.x, _newY,chatData.z,chatData.textMoney));
     }
     return _chartList;
   }
@@ -167,10 +170,13 @@ class ChartContainer extends StatelessWidget {
       Widget widget = (Expanded(child: Container(
         child: Column(
           children: <Widget>[
-            Text(
-              "",
-              style: TextStyle(
-                  color: Colors.grey
+            Container(
+              height:20,
+              child: Text(
+                chartData.z,
+                style: TextStyle(
+                    color: Colors.grey,
+                ),
               ),
             ),
             Text(
@@ -199,11 +205,14 @@ class ChartContainer extends StatelessWidget {
 
     for (var i = 0; i < _horizontalBarNum; i++) {
       Widget widget = (Container(
-        child: Text("${Utils.commaSeparated(int.parse(_scaleNumbers[i]))}${SharedPrefs.getUnit()}",
-            style: TextStyle(
-                fontSize: 13.0,
-                color: Colors.grey
-            )
+        child: AutoSizeText(
+          "${Utils.commaSeparated(int.parse(_scaleNumbers[i]))}${SharedPrefs.getUnit()}",
+          style: TextStyle(
+              fontSize: 13.0,
+              color: Colors.grey
+          ),
+          minFontSize: 4,
+          maxLines: 1,
         ),
         height: _scaleNumHeight,
         alignment: Alignment.centerRight,
@@ -243,7 +252,7 @@ class ChartContainer extends StatelessWidget {
             children: <Widget>[
               Container(
                 alignment: Alignment.topCenter,
-                width: 80,
+                width: 70,
                 child: Container(
                   margin: const EdgeInsets.only(top: 10.0),
                   child: _getChartNumberLayout(),
@@ -254,7 +263,7 @@ class ChartContainer extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Container(
                     //修正
-                    width: 500,
+                    width: 430,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -337,6 +346,12 @@ class ChartPainter extends CustomPainter {
         _circleSize,
         line
     );
+
+      TextSpan span = new TextSpan(style: new TextStyle(color: Colors.grey), text: _chartList[1].textMoney.toString());
+      TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
+      tp.layout();
+      tp.paint(canvas, new Offset(pointX, pointY-30));
+
   }
 
   @override
