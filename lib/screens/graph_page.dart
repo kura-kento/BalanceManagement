@@ -15,10 +15,7 @@ class _GraphPageState extends State<GraphPage> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
 
-  List<ChartData> _debugChartList = [
-    ChartData("4/15", 60.0),
-    ChartData("4/16", 100.toDouble()),
-  ];
+  List<ChartData> _debugChartList = [];
 
   @override
   void initState(){
@@ -111,17 +108,27 @@ class _GraphPageState extends State<GraphPage> {
     }
     print(_listCache[0].month);
     for(int i=0;i <= durationMonth;i++){
+      //その月があれば
       if(_map.containsKey(DateTime(_listCache[0].year,_listCache[0].month + i))){
+        //１月なら
         if((_listCache[0].month+i)%12 == 1){
-          _list.add(ChartData(DateFormat("yyyy年M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble()));
+          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
+                              _map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),
+
+          ));
         }else{
-          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble()));
+          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble() ));
         }
+        //なければ
       }else{
         if((_listCache[0].month+i)%12 == 1){
-          _list.add(ChartData(DateFormat("yyyy年M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0));
+          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
+                              0.0
+          ));
+        }else{
+          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0));
+
         }
-        _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0));
       }
     }
     return _list;

@@ -8,7 +8,8 @@ class ChartData {
   double y;
   String x;
 
-  ChartData(this.x, this.y): super();
+
+  ChartData(this.x, this.y,): super();
 }
 
 // チャートの描写をする為に位置計算などして表示するクラス
@@ -25,11 +26,11 @@ class ChartContainer extends StatelessWidget {
   // 目盛りに表示させる数値の配列
   List<String> _scaleNumbers;
   // チャートのデータ配列
-  final List<ChartData> _charDatatList;
+  final List<ChartData> _charDataList;
   // チャートのタイトル
   final _chartTitle;
-
-  ChartContainer(this._charDatatList, this._chartTitle): super();
+  
+  ChartContainer(this._charDataList, this._chartTitle): super();
 
   // チャートのデータを生成し返す（グラフに共通地に変換）
   List<ChartData> _getChartDataList() {
@@ -43,7 +44,7 @@ class ChartContainer extends StatelessWidget {
 
     while(coarese < 1.0){
 
-      for (var chatData in _charDatatList) {
+      for (var chatData in _charDataList) {
         list.add(chatData.y * math.pow(10, (coareseDigit)));
       }
       list.sort();
@@ -90,7 +91,7 @@ class ChartContainer extends StatelessWidget {
     }
 
     // 目盛りの数値が整数値か
-    var isInteger = _isIntegerInData(_charDatatList);
+    var isInteger = _isIntegerInData(_charDataList);
 
     // 目盛りの下限値を算出
     var lowerScaleVal = yMin - (yMin % scaleUnitVal);
@@ -112,7 +113,7 @@ class ChartContainer extends StatelessWidget {
     double _unitPoint = 100.0 / (scaleYMax - scaleYMin);
 
     List<ChartData> _chartList = List<ChartData>();
-    for (var chatData in _charDatatList) {
+    for (var chatData in _charDataList) {
       double _newY= (100.0 - (((chatData.y * math.pow(10, (coareseDigit - 1))) - scaleYMin) * _unitPoint)) / 100.0;
       _chartList.add(new ChartData(chatData.x, _newY));
     }
@@ -164,11 +165,21 @@ class ChartContainer extends StatelessWidget {
 
     for (var chartData in list) {
       Widget widget = (Expanded(child: Container(
-        child: Text(
-          chartData.x,
-          style: TextStyle(
-              color: Colors.grey
-          ),
+        child: Column(
+          children: <Widget>[
+            Text(
+              "",
+              style: TextStyle(
+                  color: Colors.grey
+              ),
+            ),
+            Text(
+              chartData.x,
+              style: TextStyle(
+                  color: Colors.grey
+              ),
+            ),
+          ],
         ),
         alignment: Alignment.topCenter,
       ),));
@@ -207,6 +218,8 @@ class ChartContainer extends StatelessWidget {
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     List<ChartData> _chartDataList = _getChartDataList();
@@ -226,36 +239,49 @@ class ChartContainer extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(child:Row(children: <Widget>[
-            Container(
-              alignment: Alignment.topCenter,
-              width: 80,
-              child: Container(
-                margin: const EdgeInsets.only(top: 10.0),
-                child: _getChartNumberLayout(),
+          Expanded(child:Row(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.topCenter,
+                width: 80,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 10.0),
+                  child: _getChartNumberLayout(),
+                ),
               ),
-            ),
-            Expanded(child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CustomPaint(
-                  painter: ChartPainter(_scaleNumbers.length, _chartTopMargin, _chartDataList, _chartSideMargin),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
                   child: Container(
-                      height: _chartHeight
+                    //修正
+                    width: 500,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CustomPaint(
+                          painter: ChartPainter(_scaleNumbers.length, _chartTopMargin, _chartDataList, _chartSideMargin),
+                          child: Container(
+                              height: _chartHeight
+                          ),
+                        ),
+                        Expanded(child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: _chartSideMargin),
+                            child: _getDateLayout(_chartDataList)
+                        ),),
+                      ],
+                    ),
                   ),
                 ),
-                Expanded(child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: _chartSideMargin),
-                    child: _getDateLayout(_chartDataList)
-                ),),
-              ],
-            ),
-            ),
-          ],
+              ),
+            ],
           )),
         ]
     );
   }
+  graphWidth(){
+   // GraphPage.graphMonth();
+  }
+
 }
 
 // チャートグラフ

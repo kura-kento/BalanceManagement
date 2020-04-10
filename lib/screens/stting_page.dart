@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'category_form.dart';
+
 enum Answers{
   YES,
   NO
@@ -59,6 +61,20 @@ class _SettingPageState extends State<SettingPage> {
                   padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
                   child: Column(
                     children: <Widget>[
+                      Container(
+                        child: IconButton(
+                          onPressed: (){
+                            Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return CategoryPage(plusOrMinus:"plus");
+                                  },
+                                ),
+                            );
+                          },
+                            icon: Icon(Icons.add),
+                        ),
+                      ),
                       Row(children: <Widget>[
                           Padding(
                             padding: EdgeInsets.only(top:15,bottom:15),
@@ -297,7 +313,7 @@ class _SettingPageState extends State<SettingPage> {
 
   Future<void> updateListViewCategory() async{
 //全てのDBを取得
-     List<Category> _categoryList = await databaseHelperCategory.getCategoryList();
+     List<Category> _categoryList = await databaseHelperCategory.getCategoryList(true);
       setState(() {
         this.categoryList = _categoryList;
       });

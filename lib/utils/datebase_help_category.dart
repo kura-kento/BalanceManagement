@@ -83,16 +83,20 @@ class DatabaseHelperCategory {
     return result;
   }
 
-  // 'Map List' [List <Map>]を取得し、それを ' List' [List <Note>]に変換します
-  Future<List<Category>> getCategoryList() async {
+  //カテゴリーリストで収支毎の値を取得する。
+  Future<List<Category>> getCategoryList(value) async {
     //全てのデータを取得
     var categoryMapList = await getCategoryMapList(); // Get 'Map List' from database
     int count = categoryMapList.length;         // Count the number of map entries in db table
 
     List<Category> categoryList = List<Category>();
+
     for (int i = 0; i < count; i++) {
-      categoryList.add(Category.fromMapObject(categoryMapList[i]));
+      if(categoryMapList[i]['plus'] == value.toString()){
+        categoryList.add(Category.fromMapObject(categoryMapList[i]));
+      }
     }
     return categoryList;
   }
+
 }
