@@ -19,13 +19,13 @@ class ChartData {
 class ChartContainer extends StatelessWidget {
 
   // チャートの上マージン
-  final double _chartTopMargin = 20.0;
+  final double _chartTopMargin = 30.0;
   // チャートの左右マージン
   final double _chartSideMargin = 20.0;
   // チャートの高さ
   final double _chartHeight = 240.0;
   // 目盛り数値の高さ
-  final double _scaleNumHeight = 20.0;
+  final double _scaleNumHeight = 37.0;
   // 目盛りに表示させる数値の配列
   List<String> _scaleNumbers;
   // チャートのデータ配列
@@ -252,7 +252,7 @@ class ChartContainer extends StatelessWidget {
             children: <Widget>[
               Container(
                 alignment: Alignment.topCenter,
-                width: 70,
+                width: 50,
                 child: Container(
                   margin: const EdgeInsets.only(top: 10.0),
                   child: _getChartNumberLayout(),
@@ -263,7 +263,7 @@ class ChartContainer extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Container(
                     //修正
-                    width: 430,
+                    width: _charDataList.length <= 4 ? 430 : (65.0*_charDataList.length),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -330,6 +330,8 @@ class ChartPainter extends CustomPainter {
     double pointY = _horizontalAdjustHeight + ((size.height - _horizontalAdjustHeight * 2) * y);
     double scopeWidth = size.width - (_varticalAdjustWidth * 2);
     double pointX = (scopeWidth / (_chartList.length * 2) * (count + 1)) + (scopeWidth / (_chartList.length * 2) * count) + _varticalAdjustWidth;
+    double textPointY = _horizontalAdjustHeight + ((size.height - _horizontalAdjustHeight * 2) * y)-28;
+    double textPointX = (scopeWidth / (_chartList.length * 2) * (count + 1)) + (scopeWidth / (_chartList.length * 2) * count) + _varticalAdjustWidth-((_chartList[count].textMoney.length+1)/2)*6;
 
     // 円背景
     paint.color = Colors.white;
@@ -346,14 +348,25 @@ class ChartPainter extends CustomPainter {
         _circleSize,
         line
     );
+    //その月の金額
+        TextSpan span = TextSpan(
+                          style: TextStyle(
+                              fontSize: 14.0-(_chartList[count].textMoney.length/1.5),
+                              color: Colors.grey
+                          ),
+                        text: "${Utils.commaSeparated(int.parse(_chartList[count].textMoney))}${SharedPrefs.getUnit()}",
+                      );
 
-      TextSpan span = new TextSpan(style: new TextStyle(color: Colors.grey), text: _chartList[1].textMoney.toString());
-      TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
-      tp.layout();
-      tp.paint(canvas, new Offset(pointX, pointY-30));
+
+        TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
+        tp.layout();
+        tp.paint(canvas, Offset(textPointX, textPointY));
+
+
 
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
+

@@ -16,7 +16,7 @@ class _GraphPageState extends State<GraphPage> {
   List<Calendar> calendarList = List<Calendar>();
 
   List<ChartData> _debugChartList = [
-    ChartData("4/15", 60.0,"　","0"),
+    ChartData(DateFormat("M月").format(DateTime.now()), 60.0,DateFormat("yyyy年").format(DateTime.now()),"0"),
     ChartData("4/16", 100.toDouble(),"　","0"),
   ];
 

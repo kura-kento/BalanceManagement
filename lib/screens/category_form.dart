@@ -29,13 +29,15 @@ class _CategoryPageState extends State<CategoryPage> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text("カテゴリー編集"),
       ),
-      body: SingleChildScrollView(
-          child: Column(
-              children: CategoryList()
-          )
-      ),
+      body:  GestureDetector(
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
 
+      child:SingleChildScrollView(
+          child: Column(children: CategoryList())
+      ),
+      ),
     );
   }
 
@@ -47,14 +49,17 @@ class _CategoryPageState extends State<CategoryPage> {
           children: <Widget>[
             Expanded(
               flex: 2,
-              child: TextField(
-                controller: incomeTitleController,
-                //style: textStyle,
-                decoration: InputDecoration(
-                    labelText: categoryList[i].title,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0)
-                    )
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: incomeTitleController,
+                  //style: textStyle,
+                  decoration: InputDecoration(
+                      labelText: categoryList[i].title,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      )
+                  ),
                 ),
               ),
             ),
