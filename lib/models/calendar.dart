@@ -7,10 +7,11 @@ class Calendar {
   String _title;
   String _memo;
   DateTime _date;
+  int _categoryId;
 
-  Calendar(this._money, this._title, this._memo, this._date);
+  Calendar(this._money, this._title, this._memo, this._date, this._categoryId);
 
-  Calendar.withId(this._id, this._money, this._title, this._memo, this._date);
+  Calendar.withId(this._id, this._money, this._title, this._memo, this._date, this._categoryId);
 
   int get id => _id;
 
@@ -21,6 +22,8 @@ class Calendar {
   String get memo => _memo;
 
   DateTime get date => _date;
+
+  int get categoryId => _categoryId;
 
   set money(int newMoney) {
     if ( newMoney.toString().length <=  6 ){
@@ -44,6 +47,10 @@ class Calendar {
     this._date = newDate;
   }
 
+  set categoryId(int newCategoryId) {
+      this._money = newCategoryId;
+  }
+
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
 
@@ -54,17 +61,19 @@ class Calendar {
     map['title'] = _title;
     map['memo'] = _memo;
     map['date'] = DateFormat('yyyy-MM-dd HH:mm').format(_date);
+    map['categoryId'] = _categoryId;
 
-    return map;
-  }
+return map;
+}
 
-  // MapオブジェクトからCalendarオブジェクトを抽出する
-  Calendar.fromMapObject(Map<String, dynamic> map) {
+// MapオブジェクトからCalendarオブジェクトを抽出する
+Calendar.fromMapObject(Map<String, dynamic> map) {
     //print(map);
     this._id = map['id'];
     this._money = map['money'];
     this._title = map['title'];
     this._memo = map['memo'];
     this._date = DateTime.parse(map['date']);
-  }
+    this._categoryId = map['categoryId'];
+    }
 }

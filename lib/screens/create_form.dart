@@ -1,6 +1,9 @@
 import 'package:balancemanagement_app/models/calendar.dart';
+import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
+import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,12 +21,25 @@ class _CreateFormState extends State<CreateForm> {
   List<String> _items = ["プラス","マイナス"];
   String _selectedItem = "プラス" ;
 
+  List<Category> _categoryItems =[Category.withId(0, "空白", true)];
+  int _selectCategory = 0;
+
   TextEditingController titleController = TextEditingController();
   TextEditingController numberController = TextEditingController();
+
+  FixedExtentScrollController scrollController = FixedExtentScrollController();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
 
+  DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
+  List<Category> categoryList = List<Category>();
+
+  @override
+  void initState() {
+    updateListViewCategory();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
@@ -45,39 +61,79 @@ class _CreateFormState extends State<CreateForm> {
                 child: ListView(
                   children: <Widget>[
                     Row( children: btnPlusMinus(), ),
-                    Padding(
-                        padding: EdgeInsets.only(top:15,bottom:15),
-                        child: TextField(
-                          controller: titleController,
-                          style: textStyle,
-                          onChanged: (value){
-                            debugPrint('Something changed in Title Text Field');
-                          },
-                          decoration: InputDecoration(
-                              labelText: 'タイトル',
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0)
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                            flex: 1,
+                            child: FlatButton(
+                              child:Text(_categoryItems[_selectCategory].title+"　＞"),
+                              onPressed: (){
+                                showCupertinoModalPopup(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      height: MediaQuery.of(context).size.height / 3,
+                                      child: CupertinoPicker(
+                                          scrollController: scrollController,
+                                          diameterRatio: 1.0,
+                                          itemExtent: 40.0,
+                                          children: _categoryItems.map(_pickerItem).toList(),
+                                          onSelectedItemChanged: (int index){
+                                            setState(() {
+                                              _selectCategory = index;
+                                            });
+                                          }
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            )
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child:Padding(
+                              padding: EdgeInsets.only(top:15,bottom:15),
+                              child: TextField(
+                                controller: titleController,
+                                style: textStyle,
+                                decoration: InputDecoration(
+                                    labelText: 'タイトル',
+                                    labelStyle: textStyle,
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5.0)
+                                    )
+                                ),
                               )
                           ),
-                        )
+                        ),
+                      ],
                     ),
-                    Padding(
-                        padding: EdgeInsets.only(top:15,bottom:15),
-                        child:TextFormField(
-                            controller: numberController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                            WhitelistingTextInputFormatter.digitsOnly
-                            ],
-                            decoration: InputDecoration(
-                                labelText: _selectedItem == _items[0] ? "収入":"支出",
-                                labelStyle: textStyle,
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0)
-                                )
-                            )
+                    Row(
+                      children: <Widget>[
+                        expandedNull(1),
+                        Expanded(
+                          flex: 2,
+                          child:Padding(
+                              padding: EdgeInsets.only(top:15,bottom:15),
+                              child:TextFormField(
+                                  controller: numberController,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  decoration: InputDecoration(
+                                      labelText: _selectedItem == _items[0] ? "収入":"支出",
+                                      labelStyle: textStyle,
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5.0)
+                                      )
+                                  )
+                              )
+                          )
                         )
+,
+                      ],
                     ),
                     Padding(
                         padding:EdgeInsets.only(top:15.0,bottom:15.0),
@@ -93,7 +149,6 @@ class _CreateFormState extends State<CreateForm> {
                                   ),
                                   onPressed: (){
                                     setState(() {
-                                      //debugPrint("Delete button clicked");
                                       moveToLastScreen();
                                     });
                                   },
@@ -111,8 +166,7 @@ class _CreateFormState extends State<CreateForm> {
                                   ),
                                   onPressed: (){
                                     setState(() {
-                                      //debugPrint("Save button clicked");
-                                      _save(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectDay) );
+                                      _save(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectDay,0) );
                                       moveToLastScreen();
                                     });
                                   },
@@ -139,7 +193,7 @@ class _CreateFormState extends State<CreateForm> {
           textColor: _selectedItem == value ? Colors.white : Colors.grey[400],
           onPressed: () {
             setState(() {
-              _selectedItem = value ;
+              _selectedItem = value;
             });
           },
         ),
@@ -163,4 +217,66 @@ class _CreateFormState extends State<CreateForm> {
     print(result);
   }
 
+  Widget _pickerItem(Category category) {
+    return Text(
+      category.title,
+      style: const TextStyle(fontSize: 32),
+    );
+  }
+  Future<void> updateListViewCategory() async{
+//収支どちらか全てのDBを取得
+    List<Category> _categoryList = await databaseHelperCategory.getCategoryList(true);
+      this.categoryList = _categoryList;
+      for(int i=0;i<categoryList.length;i++){
+        _categoryItems.add(categoryList[i]);
+      }
+    setState(() {});
+  }
+
+  //カテゴリーの名前を取得。
+  List<Category> categories(value){
+    List<Category> _categories = List<Category>();
+    if(value){
+      for(var i = 0; i < categoryList.length; i++){
+        if(categoryList[i].plus == value){
+          _categories.add(categoryList[i]);
+        }
+      }
+    }else{
+      for(var i = 0; i < categoryList.length; i++){
+        if(categoryList[i].plus == value){
+          _categories.add(categoryList[i]);
+        }
+      }
+    }
+    return _categories;
+  }
+
+  String dropDownButton(value){
+    String _id;
+    for(var i=0;i<categoryList.length;i++){
+      if(categoryList[i].plus == value){
+        _id = categoryList[i].id.toString();
+      }
+    }
+    return _id;
+  }
+
+  //空白
+  Widget expandedNull(value){
+    return Expanded(
+        flex: value,
+        child:Container(
+          child:Text(""),
+        )
+    );
+  }
+
+  Future <String> categoryTitle(value)async{
+    Category _categoryList = await databaseHelperCategory.getCategoryId(value);
+    return _categoryList.title;
+  }
+
 }
+
+

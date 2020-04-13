@@ -55,6 +55,17 @@ class DatabaseHelperCategory {
     var result = await this.database.query(tableName, orderBy: '$colId ASC');
     return result;
   }
+  //
+  Future<List<Map<String, dynamic>>> getCategoryMapWhere(id) async {
+    var result = await this.database.rawQuery('SELECT * FROM $tableName WHERE id = ?', [id]);
+    return result;
+  }
+  //idと同じデータを持ってくる。
+  Future <Category> getCategoryId(value) async {
+    var categoryMapList = await getCategoryMapWhere(value); // Get 'Map List' from database
+    return Category.fromMapObject(categoryMapList[0]);
+  }
+
 //挿入　更新　削除
   // Insert Operation: Insert a Note object to database
   Future<int> insertCategory(Category category) async {
@@ -74,6 +85,8 @@ class DatabaseHelperCategory {
     return result;
   }
 
+
+
   //データベース内のNoteオブジェクトの数を取得します
   Future<int> getCount() async {
     //rawQuery括弧ないにSQL文が使える。
@@ -82,7 +95,17 @@ class DatabaseHelperCategory {
     int result = Sqflite.firstIntValue(x);
     return result;
   }
+  Future<List<Category>> getCategoryListAll() async {
+    //全てのデータを取得
+    var categoryMapList = await getCategoryMapList(); // Get 'Map List' from database
+    int count = categoryMapList.length;         // Count the number of map entries in db table
 
+    List<Category> categoryList = List<Category>();
+    for (int i = 0; i < count; i++) {
+        categoryList.add(Category.fromMapObject(categoryMapList[i]));
+    }
+    return categoryList;
+  }
   //カテゴリーリストで収支毎の値を取得する。
   Future<List<Category>> getCategoryList(value) async {
     //全てのデータを取得

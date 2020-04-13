@@ -6,13 +6,8 @@ import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'category_form.dart';
 
-enum Answers{
-  YES,
-  NO
-}
 
 class SettingPage extends StatefulWidget {
   @override
@@ -257,12 +252,35 @@ class _SettingPageState extends State<SettingPage> {
                               color: Theme.of(context).primaryColorDark,
                               textColor: Theme.of(context).primaryColorLight,
                               child: Text(
-                                '全てのデータ削除',
+                                '収支データの全削除',
                                 textScaleFactor: 1.5,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  openDialog(context);
+                                  showCupertinoDialog(
+                                  context: context,
+                                  builder: (BuildContext context)
+                                  {
+                                    return CupertinoAlertDialog(
+                                      title: Text("全ての収支データを消しますか？"),
+                                      //content: Text(""),
+                                      actions: <Widget>[
+                                        CupertinoDialogAction(
+                                          child: Text("削除"),
+                                          onPressed: () =>
+                                              allDelete(),
+                                          isDestructiveAction: true,
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: Text("キャンセル"),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          isDefaultAction: true,
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                  );
                                 });
                               },
                             )
@@ -300,17 +318,6 @@ class _SettingPageState extends State<SettingPage> {
     print(_id);
   }
 
-
-  Future <void> _save(Category category) async {
-    int result;
-    if (category.id != null) {  // Case 1: Update operation
-      result = await databaseHelperCategory.updateCategory(category);
-    } else { // Case 2: Insert Operation
-      result = await databaseHelperCategory.insertCategory(category);
-    }
-    print(result);
-  }
-
   Future<void> updateListViewCategory() async{
 //全てのDBを取得
      List<Category> _categoryList = await databaseHelperCategory.getCategoryList(true);
@@ -338,46 +345,12 @@ class _SettingPageState extends State<SettingPage> {
     return _labelTextCategory;
   }
 //ダイアログ
-  void openDialog(BuildContext context) {
-    showDialog<Answers>(
-      context: context,
-      builder: (BuildContext context) => new SimpleDialog(
-        title: new Text('全ての収支データを消しますか？'),
-        children: <Widget>[
-          Row(children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: createDialogOption(context, Answers.YES, 'はい'),
-            ),
-            Expanded(
-              flex: 1,
-              child: createDialogOption(context, Answers.NO, 'いいえ'),
-            )
-            ]
-          )
-        ],
-      ),
-    ).then((value) {
-      switch(value) {
-        case Answers.YES:
-          _setValue('はい');
-          break;
-        case Answers.NO:
-          _setValue('いいえ');
-          break;
-      }
-    });
-  }
 
-  createDialogOption(BuildContext context, Answers answer, String str) {
-    return SimpleDialogOption(child: Text(str),onPressed: (){
-      if(str == "はい"){
-        for(var i = 0; i < calendarList.length; i++){
-          _delete(calendarList[i].id);
-        }
-      }
-      Navigator.pop(context, answer);
-      },);
+  void allDelete(){
+    for(var i = 0; i < calendarList.length; i++){
+      _delete(calendarList[i].id);
+    }
+    Navigator.of(context).pop();
   }
 
   Future <void> _delete(int id) async{
@@ -404,25 +377,29 @@ class _SettingPageState extends State<SettingPage> {
     return _categories;
   }
   String dropDownButton(value){
+    String _id;
     for(var i=0;i<categoryList.length;i++){
       if(categoryList[i].plus == value){
-        return categoryList[i].id.toString();
+        _id = categoryList[i].id.toString();
       }
     }
+    return _id;
   }
   String labelText(number,value){
+    String _title;
       if(number == ""){
         for(var i = 0; i < categoryList.length; i++){
           if(categoryList[i].plus == value){
-            return categoryList[i].title;
+            _title= categoryList[i].title;
           }
         }
       }else{
         for(var i = 0 ;i < categoryList.length; i++) {
           if(categoryList[i].id == int.parse(number)){
-            return categoryList[i].title;
+            _title= categoryList[i].title;
           }
         }
       }
+      return _title;
   }
 }

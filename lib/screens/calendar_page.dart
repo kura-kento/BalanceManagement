@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
+import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
+import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +21,10 @@ class _CalendarPageState extends State<CalendarPage> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
+
+  DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
+  List<Category> categoryList = List<Category>();
+
   //表示月
   int selectMonthValue = 0;
   String selectMonth = DateFormat.yMMMd().format(DateTime.now());
@@ -37,6 +43,7 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void initState() {
     updateListView();
+    updateListViewCategory();
     super.initState();
   }
 
@@ -302,6 +309,7 @@ class _CalendarPageState extends State<CalendarPage> {
         _list.add(
             FlatButton(
               child: Container(
+                  height: 30,
                   decoration: BoxDecoration(
                     border: Border.all(width: 1, color: Colors.grey[200]),
                     ),
@@ -333,10 +341,16 @@ class _CalendarPageState extends State<CalendarPage> {
 //全てのDBを取得
       Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
       calendarListFuture.then((calendarList) {
-        setState(() {
           this.calendarList = calendarList;
-        });
+          setState(() {});
       });
+  }
+
+  Future<void> updateListViewCategory() async{
+//収支どちらか全てのDBを取得
+    List<Category> _categoryList = await databaseHelperCategory.getCategoryListAll();
+    this.categoryList = _categoryList;
+    setState(() {});
   }
 
 //カレンダーの月合計

@@ -35,13 +35,13 @@ class _CategoryPageState extends State<CategoryPage> {
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
 
       child:SingleChildScrollView(
-          child: Column(children: CategoryList())
+          child: Column(children: categoryListWidget())
       ),
       ),
     );
   }
 
-  List<Widget> CategoryList(){
+  List<Widget> categoryListWidget(){
     List<Widget> _list = [];
     for (int i = 0; i < categoryList.length; i++) {
       _list.add(

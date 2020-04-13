@@ -131,7 +131,7 @@ class _EditFormState extends State<EditForm> {
                                   onPressed: (){
                                     setState(() {
                                       //debugPrint("Save button clicked");
-                                      _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date) );
+                                      _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date,0) );
                                       moveToLastScreen();
                                     });
                                   },

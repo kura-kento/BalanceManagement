@@ -15,6 +15,7 @@ class DatabaseHelper {
   static String colTitle = 'title';
   static String colMemo = 'memo';
   static String colDate = 'date';
+  static String colCategoryId = 'categoryId';
 
 
   DatabaseHelper._createInstance(); // DatabaseHelperのインスタンスを作成するための名前付きコンストラクタ
@@ -44,7 +45,7 @@ class DatabaseHelper {
   static void _createDb(Database db, int newVersion) async {
 
     await db.execute('CREATE TABLE $tableName($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
-        '$colMoney INTEGER, $colMemo TEXT, $colDate TEXT)');
+        '$colMoney INTEGER, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
   }
 
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
@@ -93,18 +94,7 @@ class DatabaseHelper {
     }
     return calendarList;
   }
-//月のDB引き出す
-  Future<List<Calendar>> getCalendarmonthList() async {
-    var calendarMapList = await getCalendarMonthMapList(); // Get 'Map List' from database
-    int count = calendarMapList.length;         // Count the number of map entries in db table
 
-    List<Calendar> calendarList = List<Calendar>();
-    // For loop to create a 'Note List' from a 'Map List'
-    for (int i = 0; i < count; i++) {
-      calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
-    }
-    return calendarList;
-  }
   Future<List<Map<String, dynamic>>> getCalendarMonthMapList() async {
     var result = await this.database.query(tableName, orderBy: '$colId ASC');
     return result;

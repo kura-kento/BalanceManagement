@@ -206,7 +206,7 @@ class ChartContainer extends StatelessWidget {
     for (var i = 0; i < _horizontalBarNum; i++) {
       Widget widget = (Container(
         child: AutoSizeText(
-          "${Utils.commaSeparated(int.parse(_scaleNumbers[i]))}${SharedPrefs.getUnit()}",
+          "${Utils.commaSeparated(double.parse(_scaleNumbers[i]))}${SharedPrefs.getUnit()}",
           style: TextStyle(
               fontSize: 13.0,
               color: Colors.grey

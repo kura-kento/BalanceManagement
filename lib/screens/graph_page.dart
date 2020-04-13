@@ -16,8 +16,7 @@ class _GraphPageState extends State<GraphPage> {
   List<Calendar> calendarList = List<Calendar>();
 
   List<ChartData> _debugChartList = [
-    ChartData(DateFormat("M月").format(DateTime.now()), 60.0,DateFormat("yyyy年").format(DateTime.now()),"0"),
-    ChartData("4/16", 100.toDouble(),"　","0"),
+    ChartData(DateFormat("M月").format(DateTime.now()), 100.0,DateFormat("yyyy年").format(DateTime.now()),"0"),
   ];
 
   @override
@@ -61,7 +60,9 @@ class _GraphPageState extends State<GraphPage> {
 //全てのDBを取得
     List<Calendar> _calendarList = await databaseHelper.getCalendarList();
     this.calendarList = _calendarList;
-    _debugChartList = mapToList();
+    if(this.calendarList.length!=0){
+      _debugChartList = mapToList();
+    }
     setState(() {});
   }
 
@@ -100,9 +101,11 @@ class _GraphPageState extends State<GraphPage> {
       print(value);
       _listCache.add(key);
     });
+
     _listCache.sort((a,b){
-     return a.difference(b).inDays;
+      return a.difference(b).inDays;
     });
+
     int durationMonth ;
     if(DateTime.now().year == _listCache[0].year){
       durationMonth = DateTime.now().month - _listCache[0].month;
@@ -112,6 +115,7 @@ class _GraphPageState extends State<GraphPage> {
     print(_listCache[0].month);
     for(int i=0;i <= durationMonth;i++){
       if(_map.containsKey(DateTime(_listCache[0].year,_listCache[0].month + i))){
+        //または１月がない時
         if((_listCache[0].month+i)%12 == 1){
           _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
               _map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),
