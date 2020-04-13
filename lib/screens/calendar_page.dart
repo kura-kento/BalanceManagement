@@ -316,7 +316,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                      Text( "${this.calendarList[i].title}"),
+                      Text( "${categoryTitle(this.calendarList[i].categoryId)}${this.calendarList[i].title}"),
                         moneyTextColor(i),
                     ],
                     ),
@@ -438,6 +438,19 @@ class _CalendarPageState extends State<CalendarPage> {
           child:Text(""),
         )
     );
+  }
+  String categoryTitle(id){
+    String _title;
+    if(id == 0){
+      _title = "";
+    }else{
+      for(int i=0;i < categoryList.length;i++){
+        if(categoryList[i].id == id){
+          _title = categoryList[i].title;
+        }
+      }
+    }
+    return _title;
   }
 
 }

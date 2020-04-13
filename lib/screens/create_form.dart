@@ -21,7 +21,7 @@ class _CreateFormState extends State<CreateForm> {
   List<String> _items = ["プラス","マイナス"];
   String _selectedItem = "プラス" ;
 
-  List<Category> _categoryItems =[Category.withId(0, "空白", true)];
+  List<Category> _categoryItems =[Category.withId(0, "カテゴリー", true)];
   int _selectCategory = 0;
 
   TextEditingController titleController = TextEditingController();
@@ -66,7 +66,18 @@ class _CreateFormState extends State<CreateForm> {
                         Expanded(
                             flex: 1,
                             child: FlatButton(
-                              child:Text(_categoryItems[_selectCategory].title+"　＞"),
+                              child:Row(children: <Widget>[
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(_categoryItems[_selectCategory].title),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child:Text("＞"),
+                                )
+                              ],
+
+                              ),
                               onPressed: (){
                                 showCupertinoModalPopup(
                                   context: context,
@@ -74,7 +85,9 @@ class _CreateFormState extends State<CreateForm> {
                                     return Container(
                                       height: MediaQuery.of(context).size.height / 3,
                                       child: CupertinoPicker(
-                                          scrollController: scrollController,
+                                          scrollController: FixedExtentScrollController(
+                                              initialItem: _selectCategory
+                                          ) ,
                                           diameterRatio: 1.0,
                                           itemExtent: 40.0,
                                           children: _categoryItems.map(_pickerItem).toList(),
@@ -117,6 +130,7 @@ class _CreateFormState extends State<CreateForm> {
                           child:Padding(
                               padding: EdgeInsets.only(top:15,bottom:15),
                               child:TextFormField(
+                                autofocus: true,
                                   controller: numberController,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: <TextInputFormatter>[
@@ -166,7 +180,7 @@ class _CreateFormState extends State<CreateForm> {
                                   ),
                                   onPressed: (){
                                     setState(() {
-                                      _save(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectDay,0) );
+                                      _save(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectDay,_categoryItems[_selectCategory].id) );
                                       moveToLastScreen();
                                     });
                                   },
@@ -192,9 +206,10 @@ class _CreateFormState extends State<CreateForm> {
           color: (value == _items[0]? Colors.blue : Colors.red)[100+ (_selectedItem == value ? 300 : 0)],
           textColor: _selectedItem == value ? Colors.white : Colors.grey[400],
           onPressed: () {
-            setState(() {
               _selectedItem = value;
-            });
+              updateListViewCategory();
+              _selectCategory = 0;
+              setState(() { });
           },
         ),
       ),
@@ -225,11 +240,13 @@ class _CreateFormState extends State<CreateForm> {
   }
   Future<void> updateListViewCategory() async{
 //収支どちらか全てのDBを取得
-    List<Category> _categoryList = await databaseHelperCategory.getCategoryList(true);
+    List<Category> _categoryList = await databaseHelperCategory.getCategoryList(_selectedItem == "プラス"? true:false);
       this.categoryList = _categoryList;
-      for(int i=0;i<categoryList.length;i++){
-        _categoryItems.add(categoryList[i]);
+    List<Category> _categoryItemsCache =[Category.withId(0, "空白", _selectedItem == "プラス"? true:false)];
+    for(int i=0;i<categoryList.length;i++){
+      _categoryItemsCache.add(categoryList[i]);
       }
+    _categoryItems= _categoryItemsCache;
     setState(() {});
   }
 

@@ -14,7 +14,7 @@ class _CategoryPageState extends State<CategoryPage> {
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = List<Category>();
 
-  TextEditingController incomeTitleController = TextEditingController();
+  List<TextEditingController> incomeTitleControllerList = List<TextEditingController>();
   TextEditingController spendingTitleController = TextEditingController();
 
   @override
@@ -24,8 +24,6 @@ class _CategoryPageState extends State<CategoryPage> {
   }
   @override
   Widget build(BuildContext context) {
-    //ここに入れてもいいのか？
-    TextStyle textStyle = Theme.of(context).textTheme.title;
 
     return Scaffold(
       appBar: AppBar(
@@ -52,7 +50,7 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
-                  controller: incomeTitleController,
+                  controller: incomeTitleControllerList[i],
                   //style: textStyle,
                   decoration: InputDecoration(
                       labelText: categoryList[i].title,
@@ -71,9 +69,8 @@ class _CategoryPageState extends State<CategoryPage> {
                     padding: EdgeInsets.all(20.0),
                     color: Colors.grey[400],
                     onPressed: (){
-                      setState(() {
-                        _update(categoryList[i].id,incomeTitleController.text,true);
-                      });
+                        _update(categoryList[i].id,incomeTitleControllerList[i].text,true);
+                        setState(() {});
                     },child: Text("更新"),
                   ),
                 )
@@ -88,16 +85,23 @@ class _CategoryPageState extends State<CategoryPage> {
   Future<void> updateListViewCategory() async{
 //収支どちらか全てのDBを取得
     List<Category> _categoryList = await databaseHelperCategory.getCategoryList(true);
-    setState(() {
       this.categoryList = _categoryList;
-    });
+      List<TextEditingController> _ControllerList = List<TextEditingController>();
+      for(int i=0;i < categoryList.length;i++){
+        if(categoryList[i].plus == true){
+          _ControllerList.add(TextEditingController());
+        }
+      }
+      incomeTitleControllerList = _ControllerList;
+
+    setState(() {});
   }
   //アップデート
-  Future <void> _update(before,after,value) async {
+  Future <void> _update(beforeId,after,value) async {
     int _id;
     //削除予定
     for(var i=0;i<categoryList.length;i++) {
-      if (categoryList[i].id == int.parse(before)){
+      if (categoryList[i].id == beforeId){
         _id = categoryList[i].id;
         break;
       }

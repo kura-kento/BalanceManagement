@@ -13,5 +13,6 @@ class Utils{
     final int _value = int.parse(value.toString());
     return _value;
   }
+//何文字以上で…に変える
 
 }

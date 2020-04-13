@@ -30,8 +30,6 @@ class _SettingPageState extends State<SettingPage> {
   String _selectCategorySpending = "";
 
 
-  void _setValue(String value) => setState((){});
-
   @override
   void initState(){
     updateListView();
@@ -57,7 +55,8 @@ class _SettingPageState extends State<SettingPage> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        child: IconButton(
+                        child: FlatButton(
+                          child: Text("カテゴリー編集（収入）"),
                           onPressed: (){
                             Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -67,7 +66,6 @@ class _SettingPageState extends State<SettingPage> {
                                 ),
                             );
                           },
-                            icon: Icon(Icons.add),
                         ),
                       ),
                       Row(children: <Widget>[
