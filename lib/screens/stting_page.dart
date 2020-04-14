@@ -54,9 +54,8 @@ class _SettingPageState extends State<SettingPage> {
                   padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
                   child: Column(
                     children: <Widget>[
-                      Container(
-                        child: FlatButton(
-                          child: Text("カテゴリー編集（収入）"),
+                      FlatButton(
+                          child: Text("カテゴリー編集（プラス）"),
                           onPressed: (){
                             Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -67,132 +66,17 @@ class _SettingPageState extends State<SettingPage> {
                             );
                           },
                         ),
-                      ),
-                      Row(children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top:15,bottom:15),
-                          )
-                      ],
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(top:15,bottom:15),
-                          child: Column(
-                            children: <Widget>[
-                              Text("カテゴリー編集(収入)"),
-                              Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    flex: 1,
-                                    child: DropdownButton<String>(
-                                      value: dropDownButton(true),
-                                      onChanged: (String newValue){
-                                        setState(() {
-                                          _selectCategoryIncome = newValue;
-                                        });
-                                      },
-                                      //閉じているとき
-                                      selectedItemBuilder: (context){
-                                          return categories(true).map((Category category){
-                                          return Text("選択");
-                                        }).toList();
-                                      },
-                                      //開いている時
-                                      items: categories(true).map((Category category){
-                                        //ドロップダウンボタンの押したときのデータ（value）表示（text）
-                                        return DropdownMenuItem(
-                                          value: category.id.toString(),
-                                          child:Text(category.title),
-                                        );
-                                      }).toList(),
-                                    )
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: TextField(
-                                      controller: incomeTitleController,
-                                      style: textStyle,
-                                      decoration: InputDecoration(
-                                          labelText: labelText(_selectCategoryIncome,true),
-                                          border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(5.0)
-                                          )
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(10.0),
-                                      child: FlatButton(
-                                        padding: EdgeInsets.all(20.0),
-                                        color: Colors.grey[400],
-                                        onPressed: (){
-                                          setState(() {
-                                            _update(_selectCategoryIncome,incomeTitleController.text,true);
-                                          });
-                                        },child: Text("更新"),
-                                      ),
-                                    )
-                                  )
-                                ],
-                              ),
-                              Text("カテゴリー編集(支出)"),
-                              Row(
-                                children: <Widget>[
-                                  Expanded(
-                                      flex: 1,
-                                      child: DropdownButton<String>(
-                                        value: dropDownButton(false),
-                                        onChanged: (String newValue){
-                                          setState(() {
-                                            _selectCategorySpending = newValue;
-                                          });
-                                        },
-                                        selectedItemBuilder: (context){
-                                          return categories(false).map((Category category){
-                                            return Text("選択");
-                                          }).toList();
-                                        },
-                                        items: categories(false).map((Category category){
-                                          return DropdownMenuItem(
-                                            value: category.id.toString(),
-                                            child:Text(category.title),
-                                          );
-                                        }).toList(),
-                                      )
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: TextField(
-                                      controller: spendingTitleController,
-                                      style: textStyle,
-                                      decoration: InputDecoration(
-                                          labelText: labelText(_selectCategorySpending,false),
-                                          border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(5.0)
-                                          )
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                      flex: 1,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(10.0),
-                                        child: FlatButton(
-                                          padding: EdgeInsets.all(20.0),
-                                          color: Colors.grey[400],
-                                          onPressed: (){
-                                            setState(() {
-                                              _update(_selectCategorySpending,spendingTitleController.text,false);
-                                            });
-                                          },child: Text("更新"),
-                                        ),
-                                      )
-                                  )
-                                ],
-                              ),
-                            ],
-                          )
+                      FlatButton(
+                        child: Text("カテゴリー編集（マイナス）"),
+                        onPressed: (){
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return CategoryPage(plusOrMinus:"minus");
+                              },
+                            ),
+                          );
+                        },
                       ),
                       Padding(
                           padding: EdgeInsets.only(top:15,bottom:15),

@@ -6,37 +6,37 @@ import 'dart:math' as math;
 
 // 共通チャートデータクラス
 class ChartData {
-  double y;
-  String x;
-  String z;
-  String textMoney;
+    double y;
+    String x;
+    String z;
+    String textMoney;
 
 
-  ChartData(this.x, this.y,this.z,this.textMoney): super();
-}
+    ChartData(this.x, this.y,this.z,this.textMoney): super();
+    }
 
 // チャートの描写をする為に位置計算などして表示するクラス
-class ChartContainer extends StatelessWidget {
+    class ChartContainer extends StatelessWidget {
 
-  // チャートの上マージン
-  final double _chartTopMargin = 30.0;
-  // チャートの左右マージン
-  final double _chartSideMargin = 20.0;
-  // チャートの高さ
-  final double _chartHeight = 240.0;
-  // 目盛り数値の高さ
-  final double _scaleNumHeight = 37.0;
-  // 目盛りに表示させる数値の配列
-  List<String> _scaleNumbers;
-  // チャートのデータ配列
-  final List<ChartData> _charDataList;
-  // チャートのタイトル
-  final _chartTitle;
+    // チャートの上マージン
+    final double _chartTopMargin = 30.0;
+    // チャートの左右マージン
+    final double _chartSideMargin = 20.0;
+    // チャートの高さ
+    final double _chartHeight = 240.0;
+    // 目盛り数値の高さ初期値３７.０
+    final double _scaleNumHeight = 36.0;
+    // 目盛りに表示させる数値の配列
+    List<String> _scaleNumbers;
+    // チャートのデータ配列
+    final List<ChartData> _charDataList;
+    // チャートのタイトル
+    final _chartTitle;
 
-  ChartContainer(this._charDataList, this._chartTitle): super();
+    ChartContainer(this._charDataList, this._chartTitle): super();
 
-  // チャートのデータを生成し返す（グラフに共通地に変換）
-  List<ChartData> _getChartDataList() {
+    // チャートのデータを生成し返す（グラフに共通地に変換）
+    List<ChartData> _getChartDataList() {
     List<double> list = List<double>();
 
     var yMin = 0.0;
@@ -47,21 +47,21 @@ class ChartContainer extends StatelessWidget {
 
     while(coarese < 1.0){
 
-      for (var chatData in _charDataList) {
-        list.add(chatData.y * math.pow(10, (coareseDigit)));
-      }
-      list.sort();
-      yMin = list.first;
-      yMax = list.last;
+    for (var chatData in _charDataList) {
+    list.add(chatData.y * math.pow(10, (coareseDigit)));
+    }
+    list.sort();
+    yMin = list.first;
+    yMax = list.last;
 
-      // 最大値と最小値の差
-      double _differenceVal = yMax - yMin;
+    // 最大値と最小値の差
+    double _differenceVal = yMax - yMin;
 
-      // 目盛り単位数を求める（2d ≤ w）
-      // http://www.eng.niigata-u.ac.jp/~nomoto/21.html
-      coarseVal = _differenceVal / 2.0;
-      coarese = coarseVal.round().toDouble();
-      coareseDigit++;
+    // 目盛り単位数を求める（2d ≤ w）
+    // http://www.eng.niigata-u.ac.jp/~nomoto/21.html
+    coarseVal = _differenceVal / 2.0;
+    coarese = coarseVal.round().toDouble();
+    coareseDigit++;
     }
 
     _scaleNumbers = List<String>();
@@ -70,8 +70,8 @@ class ChartContainer extends StatelessWidget {
 
     var digit = 0;
     while(coarese > 10.0){
-      coarese /= 10.0;
-      digit++;
+    coarese /= 10.0;
+    digit++;
     }
 
     List<int> scaleValues = [1, 2, 5];
@@ -80,17 +80,17 @@ class ChartContainer extends StatelessWidget {
     var multiple = 0;
     int scaleUnitVal = 0;
     while(!isFinish){
-      scaleUnitVal = scaleValues[count] * math.pow(10, (digit + multiple));
-      if ((scaleUnitVal * 2) > coarseVal) {
-        isFinish = true;
-      }
+    scaleUnitVal = scaleValues[count] * math.pow(10, (digit + multiple));
+    if ((scaleUnitVal * 2) > coarseVal) {
+    isFinish = true;
+    }
 
-      if (count == (scaleValues.length - 1)) {
-        count = 0;
-        multiple++;
-      } else {
-        count++;
-      }
+    if (count == (scaleValues.length - 1)) {
+    count = 0;
+    multiple++;
+    } else {
+    count++;
+    }
     }
 
     // 目盛りの数値が整数値か

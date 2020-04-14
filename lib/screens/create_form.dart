@@ -122,8 +122,7 @@ class _CreateFormState extends State<CreateForm> {
                         ),
                       ],
                     ),
-                    Row(
-                      children: <Widget>[
+                    Row(children: <Widget>[
                         expandedNull(1),
                         Expanded(
                           flex: 2,
@@ -146,7 +145,6 @@ class _CreateFormState extends State<CreateForm> {
                               )
                           )
                         )
-,
                       ],
                     ),
                     Padding(

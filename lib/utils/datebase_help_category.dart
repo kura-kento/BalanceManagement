@@ -42,8 +42,8 @@ class DatabaseHelperCategory {
 
     await db.execute('CREATE TABLE $tableName($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
 
-    await db.insert(tableName,Category("購入",true).toMap());
-    await db.insert(tableName,Category("売上",false).toMap());
+    await db.insert(tableName,Category("売上",true).toMap());
+    await db.insert(tableName,Category("購入",false).toMap());
     for(var i=0;i<6;i++){
       await db.insert(tableName,Category("その他${i+1}",true).toMap());
       await db.insert(tableName,Category("その他${i+1}",false).toMap());
