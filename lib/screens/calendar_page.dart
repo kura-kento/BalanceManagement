@@ -71,8 +71,8 @@ class _CalendarPageState extends State<CalendarPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        Text("${yearSum()}${SharedPrefs.getUnit()}",),
-                        Text("${monthSum()}${SharedPrefs.getUnit()}"),
+                        Text("${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}",),
+                        Text("${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}"),
                       ],
                     ),
                   ],
@@ -414,21 +414,12 @@ class _CalendarPageState extends State<CalendarPage> {
   }
   //＋ーで色を変える。
   Widget moneyTextColor(index){
-    if(this.calendarList[index].money >= 0){
       return Text(
-          "${this.calendarList[index].money}${SharedPrefs.getUnit()}",
+          "${Utils.commaSeparated(this.calendarList[index].money)}${SharedPrefs.getUnit()}",
           style: TextStyle(
-              color: Colors.lightBlueAccent[200]
+              color: this.calendarList[index].money >= 0 ? Colors.lightBlueAccent[200]:Colors.redAccent[200]
           )
       );
-    }else{
-      return Text(
-          "${this.calendarList[index].money}${SharedPrefs.getUnit()}",
-          style: TextStyle(
-              color: Colors.redAccent[200]
-          )
-      );
-    }
   }
   //空白
   Widget expandedNull(value){

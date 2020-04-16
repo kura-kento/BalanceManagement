@@ -156,29 +156,28 @@ class _CreateFormState extends State<CreateForm> {
                                   color: Theme.of(context).primaryColorDark,
                                   textColor: Theme.of(context).primaryColorLight,
                                   child: Text(
-                                    'キャンセル',
-                                    textScaleFactor: 1.5,
-                                  ),
-                                  onPressed: (){
-                                    setState(() {
-                                      moveToLastScreen();
-                                    });
-                                  },
-                                )
-                            ),
-                            Container(width:5.0),
-
-                            Expanded(
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColorDark,
-                                  textColor: Theme.of(context).primaryColorLight,
-                                  child: Text(
                                     '保存',
                                     textScaleFactor: 1.5,
                                   ),
                                   onPressed: (){
                                     setState(() {
                                       _save(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectDay,_categoryItems[_selectCategory].id) );
+                                      moveToLastScreen();
+                                    });
+                                  },
+                                )
+                            ),
+                            Container(width:5.0),
+                            Expanded(
+                                child: RaisedButton(
+                                  color: Theme.of(context).primaryColorDark,
+                                  textColor: Theme.of(context).primaryColorLight,
+                                  child: Text(
+                                    'キャンセル',
+                                    textScaleFactor: 1.5,
+                                  ),
+                                  onPressed: (){
+                                    setState(() {
                                       moveToLastScreen();
                                     });
                                   },

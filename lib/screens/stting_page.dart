@@ -26,10 +26,6 @@ class _SettingPageState extends State<SettingPage> {
   TextEditingController spendingTitleController = TextEditingController();
   TextEditingController unitController = TextEditingController();
 
-  String _selectCategoryIncome = "";
-  String _selectCategorySpending = "";
-
-
   @override
   void initState(){
     updateListView();
@@ -185,19 +181,6 @@ class _SettingPageState extends State<SettingPage> {
           child:Text(""),
         )
     );
-  }
-
-  Future <void> _update(before,after,value) async {
-    int _id;
-    //削除予定
-    for(var i=0;i<categoryList.length;i++) {
-      if (categoryList[i].id == int.parse(before)){
-        _id = categoryList[i].id;
-        break;
-      }
-    }
-    await databaseHelperCategory.updateCategory(Category.withId(_id,after,value));
-    print(_id);
   }
 
   Future<void> updateListViewCategory() async{

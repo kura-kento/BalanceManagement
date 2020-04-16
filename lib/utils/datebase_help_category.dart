@@ -32,7 +32,7 @@ class DatabaseHelperCategory {
   static Future<Database> initializeDatabase() async {
     // データベースを保存するためのAndroidとiOSの両方のディレクトリパスを取得する
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + 'category.db';
+    String path = directory.path + '/category.db';
 
     // Open/指定されたパスにデータベースを作成する
     var categoriesDatabase = await openDatabase(path, version: 1, onCreate: _createDb);

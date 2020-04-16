@@ -35,7 +35,7 @@ class DatabaseHelper {
   static Future<Database> initializeDatabase() async {
     // データベースを保存するためのAndroidとiOSの両方のディレクトリパスを取得する
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + 'calendar.db';
+    String path = directory.path + '/calendar.db';
 
     // Open/指定されたパスにデータベースを作成する
     var calendarsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);

@@ -70,6 +70,7 @@ class _CategoryPageState extends State<CategoryPage> {
                     color: Colors.grey[400],
                     onPressed: (){
                         _update(categoryList[i].id,incomeTitleControllerList[i].text, widget.plusOrMinus == "plus" ? true : false);
+                        updateListViewCategory(widget.plusOrMinus == "plus" ? true : false);
                         setState(() {});
                     },child: Text("更新"),
                   ),
@@ -86,13 +87,13 @@ class _CategoryPageState extends State<CategoryPage> {
 //収支どちらか全てのDBを取得
     List<Category> _categoryList = await databaseHelperCategory.getCategoryList(value);
       this.categoryList = _categoryList;
-      List<TextEditingController> _ControllerList = List<TextEditingController>();
+      List<TextEditingController> _controllerList = List<TextEditingController>();
       for(int i=0;i < categoryList.length;i++){
         if(categoryList[i].plus == value){
-          _ControllerList.add(TextEditingController());
+          _controllerList.add(TextEditingController());
         }
       }
-      incomeTitleControllerList = _ControllerList;
+      incomeTitleControllerList = _controllerList;
 
     setState(() {});
   }

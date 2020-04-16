@@ -172,24 +172,6 @@ class _EditFormState extends State<EditForm> {
                                   color: Theme.of(context).primaryColorDark,
                                   textColor: Theme.of(context).primaryColorLight,
                                   child: Text(
-                                    'キャンセル',
-                                    textScaleFactor: 1.5,
-                                  ),
-                                  onPressed: (){
-                                    setState(() {
-                                      //debugPrint("Delete button clicked");
-                                      moveToLastScreen();
-                                    });
-                                  },
-                                )
-                            ),
-                            Container(width:5.0),
-
-                            Expanded(
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColorDark,
-                                  textColor: Theme.of(context).primaryColorLight,
-                                  child: Text(
                                     '保存',
                                     textScaleFactor: 1.5,
                                   ),
@@ -197,6 +179,23 @@ class _EditFormState extends State<EditForm> {
                                     setState(() {
                                       //debugPrint("Save button clicked");
                                       _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date,0) );
+                                      moveToLastScreen();
+                                    });
+                                  },
+                                )
+                            ),
+                            Container(width:5.0),
+                            Expanded(
+                                child: RaisedButton(
+                                  color: Theme.of(context).primaryColorDark,
+                                  textColor: Theme.of(context).primaryColorLight,
+                                  child: Text(
+                                    'キャンセル',
+                                    textScaleFactor: 1.5,
+                                  ),
+                                  onPressed: (){
+                                    setState(() {
+                                      //debugPrint("Delete button clicked");
                                       moveToLastScreen();
                                     });
                                   },
