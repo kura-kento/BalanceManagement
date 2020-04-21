@@ -27,6 +27,10 @@ class EditForm extends StatefulWidget {
 class _EditFormState extends State<EditForm> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
+  List<Calendar> calendarList = List<Calendar>();
+
+  DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
+  List<Category> categoryList = List<Category>();
 
   List<String> _items = ["プラス","マイナス"];
   String _selectedItem = "プラス";
@@ -36,15 +40,16 @@ class _EditFormState extends State<EditForm> {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController numberController = TextEditingController();
-
-  DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
-  List<Category> categoryList = List<Category>();
+  FixedExtentScrollController scrollController = FixedExtentScrollController();
 
   @override
   void initState() {
-    _selectedItem = widget.selectCalendarList.money >= 0 ? _items[0]:_items[1];
-    numberController = TextEditingController(text: '${widget.selectCalendarList.money * (widget.selectCalendarList.money < 0 ? -1:1 )}');
-    titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
+    if(widget.inputMode == InputMode.edit){
+      _selectedItem = widget.selectCalendarList.money >= 0 ? _items[0]:_items[1];
+      numberController = TextEditingController(text: '${widget.selectCalendarList.money * (widget.selectCalendarList.money < 0 ? -1:1 )}');
+      titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
+      _selectCategory = widget.selectCalendarList.categoryId-1;
+    }
     updateListViewCategory();
     super.initState();
   }
@@ -61,15 +66,7 @@ class _EditFormState extends State<EditForm> {
              onPressed: () => moveToLastScreen(),
           ),
             actions: <Widget>[
-              IconButton(
-                onPressed: () {
-                    setState(() {
-                      _delete(widget.selectCalendarList.id);
-                      moveToLastScreen();
-                    });
-                },
-                icon: Icon(Icons.delete),
-              ),
+                dustButton(),
             ]
         ),
         body: Container(
@@ -95,7 +92,6 @@ class _EditFormState extends State<EditForm> {
                               child:Text("＞"),
                             )
                           ],
-
                           ),
                           onPressed: (){
                             showCupertinoModalPopup(
@@ -129,9 +125,6 @@ class _EditFormState extends State<EditForm> {
                             child: TextField(
                               controller: titleController,
                               style: textStyle,
-                              onChanged: (value){
-                                debugPrint('Something changed in Title Text Field');
-                              },
                               decoration: InputDecoration(
                                   labelText: 'タイトル',
                                   labelStyle: textStyle,
@@ -180,8 +173,7 @@ class _EditFormState extends State<EditForm> {
                               textScaleFactor: 1.5,
                             ),
                             onPressed: (){
-
-                                _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date,_categoryItems[_selectCategory].id) ,context);
+                                _save();
                                 moveToLastScreen();
                                 setState(() {});
                             },
@@ -219,16 +211,22 @@ class _EditFormState extends State<EditForm> {
     Navigator.pop(context);
   }
 
-  Future <void> _save(Calendar calendar ,BuildContext context1) async {
-    if(calendar.title.length > 30){
-      print("桁数が");
-    }
+  Future <void> _save() async {
 
     int result;
-    if (calendar.id != null) {  // Case 1: Update operation
-      result = await databaseHelper.updateCalendar(calendar);
+    if (widget.inputMode == InputMode.edit) {  // Case 1: Update operation
+      result = await databaseHelper.updateCalendar(Calendar.withId(widget.selectCalendarList.id,
+                                                                  Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),
+                                                                  '${titleController.text}','${titleController.text}',
+                                                                  widget.selectCalendarList.date,
+                                                                  _categoryItems[_selectCategory].id)
+      );
     } else { // Case 2: Insert Operation
-      result = await databaseHelper.insertCalendar(calendar);
+      result = await databaseHelper.insertCalendar(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),
+                                                            '${titleController.text}',
+                                                            '${titleController.text}',
+                                                            widget.selectDay,
+                                                            _categoryItems[_selectCategory].id));
     }
     //print(result);
   }
@@ -263,5 +261,18 @@ class _EditFormState extends State<EditForm> {
         )
     );
   }
-
+  Widget dustButton(){
+    if(widget.inputMode == InputMode.edit){
+      return IconButton(
+        onPressed: () {
+          _delete(widget.selectCalendarList.id);
+          moveToLastScreen();
+          setState(() {});
+        },
+        icon: Icon(Icons.delete),
+      );
+    }else{
+      return SizedBox.shrink();
+    }
+  }
 }

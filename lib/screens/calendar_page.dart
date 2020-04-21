@@ -9,7 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'create_form.dart';
 import 'edit_form.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -89,7 +88,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return CreateForm(selectDay: selectDay);
+                          return EditForm(selectDay: selectDay,inputMode: InputMode.create);
                         },
                       ),
                     );

@@ -10,7 +10,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
   runApp(MyApp());
 }
 
