@@ -40,7 +40,7 @@ class Category {
 
   // Mapオブジェクトからオブジェクトを抽出する
   Category.fromMapObject(Map<String, dynamic> map) {
-    print(map);
+    //print(map);
     this._id = map['id'];
     this._title = map['title'];
     this._plus = map['plus'] == "true" ? true:false;

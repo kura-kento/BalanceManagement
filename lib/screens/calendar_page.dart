@@ -7,6 +7,7 @@ import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'create_form.dart';
 import 'edit_form.dart';
@@ -57,25 +58,28 @@ class _CalendarPageState extends State<CalendarPage> {
               expandedNull(1),
               Expanded(
                 flex: 5,
-                child:Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("合計(年)："),
-                        Text("合計(月)：")
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Text("${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}",),
-                        Text("${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}"),
-                      ],
-                    ),
-                  ],
+                child:SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("合計(年)："),
+                          Text("合計(月)：")
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Text("${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}"),
+                          Text("${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}"),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Expanded(
@@ -260,7 +264,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Container(
                         color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(DateTime.now()) ? Colors.red[300] : Colors.transparent ,
                         child: Text(
@@ -275,7 +279,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                     Expanded(
                       child: Container(),
-                      flex: 3,
+                      flex: 5,
                     )
                   ],
                 ),
@@ -309,23 +313,40 @@ class _CalendarPageState extends State<CalendarPage> {
         _list.add(
             FlatButton(
               child: Container(
-                  height: 30,
+                  height: 40,
                   decoration: BoxDecoration(
                     border: Border.all(width: 1, color: Colors.grey[200]),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                      Text( "${categoryTitle(this.calendarList[i].categoryId)}${this.calendarList[i].title}"),
-                        moneyTextColor(i),
-                    ],
+                    child: Slidable(
+                      actionPane: SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.15,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                        Text( "${categoryTitle(this.calendarList[i].categoryId)}${this.calendarList[i].title}"),
+                          moneyTextColor(i),
+                      ],
+                      ),
+                        secondaryActions: <Widget>[
+                          IconSlideAction(
+                              caption: '削除',
+                              color: Colors.red,
+                              icon: Icons.delete,
+                              onTap: () {
+                                _delete(calendarList[i].id);
+                                updateListView();
+                                setState(() {});
+                              }
+                    )
+                  ]
                     ),
+
               ),
               onPressed: () async{
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
-                      return EditForm(selectCalendarList: this.calendarList[i]);
+                      return EditForm(selectCalendarList: this.calendarList[i],inputMode: InputMode.edit,);
                     },
                   ),
                 );
@@ -414,11 +435,13 @@ class _CalendarPageState extends State<CalendarPage> {
   }
   //＋ーで色を変える。
   Widget moneyTextColor(index){
-      return Text(
-          "${Utils.commaSeparated(this.calendarList[index].money)}${SharedPrefs.getUnit()}",
-          style: TextStyle(
-              color: this.calendarList[index].money >= 0 ? Colors.lightBlueAccent[200]:Colors.redAccent[200]
-          )
+      return Center(
+        child: Text(
+            "${Utils.commaSeparated(this.calendarList[index].money)}${SharedPrefs.getUnit()}",
+            style: TextStyle(
+                color: this.calendarList[index].money >= 0 ? Colors.lightBlueAccent[200]:Colors.redAccent[200]
+            )
+        ),
       );
   }
   //空白
@@ -442,6 +465,12 @@ class _CalendarPageState extends State<CalendarPage> {
       }
     }
     return _title;
+  }
+
+  Future <void> _delete(int id) async{
+    int result;
+    result = await databaseHelper.deleteCalendar(id);
+    print(result);
   }
 
 }

@@ -7,11 +7,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum InputMode{
+  create,
+  edit
+}
+
 class EditForm extends StatefulWidget {
 
-  EditForm({Key key, this.selectCalendarList}) : super(key: key);
+  EditForm({Key key, this.selectCalendarList, this.inputMode,this.selectDay}) : super(key: key);
 
+  final DateTime selectDay;
   final Calendar selectCalendarList;
+  final InputMode inputMode;
 
   @override
   _EditFormState createState() => _EditFormState();
@@ -48,7 +55,7 @@ class _EditFormState extends State<EditForm> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("編集フォーム"),
+          title: Text(widget.inputMode == InputMode.edit ? "編集フォーム" : "新規追加フォーム"),
           leading: IconButton(icon: Icon(
              Icons.arrow_back),
              onPressed: () => moveToLastScreen(),
@@ -165,44 +172,20 @@ class _EditFormState extends State<EditForm> {
                     ),
                     Padding(
                         padding:EdgeInsets.only(top:15.0,bottom:15.0),
-                        child:Row(
-                          children: <Widget>[
-                            Expanded(
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColorDark,
-                                  textColor: Theme.of(context).primaryColorLight,
-                                  child: Text(
-                                    '保存',
-                                    textScaleFactor: 1.5,
-                                  ),
-                                  onPressed: (){
-                                    setState(() {
-                                      //debugPrint("Save button clicked");
-                                      _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date,0) );
-                                      moveToLastScreen();
-                                    });
-                                  },
-                                )
+                          child: RaisedButton(
+                            color: Theme.of(context).primaryColorDark,
+                            textColor: Theme.of(context).primaryColorLight,
+                            child: Text(
+                              '保存',
+                              textScaleFactor: 1.5,
                             ),
-                            Container(width:5.0),
-                            Expanded(
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColorDark,
-                                  textColor: Theme.of(context).primaryColorLight,
-                                  child: Text(
-                                    'キャンセル',
-                                    textScaleFactor: 1.5,
-                                  ),
-                                  onPressed: (){
-                                    setState(() {
-                                      //debugPrint("Delete button clicked");
-                                      moveToLastScreen();
-                                    });
-                                  },
-                                )
-                            ),
-                          ],
-                        )
+                            onPressed: (){
+
+                                _save(Calendar.withId(widget.selectCalendarList.id,Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectCalendarList.date,_categoryItems[_selectCategory].id) ,context);
+                                moveToLastScreen();
+                                setState(() {});
+                            },
+                          )
                     )
                   ],
                 )
@@ -236,19 +219,23 @@ class _EditFormState extends State<EditForm> {
     Navigator.pop(context);
   }
 
-  Future <void> _save(Calendar calendar) async {
+  Future <void> _save(Calendar calendar ,BuildContext context1) async {
+    if(calendar.title.length > 30){
+      print("桁数が");
+    }
+
     int result;
     if (calendar.id != null) {  // Case 1: Update operation
       result = await databaseHelper.updateCalendar(calendar);
     } else { // Case 2: Insert Operation
       result = await databaseHelper.insertCalendar(calendar);
     }
-    print(result);
+    //print(result);
   }
   Future <void> _delete(int id) async{
     int result;
       result = await databaseHelper.deleteCalendar(id);
-    print(result);
+    //print(result);
   }
   Widget _pickerItem(Category category) {
     return Text(

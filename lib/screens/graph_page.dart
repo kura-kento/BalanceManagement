@@ -29,7 +29,7 @@ class _GraphPageState extends State<GraphPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text((calendarList.length != 0) ?  calendarList[0].title : "グラフ", style: TextStyle(color: Colors.black),),
+        title: Text("グラフ", style: TextStyle(color: Colors.black),),
       ),
       body: Container(
           margin: EdgeInsets.symmetric(horizontal: 10.0),

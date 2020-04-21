@@ -58,11 +58,10 @@ class _CreateFormState extends State<CreateForm> {
                 onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
               child: Padding(
                 padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
-                child: ListView(
+                child: Column(
                   children: <Widget>[
                     Row( children: btnPlusMinus(), ),
-                    Row(
-                      children: <Widget>[
+                    Row(children: <Widget>[
                         Expanded(
                             flex: 1,
                             child: FlatButton(
@@ -76,7 +75,6 @@ class _CreateFormState extends State<CreateForm> {
                                   child:Text("＞"),
                                 )
                               ],
-
                               ),
                               onPressed: (){
                                 showCupertinoModalPopup(
@@ -148,42 +146,22 @@ class _CreateFormState extends State<CreateForm> {
                       ],
                     ),
                     Padding(
-                        padding:EdgeInsets.only(top:15.0,bottom:15.0),
-                        child:Row(
-                          children: <Widget>[
-                            Expanded(
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColorDark,
-                                  textColor: Theme.of(context).primaryColorLight,
-                                  child: Text(
-                                    '保存',
-                                    textScaleFactor: 1.5,
-                                  ),
-                                  onPressed: (){
-                                    setState(() {
-                                      _save(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectDay,_categoryItems[_selectCategory].id) );
-                                      moveToLastScreen();
-                                    });
-                                  },
-                                )
+                        padding:EdgeInsets.only(top:20.0,bottom:15.0),
+                        child: RaisedButton(
+                          color: Theme.of(context).primaryColorDark,
+                          textColor: Theme.of(context).primaryColorLight,
+                          child: Center(
+                            child: Text(
+                              '保存',
+                              textScaleFactor: 1.5,
                             ),
-                            Container(width:5.0),
-                            Expanded(
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColorDark,
-                                  textColor: Theme.of(context).primaryColorLight,
-                                  child: Text(
-                                    'キャンセル',
-                                    textScaleFactor: 1.5,
-                                  ),
-                                  onPressed: (){
-                                    setState(() {
-                                      moveToLastScreen();
-                                    });
-                                  },
-                                )
-                            ),
-                          ],
+                          ),
+                          onPressed: (){
+                            setState(() {
+                              _save(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),'${titleController.text}','${titleController.text}',widget.selectDay,_categoryItems[_selectCategory].id) );
+                              moveToLastScreen();
+                            });
+                          },
                         )
                     )
                   ],
@@ -226,7 +204,7 @@ class _CreateFormState extends State<CreateForm> {
     } else { // Case 2: Insert Operation
       result = await databaseHelper.insertCalendar(calendar);
     }
-    print(result);
+   // print(result);
   }
 
   Widget _pickerItem(Category category) {

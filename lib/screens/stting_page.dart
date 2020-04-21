@@ -106,13 +106,13 @@ class _SettingPageState extends State<SettingPage> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: FlatButton(
-                                        padding: EdgeInsets.all(20.0),
+                                        padding: EdgeInsets.all(10.0),
                                         color: Colors.grey[400],
                                         onPressed: (){
                                           setState(() {
                                             SharedPrefs.setUnit("${unitController.text}");
                                           });
-                                        },child: Text("更新"),
+                                        },child: Center(child: Text("更新")),
                                       ),
                                     )
                                 )
