@@ -320,13 +320,16 @@ class ChartPainter extends CustomPainter {
     }
 
     // ポイントの描写
-    for (var i = 0; i < _chartList.length; i++) {
-      _createPoint(canvas, size, paint, _chartList[i].y, i);
+    if(_chartList.length ==1 && _chartList[0].textMoney == "0") {
+
+    }else {
+      for (var i = 0; i < _chartList.length; i++) {
+        _createPoint(canvas, size, paint, _chartList[i].y, i);
+      }
     }
   }
 
   void _createPoint(Canvas canvas, Size size, Paint paint, double y, int count) {
-
     double pointY = _horizontalAdjustHeight + ((size.height - _horizontalAdjustHeight * 2) * y);
     double scopeWidth = size.width - (_varticalAdjustWidth * 2);
     double pointX = (scopeWidth / (_chartList.length * 2) * (count + 1)) + (scopeWidth / (_chartList.length * 2) * count) + _varticalAdjustWidth;

@@ -1,7 +1,7 @@
 name: balancemanagement_app
 description: A new Flutter application.
 
-version: 1.0.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -27,8 +27,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter:
+  flutter_launcher_icons: any
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "icon/icon.png"
+
+flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

@@ -57,8 +57,7 @@ class _CalendarPageState extends State<CalendarPage> {
               expandedNull(1),
               Expanded(
                 flex: 5,
-                child:SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -69,17 +68,19 @@ class _CalendarPageState extends State<CalendarPage> {
                           Text("合計(月)：")
                         ],
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Text("${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}"),
-                          Text("${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}"),
-                        ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Text("${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}"),
+                            Text("${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}"),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
               ),
               Expanded(
                 flex: 1,

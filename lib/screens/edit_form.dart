@@ -48,7 +48,7 @@ class _EditFormState extends State<EditForm> {
       _selectedItem = widget.selectCalendarList.money >= 0 ? _items[0]:_items[1];
       numberController = TextEditingController(text: '${widget.selectCalendarList.money * (widget.selectCalendarList.money < 0 ? -1:1 )}');
       titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
-      _selectCategory = widget.selectCalendarList.categoryId-1;
+      defaultButton();
     }
     updateListViewCategory();
     super.initState();
@@ -274,5 +274,14 @@ class _EditFormState extends State<EditForm> {
     }else{
       return SizedBox.shrink();
     }
+  }
+//編集フォームでドロップダウンの位置決め
+  Future<void> defaultButton() async{
+      List<Category> _categoryList = await databaseHelperCategory.getCategoryList(_selectedItem == "プラス"? true:false);
+      List<int> _category = List<int>();
+      _categoryList.forEach((Category category){
+        _category.add(category.id);
+      });
+    _selectCategory = _category.indexOf(widget.selectCalendarList.categoryId)+1;
   }
 }

@@ -50,6 +50,7 @@ class _SettingPageState extends State<SettingPage> {
                   padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
                   child: Column(
                     children: <Widget>[
+                      Divider(color: Colors.grey),
                       FlatButton(
                           child: Text("カテゴリー編集（プラス）"),
                           onPressed: (){
@@ -62,6 +63,7 @@ class _SettingPageState extends State<SettingPage> {
                             );
                           },
                         ),
+                      Divider(color: Colors.grey),
                       FlatButton(
                         child: Text("カテゴリー編集（マイナス）"),
                         onPressed: (){
@@ -74,6 +76,7 @@ class _SettingPageState extends State<SettingPage> {
                           );
                         },
                       ),
+                      Divider(color: Colors.grey),
                       Padding(
                           padding: EdgeInsets.only(top:15,bottom:15),
                           child:Column(
@@ -124,6 +127,8 @@ class _SettingPageState extends State<SettingPage> {
                       Padding(
                         padding:EdgeInsets.only(top:15.0,bottom:15.0),
                       ),
+                      Divider(color: Colors.grey),
+
                       Padding(
                           padding:EdgeInsets.only(top:15.0,bottom:15.0),
                             child: RaisedButton(
@@ -163,6 +168,7 @@ class _SettingPageState extends State<SettingPage> {
                               },
                             )
                         ),
+                      Divider(color: Colors.grey),
                     ],
                   )
               ),
