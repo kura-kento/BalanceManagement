@@ -99,79 +99,83 @@ class _EditFormState extends State<EditForm> {
                             showCupertinoModalPopup(
                               context: context,
                               builder: (BuildContext context) {
-                                return Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(0xffffffff),
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: Color(0xff999999),
-                                            width: 0.0,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          CupertinoButton(
-                                            child: Text('編集',
-                                              style: TextStyle(
-                                                  color: Colors.cyan
+                                return StatefulBuilder(
+                                  builder: (context, setState1) {
+                                    return Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Color(0xffffffff),
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Color(0xff999999),
+                                                width: 0.0,
                                               ),
                                             ),
-                                            onPressed: () async{
-                                              await Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) {
-                                                      return CategoryPage(plusOrMinus:_selectedItem == "プラス"? "plus":"minus");
-                                                    },
-                                                  )
-                                              );
-                                              updateListViewCategory();
-                                              setState(() {});
-                                            },
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 16.0,
-                                              vertical: 5.0,
-                                            ),
                                           ),
-                                          CupertinoButton(
-                                            child: Text('決定',
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              CupertinoButton(
+                                                child: Text('編集',
                                                   style: TextStyle(
-                                                  color: Colors.cyan
+                                                      color: Colors.cyan
                                                   ),
-                                            ),
-                                            onPressed: () {
-                                              moveToLastScreen();
-                                            },
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 16.0,
-                                              vertical: 5.0,
-                                            ),
+                                                ),
+                                                onPressed: () async{
+                                                  await Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                        builder: (context) {
+                                                          return CategoryPage(plusOrMinus:_selectedItem == "プラス"? "plus":"minus");
+                                                        },
+                                                      )
+                                                  );
+                                                  updateListViewCategory();
+                                                  setState1(() {});
+                                                },
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 16.0,
+                                                  vertical: 5.0,
+                                                ),
+                                              ),
+                                              CupertinoButton(
+                                                child: Text('決定',
+                                                      style: TextStyle(
+                                                      color: Colors.cyan
+                                                      ),
+                                                ),
+                                                onPressed: () {
+                                                  moveToLastScreen();
+                                                },
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 16.0,
+                                                  vertical: 5.0,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      color: Color(0xffffffff),
-                                      height: MediaQuery.of(context).size.height / 3,
-                                      child: CupertinoPicker(
-                                          scrollController: FixedExtentScrollController(
-                                              initialItem: _selectCategory
-                                          ) ,
-                                          diameterRatio: 1.0,
-                                          itemExtent: 40.0,
-                                          children: _categoryItems.map(_pickerItem).toList(),
-                                          onSelectedItemChanged: (int index){
-                                            setState(() {
-                                              _selectCategory = index;
-                                            });
-                                          }
-                                      ),
-                                    ),
-                                  ],
+                                        ),
+                                        Container(
+                                          color: Color(0xffffffff),
+                                          height: MediaQuery.of(context).size.height / 3,
+                                          child: CupertinoPicker(
+                                              scrollController: FixedExtentScrollController(
+                                                  initialItem: _selectCategory
+                                              ) ,
+                                              diameterRatio: 1.0,
+                                              itemExtent: 40.0,
+                                              children: _categoryItems.map(_pickerItem).toList(),
+                                              onSelectedItemChanged: (int index){
+                                                setState(() {
+                                                  _selectCategory = index;
+                                                });
+                                              }
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
                                 );
                               },
                             );
@@ -298,15 +302,15 @@ class _EditFormState extends State<EditForm> {
   Widget _pickerItem(Category category) {
     return Text(
       category.title,
+      textAlign: TextAlign.center,
       style: const TextStyle(fontSize: 32),
     );
   }
 
   Future<void> updateListViewCategory() async{
 //収支どちらか全てのDBを取得
-    List<Category> _categoryList = await databaseHelperCategory.getCategoryList(_selectedItem == "プラス"? true:false);
-    this.categoryList = _categoryList;
-    List<Category> _categoryItemsCache =[Category.withId(0, "空白", _selectedItem == "プラス"? true:false)];
+    this.categoryList = await databaseHelperCategory.getCategoryList(_selectedItem == "プラス");
+    List<Category> _categoryItemsCache =[Category.withId(0, "空白", _selectedItem == "プラス")];
     for(int i=0;i<categoryList.length;i++){
       _categoryItemsCache.add(categoryList[i]);
     }

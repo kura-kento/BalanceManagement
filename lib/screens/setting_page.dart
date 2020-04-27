@@ -41,19 +41,23 @@ class _SettingPageState extends State<SettingPage> {
 
     return Scaffold(
         appBar: AppBar(
-            title: Text("編集フォーム"),
+            title: Text("設定"),
         ),
         body: GestureDetector(
             onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
             child: SingleChildScrollView(
-              child: Padding(
-                  padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
                   child: Column(
                     children: <Widget>[
-                      Divider(color: Colors.grey),
-                      FlatButton(
-                          child: Text("カテゴリー編集（プラス）"),
-                          onPressed: (){
+                      InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(15.0),
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(child: Text(
+                              "カテゴリー編集（プラス）",
+                              textScaleFactor: 1.5,
+                            )),
+                          ) ,
+                          onTap: (){
                             Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) {
@@ -63,10 +67,17 @@ class _SettingPageState extends State<SettingPage> {
                             );
                           },
                         ),
-                      Divider(color: Colors.grey),
-                      FlatButton(
-                        child: Text("カテゴリー編集（マイナス）"),
-                        onPressed: (){
+                      Divider(color: Colors.grey,height:0),
+                      InkWell(
+                        child: Container(
+                            padding: EdgeInsets.all(15.0),
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(child: Text(
+                              "カテゴリー編集（マイナス）",
+                              textScaleFactor: 1.5,
+                            ))
+                        ),
+                        onTap: (){
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
@@ -76,9 +87,9 @@ class _SettingPageState extends State<SettingPage> {
                           );
                         },
                       ),
-                      Divider(color: Colors.grey),
+                      Divider(color: Colors.grey,height:0),
                       Padding(
-                          padding: EdgeInsets.only(top:15,bottom:15),
+                          padding: EdgeInsets.only(top:5,bottom:5),
                           child:Column(
                             children: <Widget>[
                               Text("単位編集"),
@@ -86,13 +97,16 @@ class _SettingPageState extends State<SettingPage> {
                                 children: <Widget>[
                                 Expanded(
                                   flex: 1,
-                                  child: Text("単位：",
-                                    style: TextStyle(fontSize: 20,),
+                                  child: Text("  単位：",
+                                    textScaleFactor: 1.5,
                                   ),
                                 ),
                                 Expanded(
                                   flex:2,
                                   child: TextField(
+                                    onTap: (){
+                                      unitController.text = SharedPrefs.getUnit();
+                                    },
                                     controller: unitController,
                                     style: textStyle,
                                     decoration: InputDecoration(
@@ -109,7 +123,6 @@ class _SettingPageState extends State<SettingPage> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: FlatButton(
-                                        padding: EdgeInsets.all(10.0),
                                         color: Colors.grey[400],
                                         onPressed: (){
                                           setState(() {
@@ -125,20 +138,22 @@ class _SettingPageState extends State<SettingPage> {
                           )
                       ),
                       Padding(
-                        padding:EdgeInsets.only(top:15.0,bottom:15.0),
+                        padding:EdgeInsets.only(top:10.0),
                       ),
-                      Divider(color: Colors.grey),
-
-                      Padding(
-                          padding:EdgeInsets.only(top:15.0,bottom:15.0),
-                            child: RaisedButton(
-                              color: Theme.of(context).primaryColorDark,
-                              textColor: Theme.of(context).primaryColorLight,
-                              child: Text(
-                                '収支データの全削除',
-                                textScaleFactor: 1.5,
+                      Divider(color: Colors.grey,height:0),
+                      InkWell(
+                              child: Container(
+                                padding: EdgeInsets.all(15.0),
+                                width: MediaQuery.of(context).size.width,
+                                child: Center(
+                                  child: Text(
+                                    '収支データの全削除',
+                                    textScaleFactor: 1.5,
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
                               ),
-                              onPressed: () {
+                              onTap: () {
                                 setState(() {
                                   showCupertinoDialog(
                                   context: context,
@@ -166,12 +181,11 @@ class _SettingPageState extends State<SettingPage> {
                                   );
                                 });
                               },
-                            )
-                        ),
-                      Divider(color: Colors.grey),
+                            ),
+                      Divider(color: Colors.grey,height:0),
                     ],
                   )
-              ),
+
             ),
           ),
     );

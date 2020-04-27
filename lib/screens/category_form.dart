@@ -14,12 +14,11 @@ class _CategoryPageState extends State<CategoryPage> {
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = List<Category>();
 
-  List<TextEditingController> incomeTitleControllerList = List<TextEditingController>();
-  TextEditingController spendingTitleController = TextEditingController();
+  List<TextEditingController> titleControllerList = List<TextEditingController>();
 
   @override
-  void initState(){
-    updateListViewCategory(widget.plusOrMinus == "plus" ? true : false);
+  void initState() {
+    updateListViewCategory(widget.plusOrMinus == "plus");
     super.initState();
   }
   @override
@@ -32,7 +31,7 @@ class _CategoryPageState extends State<CategoryPage> {
       body:  GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
 
-      child:SingleChildScrollView(
+      child: (titleControllerList.length==0) ? Container():SingleChildScrollView(
           child: Column(children: categoryListWidget())
       ),
       ),
@@ -50,7 +49,10 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
-                  controller: incomeTitleControllerList[i],
+                  onTap: (){
+                    titleControllerList[i].text = categoryList[i].title;
+                  },
+                  controller: titleControllerList[i],
                   //style: textStyle,
                   decoration: InputDecoration(
                       labelText: categoryList[i].title,
@@ -68,9 +70,9 @@ class _CategoryPageState extends State<CategoryPage> {
                   child: FlatButton(
                     padding: EdgeInsets.all(20.0),
                     color: Colors.grey[400],
-                    onPressed: (){
-                        _update(categoryList[i].id,incomeTitleControllerList[i].text, widget.plusOrMinus == "plus" ? true : false);
-                        updateListViewCategory(widget.plusOrMinus == "plus" ? true : false);
+                    onPressed: () async{
+                        _update(categoryList[i].id,titleControllerList[i].text, widget.plusOrMinus == "plus");
+                        this.categoryList = await databaseHelperCategory.getCategoryList( widget.plusOrMinus == "plus");
                         setState(() {});
                     },child: Center(child: Text("更新")),
                   ),
@@ -85,16 +87,14 @@ class _CategoryPageState extends State<CategoryPage> {
 
   Future<void> updateListViewCategory(value) async{
 //収支どちらか全てのDBを取得
-    List<Category> _categoryList = await databaseHelperCategory.getCategoryList(value);
-      this.categoryList = _categoryList;
+      this.categoryList = await databaseHelperCategory.getCategoryList(value);
       List<TextEditingController> _controllerList = List<TextEditingController>();
       for(int i=0;i < categoryList.length;i++){
         if(categoryList[i].plus == value){
           _controllerList.add(TextEditingController());
         }
       }
-      incomeTitleControllerList = _controllerList;
-
+      titleControllerList = _controllerList;
     setState(() {});
   }
   //アップデート

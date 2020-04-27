@@ -31,7 +31,9 @@ class _CalendarPageState extends State<CalendarPage> {
   //選択している日
   DateTime selectDay = DateTime.now();
 
-
+ // InfinityPageController _infinityPageController;
+  int _initialPage = 0;
+  int _scrollIndex = 0;
 
   var _week = ["日", "月", "火", "水", "木", "金", "土"];
   var _weekColor = [Colors.red[200],
@@ -46,8 +48,10 @@ class _CalendarPageState extends State<CalendarPage> {
   void initState() {
     updateListView();
     updateListViewCategory();
+    //_infinityPageController = InfinityPageController(initialPage: 0);
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +132,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 child:Align(
                   alignment: Alignment.center,
                   child: AutoSizeText(
-                        "${selectOfMonth(selectMonthValue).year}年${selectOfMonth(selectMonthValue).month}月",
+                        DateFormat.yMMM("ja_JP").format(selectOfMonth(selectMonthValue)),
                         style: TextStyle(
                           fontSize: 30
                         ),
@@ -160,7 +164,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ],
           ),
           //メモ（カラムで行を取る）memoList名前変更予定
-          Expanded(child: SingleChildScrollView(child: Column( children: memoList() )))
+           SingleChildScrollView(child: Column( children: memoList() ))
         ],
       ),
     );
@@ -313,12 +317,11 @@ class _CalendarPageState extends State<CalendarPage> {
     for(int i = 0; i < calendarList.length ; i++) {
       if(DateFormat.yMMMd().format(this.calendarList[i].date) == DateFormat.yMMMd().format(selectDay)){
         _list.add(
-            FlatButton(
+            InkWell(
               child: Container(
                   height: 40,
                   decoration: BoxDecoration(
                     border: Border(
-                      top:BorderSide(width: 1, color: Colors.grey[200]),
                       bottom:BorderSide(width: 1, color: Colors.grey[200]),
                     ),
                     ),
@@ -328,7 +331,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                        Text( "${categoryTitle(this.calendarList[i].categoryId)}${this.calendarList[i].title}"),
+                        Text( "　${categoryTitle(this.calendarList[i].categoryId)}${this.calendarList[i].title}"),
                           moneyTextColor(i),
                       ],
                       ),
@@ -347,7 +350,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
 
               ),
-              onPressed: () async{
+              onTap: () async{
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
@@ -443,7 +446,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget moneyTextColor(index){
       return Center(
         child: Text(
-            "${Utils.commaSeparated(this.calendarList[index].money)}${SharedPrefs.getUnit()}",
+            "${Utils.commaSeparated(this.calendarList[index].money)}${SharedPrefs.getUnit()}　",
             style: TextStyle(
                 color: this.calendarList[index].money >= 0 ? Colors.lightBlueAccent[200]:Colors.redAccent[200]
             )
