@@ -46,7 +46,7 @@ class _CategoryPageState extends State<CategoryPage> {
         Row(
           children: <Widget>[
             Expanded(
-              flex: 2,
+              flex: 5,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -62,7 +62,7 @@ class _CategoryPageState extends State<CategoryPage> {
               ),
             ),
             Expanded(
-                flex: 1,
+                flex: 2,
                 child: Padding(
                   padding: EdgeInsets.all(10.0),
                   child: FlatButton(
@@ -72,7 +72,7 @@ class _CategoryPageState extends State<CategoryPage> {
                         _update(categoryList[i].id,incomeTitleControllerList[i].text, widget.plusOrMinus == "plus" ? true : false);
                         updateListViewCategory(widget.plusOrMinus == "plus" ? true : false);
                         setState(() {});
-                    },child: Text("更新"),
+                    },child: Center(child: Text("更新")),
                   ),
                 )
             )

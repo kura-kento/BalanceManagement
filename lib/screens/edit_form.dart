@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'category_form.dart';
+
 enum InputMode{
   create,
   edit
@@ -97,21 +99,79 @@ class _EditFormState extends State<EditForm> {
                             showCupertinoModalPopup(
                               context: context,
                               builder: (BuildContext context) {
-                                return Container(
-                                  height: MediaQuery.of(context).size.height / 3,
-                                  child: CupertinoPicker(
-                                      scrollController: FixedExtentScrollController(
-                                          initialItem: _selectCategory
-                                      ) ,
-                                      diameterRatio: 1.0,
-                                      itemExtent: 40.0,
-                                      children: _categoryItems.map(_pickerItem).toList(),
-                                      onSelectedItemChanged: (int index){
-                                        setState(() {
-                                          _selectCategory = index;
-                                        });
-                                      }
-                                  ),
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffffffff),
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Color(0xff999999),
+                                            width: 0.0,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          CupertinoButton(
+                                            child: Text('編集',
+                                              style: TextStyle(
+                                                  color: Colors.cyan
+                                              ),
+                                            ),
+                                            onPressed: () async{
+                                              await Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return CategoryPage(plusOrMinus:_selectedItem == "プラス"? "plus":"minus");
+                                                    },
+                                                  )
+                                              );
+                                              updateListViewCategory();
+                                              setState(() {});
+                                            },
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16.0,
+                                              vertical: 5.0,
+                                            ),
+                                          ),
+                                          CupertinoButton(
+                                            child: Text('決定',
+                                                  style: TextStyle(
+                                                  color: Colors.cyan
+                                                  ),
+                                            ),
+                                            onPressed: () {
+                                              moveToLastScreen();
+                                            },
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16.0,
+                                              vertical: 5.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      color: Color(0xffffffff),
+                                      height: MediaQuery.of(context).size.height / 3,
+                                      child: CupertinoPicker(
+                                          scrollController: FixedExtentScrollController(
+                                              initialItem: _selectCategory
+                                          ) ,
+                                          diameterRatio: 1.0,
+                                          itemExtent: 40.0,
+                                          children: _categoryItems.map(_pickerItem).toList(),
+                                          onSelectedItemChanged: (int index){
+                                            setState(() {
+                                              _selectCategory = index;
+                                            });
+                                          }
+                                      ),
+                                    ),
+                                  ],
                                 );
                               },
                             );

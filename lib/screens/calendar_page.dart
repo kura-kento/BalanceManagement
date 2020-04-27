@@ -31,6 +31,8 @@ class _CalendarPageState extends State<CalendarPage> {
   //選択している日
   DateTime selectDay = DateTime.now();
 
+
+
   var _week = ["日", "月", "火", "水", "木", "金", "土"];
   var _weekColor = [Colors.red[200],
     Colors.grey[300],
@@ -57,7 +59,6 @@ class _CalendarPageState extends State<CalendarPage> {
               expandedNull(1),
               Expanded(
                 flex: 5,
-
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -94,6 +95,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       ),
                     );
                     updateListView();
+                    updateListViewCategory();
                   },
                   icon: Icon(Icons.add),
                 ),
@@ -315,7 +317,10 @@ class _CalendarPageState extends State<CalendarPage> {
               child: Container(
                   height: 40,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey[200]),
+                    border: Border(
+                      top:BorderSide(width: 1, color: Colors.grey[200]),
+                      bottom:BorderSide(width: 1, color: Colors.grey[200]),
+                    ),
                     ),
                     child: Slidable(
                       actionPane: SlidableDrawerActionPane(),
@@ -351,6 +356,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 );
                 updateListView();
+                updateListViewCategory();
               },
             ),
         );

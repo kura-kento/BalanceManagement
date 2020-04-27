@@ -1,5 +1,5 @@
 import 'package:balancemanagement_app/screens/calendar_page.dart';
-import 'package:balancemanagement_app/screens/stting_page.dart';
+import 'package:balancemanagement_app/screens/setting_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'graph_page.dart';
