@@ -2,10 +2,16 @@ import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:flutter/material.dart';
 
+enum MoneyValue{
+  income,
+  spending
+}
+
 class CategoryPage extends StatefulWidget {
-  CategoryPage({Key key,this.plusOrMinus}) : super(key: key);
-  final String plusOrMinus;
-  @override
+  CategoryPage({Key key,this.moneyValue}) : super(key: key);
+  final MoneyValue moneyValue;
+
+@override
   _CategoryPageState createState() => _CategoryPageState();
 }
 
@@ -18,7 +24,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   void initState() {
-    updateListViewCategory(widget.plusOrMinus == "plus");
+    updateListViewCategory(widget.moneyValue == MoneyValue.income);
     super.initState();
   }
   @override
@@ -71,8 +77,8 @@ class _CategoryPageState extends State<CategoryPage> {
                     padding: EdgeInsets.all(20.0),
                     color: Colors.grey[400],
                     onPressed: () async{
-                        _update(categoryList[i].id,titleControllerList[i].text, widget.plusOrMinus == "plus");
-                        this.categoryList = await databaseHelperCategory.getCategoryList( widget.plusOrMinus == "plus");
+                        _update(categoryList[i].id,titleControllerList[i].text, widget.moneyValue);
+                        this.categoryList = await databaseHelperCategory.getCategoryList( widget.moneyValue == MoneyValue.income);
                         setState(() {});
                     },child: Center(child: Text("更新")),
                   ),
@@ -107,7 +113,7 @@ class _CategoryPageState extends State<CategoryPage> {
         break;
       }
     }
-    await databaseHelperCategory.updateCategory(Category.withId(_id,after,value));
+    await databaseHelperCategory.updateCategory(Category.withId(_id,after,(value == MoneyValue.income)));
     print(_id);
   }
 }

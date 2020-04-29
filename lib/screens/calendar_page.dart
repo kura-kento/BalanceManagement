@@ -8,6 +8,7 @@ import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:infinity_page_view/infinity_page_view.dart';
 import 'package:intl/intl.dart';
 import 'edit_form.dart';
 
@@ -31,9 +32,10 @@ class _CalendarPageState extends State<CalendarPage> {
   //選択している日
   DateTime selectDay = DateTime.now();
 
- // InfinityPageController _infinityPageController;
+  InfinityPageController _infinityPageController;
   int _initialPage = 0;
   int _scrollIndex = 0;
+
 
   var _week = ["日", "月", "火", "水", "木", "金", "土"];
   var _weekColor = [Colors.red[200],
@@ -48,8 +50,15 @@ class _CalendarPageState extends State<CalendarPage> {
   void initState() {
     updateListView();
     updateListViewCategory();
-    //_infinityPageController = InfinityPageController(initialPage: 0);
+    _infinityPageController = InfinityPageController(initialPage: 0);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // コントローラ破棄
+    _infinityPageController.dispose();
+    super.dispose();
   }
 
 
@@ -137,7 +146,6 @@ class _CalendarPageState extends State<CalendarPage> {
                           fontSize: 30
                         ),
                     ),
-
                 ),
               ),
               Expanded(
@@ -156,12 +164,30 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
             ]),
           ),
-          Column(
-            children: <Widget>[
-              //曜日用に1行作る。
-              Row(children: weekList(),),
-              Column( children: columnList() )
-            ],
+          Container(
+           height: 325,
+            child: InfinityPageView(
+              controller: _infinityPageController,
+              itemCount: 3,
+              itemBuilder: (content, index){
+                //page(index);
+                return Container(
+                    color: Colors.grey[200],
+                    child: Column(
+                      children: <Widget>[
+                        //曜日用に1行作る。
+                        Row(children: weekList(),),
+                        Column( children: columnList() )
+                      ],
+                    ),
+                );
+              },
+              onPageChanged: (index) {
+                scrollValue(index);
+                print(_scrollIndex);
+                setState(() {});
+              },
+            ),
           ),
           //メモ（カラムで行を取る）memoList名前変更予定
            SingleChildScrollView(child: Column( children: memoList() ))
@@ -169,6 +195,17 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
     );
   }
+  void scrollValue(index){
+    if( (index - _initialPage).abs() == 1) {
+      selectMonthValue += (index - _initialPage);
+      selectDay = selectOfMonth(selectMonthValue);
+    }else if((index - _initialPage).abs() == 2) {
+      selectMonthValue += (((index - _initialPage)/2)*-1).floor();
+      selectDay = selectOfMonth(selectMonthValue);
+    }
+    _initialPage=index;
+  }
+
   //カレンダーの曜日部分（1行目）
   List<Widget> weekList() {
     List<Widget> _list = [];
@@ -347,8 +384,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               }
                     )
                   ]
-                    ),
-
+                ),
               ),
               onTap: () async{
                 await Navigator.of(context).push(

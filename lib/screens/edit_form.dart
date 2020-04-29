@@ -34,8 +34,7 @@ class _EditFormState extends State<EditForm> {
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = List<Category>();
 
-  List<String> _items = ["プラス","マイナス"];
-  String _selectedItem = "プラス";
+  MoneyValue moneyValue = MoneyValue.income;
 
   List<Category> _categoryItems =[Category.withId(0, "カテゴリー", true)];
   int _selectCategory = 0;
@@ -47,7 +46,7 @@ class _EditFormState extends State<EditForm> {
   @override
   void initState() {
     if(widget.inputMode == InputMode.edit){
-      _selectedItem = widget.selectCalendarList.money >= 0 ? _items[0]:_items[1];
+      moneyValue = widget.selectCalendarList.money >= 0 ? MoneyValue.income:MoneyValue.spending;
       numberController = TextEditingController(text: '${widget.selectCalendarList.money * (widget.selectCalendarList.money < 0 ? -1:1 )}');
       titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
       defaultButton();
@@ -127,7 +126,7 @@ class _EditFormState extends State<EditForm> {
                                                   await Navigator.of(context).push(
                                                       MaterialPageRoute(
                                                         builder: (context) {
-                                                          return CategoryPage(plusOrMinus:_selectedItem == "プラス"? "plus":"minus");
+                                                          return CategoryPage(moneyValue: moneyValue);
                                                         },
                                                       )
                                                   );
@@ -216,7 +215,7 @@ class _EditFormState extends State<EditForm> {
                                   WhitelistingTextInputFormatter.digitsOnly
                                 ],
                                 decoration: InputDecoration(
-                                    labelText: _selectedItem == _items[0] ? "収入":"支出",
+                                    labelText: moneyValue == MoneyValue.income ? "収入":"支出",
                                     labelStyle: textStyle,
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5.0)
@@ -252,21 +251,22 @@ class _EditFormState extends State<EditForm> {
   }
   List<Widget> btnPlusMinus(){
     List<Widget> _list = [];
-    _items.forEach((value){
-      _list.add(Expanded(
-        flex: 1,
-        child: RaisedButton(
-          child: Text(value),
-          color: (value == _items[0]? Colors.blue : Colors.red)[100+ (_selectedItem == value ? 300 : 0)],
-          textColor: _selectedItem == value ? Colors.white : Colors.grey[400],
-          onPressed: () {
-              _selectedItem = value ;
+    [MoneyValue.income,MoneyValue.spending].asMap().forEach((index,element) {
+      _list.add(
+        Expanded(
+          flex: 1,
+          child: RaisedButton(
+            child: Text("プラス"),
+            color: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
+            textColor: moneyValue == element ? Colors.white : Colors.grey[400],
+            onPressed: () {
+              moneyValue = element;
               updateListViewCategory();
               _selectCategory = 0;
               setState(() {});
-          },
+            },
+          ),
         ),
-      ),
       );
     });
     return _list;
@@ -276,41 +276,38 @@ class _EditFormState extends State<EditForm> {
   }
 
   Future <void> _save() async {
-
-    int result;
     if (widget.inputMode == InputMode.edit) {  // Case 1: Update operation
-      result = await databaseHelper.updateCalendar(Calendar.withId(widget.selectCalendarList.id,
-                                                                  Utils.toInt(numberController.text)*(_selectedItem == _items[0] ? 1 : -1),
+      await databaseHelper.updateCalendar(Calendar.withId(widget.selectCalendarList.id,
+                                                                  Utils.toInt(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                                   '${titleController.text}','${titleController.text}',
                                                                   widget.selectCalendarList.date,
                                                                   _categoryItems[_selectCategory].id)
       );
     } else { // Case 2: Insert Operation
-      result = await databaseHelper.insertCalendar(Calendar(Utils.toInt(numberController.text)*(_selectedItem == _items[0]? 1 : -1),
+      await databaseHelper.insertCalendar(Calendar(Utils.toInt(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
                                                             '${titleController.text}',
                                                             widget.selectDay,
                                                             _categoryItems[_selectCategory].id));
     }
-    //print(result);
   }
   Future <void> _delete(int id) async{
-    int result;
-      result = await databaseHelper.deleteCalendar(id);
-    //print(result);
+    await databaseHelper.deleteCalendar(id);
   }
   Widget _pickerItem(Category category) {
-    return Text(
-      category.title,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 32),
+    return Center(
+      child: Text(
+        category.title,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 32),
+      ),
     );
   }
 
   Future<void> updateListViewCategory() async{
 //収支どちらか全てのDBを取得
-    this.categoryList = await databaseHelperCategory.getCategoryList(_selectedItem == "プラス");
-    List<Category> _categoryItemsCache =[Category.withId(0, "空白", _selectedItem == "プラス")];
+    this.categoryList = await databaseHelperCategory.getCategoryList(moneyValue == MoneyValue.income);
+    List<Category> _categoryItemsCache =[Category.withId(0, "空白", moneyValue == MoneyValue.income)];
     for(int i=0;i<categoryList.length;i++){
       _categoryItemsCache.add(categoryList[i]);
     }
@@ -341,7 +338,7 @@ class _EditFormState extends State<EditForm> {
   }
 //編集フォームでドロップダウンの位置決め
   Future<void> defaultButton() async{
-      List<Category> _categoryList = await databaseHelperCategory.getCategoryList(_selectedItem == "プラス"? true:false);
+      List<Category> _categoryList = await databaseHelperCategory.getCategoryList(moneyValue == MoneyValue.income ? true:false);
       List<int> _category = List<int>();
       _categoryList.forEach((Category category){
         _category.add(category.id);

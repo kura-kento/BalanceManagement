@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'category_form.dart';
 
-
 class SettingPage extends StatefulWidget {
+
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -51,7 +51,6 @@ class _SettingPageState extends State<SettingPage> {
                       InkWell(
                           child: Container(
                             padding: EdgeInsets.all(15.0),
-                            width: MediaQuery.of(context).size.width,
                             child: Center(child: Text(
                               "カテゴリー編集（プラス）",
                               textScaleFactor: 1.5,
@@ -61,7 +60,7 @@ class _SettingPageState extends State<SettingPage> {
                             Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) {
-                                    return CategoryPage(plusOrMinus:"plus");
+                                    return CategoryPage(moneyValue: MoneyValue.income);
                                   },
                                 ),
                             );
@@ -81,7 +80,7 @@ class _SettingPageState extends State<SettingPage> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return CategoryPage(plusOrMinus:"minus");
+                                return CategoryPage(moneyValue: MoneyValue.spending,);
                               },
                             ),
                           );
