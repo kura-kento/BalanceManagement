@@ -35,6 +35,7 @@ class _CalendarPageState extends State<CalendarPage> {
   InfinityPageController _infinityPageController;
   int _initialPage = 0;
   int _scrollIndex = 0;
+  int _calendarHeight = 300;
 
 
   var _week = ["日", "月", "火", "水", "木", "金", "土"];
@@ -167,32 +168,28 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
             ]),
           ),
-          Container(
-           height: 325,
+          Expanded(
             child: InfinityPageView(
               controller: _infinityPageController,
               itemCount: 3,
               itemBuilder: (content, index){
-                //print(_infinityPageController.realIndex);
-                //print(index);
-                return Container(
-                    color: Colors.grey[200],
-                    child: Column(
+                return Column(
                       children: <Widget>[
                         //曜日用に1行作る。
                         Row(children: weekList(),),
-                        scrollPage(index)
+                        scrollPage(index),
+                        (_initialPage == index ) ? Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) : Container()
                       ],
-                    ),
-                );
+                    );
               },
               onPageChanged: (index) {
+                _scrollIndex = 0;
                 scrollValue(index);
                 setState(() {});
               },
             ),
           ),
-           Expanded(child: SingleChildScrollView(child: Column( children: memoList() )))
+
         ],
       ),
     );
@@ -268,7 +265,7 @@ class _CalendarPageState extends State<CalendarPage> {
         child: Stack(
           children: <Widget>[
             Container(
-              height: 100.0,
+//              height: 100.0,
               width: double.infinity,
               decoration: BoxDecoration(
                 border: Border.all(width: 1, color: Colors.white),
