@@ -5,7 +5,6 @@ import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_ad_manager/flutter_google_ad_manager.dart';
 import 'dart:async';
 import 'category_form.dart';
 
@@ -185,7 +184,6 @@ class _SettingPageState extends State<SettingPage> {
                       Divider(color: Colors.grey,height:0),
                     ],
                   )
-
             ),
           ),
     );
@@ -287,18 +285,4 @@ class _SettingPageState extends State<SettingPage> {
       }
       return _title;
   }
-}
-
-class MyTestDevices extends TestDevices {
-  static MyTestDevices _instance;
-
-  factory MyTestDevices() {
-    if (_instance == null) _instance = new MyTestDevices._internal();
-    return _instance;
-  }
-
-  MyTestDevices._internal();
-
-  @override
-  List<String> get values => List()..add("XXXXXXXX"); // Set here.
 }

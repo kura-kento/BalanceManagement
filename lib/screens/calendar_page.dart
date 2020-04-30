@@ -35,7 +35,8 @@ class _CalendarPageState extends State<CalendarPage> {
   InfinityPageController _infinityPageController;
   int _initialPage = 0;
   int _scrollIndex = 0;
-  int _calendarHeight = 300;
+  int _tapIndex = 0;
+
 
 
   var _week = ["日", "月", "火", "水", "木", "金", "土"];
@@ -67,64 +68,56 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-          title: Row(
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: Container(),
-              ),
-              Expanded(
-                flex: 5,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("合計(年)："),
-                          Text("合計(月)：")
-                        ],
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Text("${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}"),
-                            Text("${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}"),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-              ),
-              Expanded(
-                flex: 1,
-                child: IconButton(
-                  onPressed: ()async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return EditForm(selectDay: selectDay,inputMode: InputMode.create);
-                        },
-                      ),
-                    );
-                    updateListView();
-                    updateListViewCategory();
-                  },
-                  icon: Icon(Icons.add),
-                ),
-              ),
-            ],
-          ),
-      ),
       body: Column(
         //上から合計額、カレンダー、メモ
         children: <Widget>[
+          Container(height: 18,color: Colors.grey[300]),
           Container(
-            height:50,
+            height: 40,
+            color: Colors.grey[300],
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Container(),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Stack(
+                    children: <Widget>[
+                      appbarWidgets().elementAt(_tapIndex),
+                      InkWell(
+                        onTap: (){
+                          _tapIndex = (_tapIndex+1)%2 ;
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: IconButton(
+                    onPressed: ()async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return EditForm(selectDay: selectDay,inputMode: InputMode.create);
+                          },
+                        ),
+                      );
+                      updateListView();
+                      updateListViewCategory();
+                    },
+                    icon: Icon(Icons.add),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Container(
+            height:40,
             child: Row(children: <Widget>[
               Expanded(
                 flex:1,
@@ -135,7 +128,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       selectDay = selectOfMonth(selectMonthValue);
                     });
                   },
-                  iconSize:40,
+                  iconSize:30,
                   icon: Icon(Icons.arrow_left),
                 ),
               ),
@@ -162,7 +155,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       selectDay = selectOfMonth(selectMonthValue);
                     });
                   },
-                  iconSize:40,
+                  iconSize:30,
                   icon: Icon(Icons.arrow_right),
                 ),
               ),
@@ -189,11 +182,35 @@ class _CalendarPageState extends State<CalendarPage> {
               },
             ),
           ),
-
         ],
       ),
     );
   }
+  List<Widget> appbarWidgets(){
+    List<Widget> _widgets = [];
+    List<String> _string =[
+      "月合計：${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}",
+      "年合計：${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}",
+    ];
+    for(int i=0;i<2;i++){
+      _widgets.add(
+          Center(
+              child: AutoSizeText(
+                _string[i],
+                minFontSize: 4,
+                maxLines: 1,
+                style: TextStyle(
+                    fontSize: 25
+                ),
+              )
+          )
+      );
+    }
+
+
+    return _widgets;
+  }
+
   Widget scrollPage(index){
     if( (index - _initialPage).abs() == 1) {
       _scrollIndex = (index - _initialPage);
@@ -209,11 +226,10 @@ class _CalendarPageState extends State<CalendarPage> {
   void scrollValue(index){
     if( (index - _initialPage).abs() == 1) {
       selectMonthValue += (index - _initialPage);
-      selectDay = selectOfMonth(selectMonthValue);
     }else if((index - _initialPage).abs() == 2) {
       selectMonthValue += (((index - _initialPage)/2)*-1).floor();
-      selectDay = selectOfMonth(selectMonthValue);
     }
+    selectDay = selectOfMonth(selectMonthValue);
     _initialPage = index;
   }
 
@@ -283,12 +299,14 @@ class _CalendarPageState extends State<CalendarPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
-                      flex: 2,
+                      flex: 1,
                       child: Container(
                         color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(DateTime.now()) ? Colors.red[300] : Colors.transparent ,
-                        child: Text(
+                        child: AutoSizeText(
                           "${Utils.toInt(date.day)}",
                           textAlign: TextAlign.center,
+                          minFontSize: 4,
+                          maxLines: 1,
                           style: TextStyle(
                             fontSize: 10.0,
                             color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(DateTime.now()) ? Colors.white : Colors.black ,
@@ -298,7 +316,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                     Expanded(
                       child: Container(),
-                      flex: 5,
+                      flex: 2,
                     )
                   ],
                 ),
@@ -308,9 +326,8 @@ class _CalendarPageState extends State<CalendarPage> {
             FlatButton(
               child: Container(),
               onPressed: () {
-                setState((){
-                  selectDay = date;
-                });
+                selectDay = date;
+                setState((){});
               },
             ),
           ],
@@ -349,9 +366,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               child: Text(
                                   "${Utils.commaSeparated(this.calendarList[i].money)}${SharedPrefs.getUnit()}　",
                                   style: TextStyle(
-                                      color: this.calendarList[i].money >= 0
-                                          ? Colors.lightBlueAccent[200]
-                                          : Colors.redAccent[200]
+                                      color: this.calendarList[i].money >= 0 ? Colors.lightBlueAccent[200] : Colors.redAccent[200]
                                   )
                               ),
                             ),
@@ -388,13 +403,10 @@ class _CalendarPageState extends State<CalendarPage> {
     }
     return _list;
   }
-  void updateListView() {
+  Future<void> updateListView() async{
 //全てのDBを取得
-      Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
-      calendarListFuture.then((calendarList) {
-          this.calendarList = calendarList;
+    this.calendarList = await databaseHelper.getCalendarList();
           setState(() {});
-      });
   }
 
   Future<void> updateListViewCategory() async{
@@ -407,8 +419,8 @@ class _CalendarPageState extends State<CalendarPage> {
   int monthSum(){
     int _moneySum =0;
     for(int i = 0; i < calendarList.length; i++){
-      if(selectOfMonth(selectMonthValue+_scrollIndex).month == calendarList[i].date.month &&
-          selectOfMonth(selectMonthValue+_scrollIndex).year == calendarList[i].date.year){
+      if(selectOfMonth(selectMonthValue).month == calendarList[i].date.month &&
+          selectOfMonth(selectMonthValue).year == calendarList[i].date.year){
         _moneySum += calendarList[i].money;
       }
     }
@@ -418,7 +430,7 @@ class _CalendarPageState extends State<CalendarPage> {
   int yearSum(){
     int _moneySum =0;
     for(int i = 0; i < calendarList.length; i++){
-      if(selectOfMonth(selectMonthValue+_scrollIndex).year == calendarList[i].date.year){
+      if(selectOfMonth(selectMonthValue).year == calendarList[i].date.year){
         _moneySum += calendarList[i].money;
       }
     }
