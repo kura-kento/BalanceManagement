@@ -1,9 +1,7 @@
 import 'package:balancemanagement_app/models/category.dart';
+import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_ad_manager/flutter_google_ad_manager.dart';
-
-import 'home_page.dart';
 
 enum MoneyValue{
   income,
@@ -48,27 +46,7 @@ class _CategoryPageState extends State<CategoryPage> {
             ),
             ),
           ),
-          DFPBanner(
-            isDevelop: true,
-            testDevices: MyTestDevices(),
-            adUnitId: '/XXXXXXXXX/XXXXXXXXX',
-            adSize: DFPAdSize.BANNER,
-            onAdLoaded: () {
-              print('Banner onAdLoaded');
-            },
-            onAdFailedToLoad: (errorCode) {
-              print('Banner onAdFailedToLoad: errorCode:$errorCode');
-            },
-            onAdOpened: () {
-              print('Banner onAdOpened');
-            },
-            onAdClosed: () {
-              print('Banner onAdClosed');
-            },
-            onAdLeftApplication: () {
-              print('Banner onAdLeftApplication');
-            },
-          ),
+          AdMob.banner()
         ],
       ),
     );

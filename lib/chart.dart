@@ -17,52 +17,57 @@ class ChartData {
     }
 
 // チャートの描写をする為に位置計算などして表示するクラス
-    class ChartContainer extends StatelessWidget {
+class ChartContainer extends StatelessWidget {
 
-    // チャートの上マージン
-    final double _chartTopMargin = 30.0;
-    // チャートの左右マージン
-    final double _chartSideMargin = 20.0;
-    // チャートの高さ
-    final double _chartHeight = 240.0;
-    // 目盛り数値の高さ初期値３７.０
-    final double _scaleNumHeight = 36.0;
-    // 目盛りに表示させる数値の配列
-    List<String> _scaleNumbers;
-    // チャートのデータ配列
-    final List<ChartData> _charDataList;
-    // チャートのタイトル
-    final _chartTitle;
+  // チャートの上マージン
+  final double _chartTopMargin = 30.0;
 
-    ChartContainer(this._charDataList, this._chartTitle): super();
+  // チャートの左右マージン
+  final double _chartSideMargin = 20.0;
 
-    // チャートのデータを生成し返す（グラフに共通地に変換）
-    List<ChartData> _getChartDataList() {
+  // チャートの高さ
+  final double _chartHeight = 240.0;
+
+  // 目盛り数値の高さ初期値３７.０
+  final double _scaleNumHeight = 36.0;
+
+  // 目盛りに表示させる数値の配列
+  List<String> _scaleNumbers;
+
+  // チャートのデータ配列
+  final List<ChartData> _charDataList;
+
+  // チャートのタイトル
+  final _chartTitle;
+
+  ChartContainer(this._charDataList, this._chartTitle) : super();
+
+  // チャートのデータを生成し返す（グラフに共通地に変換）
+  List<ChartData> _getChartDataList() {
     List<double> list = List<double>();
 
     var yMin = 0.0;
     var yMax = 0.0;
     var coarseVal = 0.0;
-    var coarese = 0.0;
-    var coareseDigit = 0;
+    var coarse = 0.0;
+    var coarseDigit = 0;
 
-    while(coarese < 1.0){
+    while (coarse < 1.0) {
+      for (var chatData in _charDataList) {
+        list.add(chatData.y * math.pow(10, (coarseDigit)));
+      }
+      list.sort();
+      yMin = list.first;
+      yMax = list.last;
 
-    for (var chatData in _charDataList) {
-    list.add(chatData.y * math.pow(10, (coareseDigit)));
-    }
-    list.sort();
-    yMin = list.first;
-    yMax = list.last;
+      // 最大値と最小値の差
+      double _differenceVal = yMax - yMin;
 
-    // 最大値と最小値の差
-    double _differenceVal = yMax - yMin;
-
-    // 目盛り単位数を求める（2d ≤ w）
-    // http://www.eng.niigata-u.ac.jp/~nomoto/21.html
-    coarseVal = _differenceVal / 2.0;
-    coarese = coarseVal.round().toDouble();
-    coareseDigit++;
+      // 目盛り単位数を求める（2d ≤ w）
+      // http://www.eng.niigata-u.ac.jp/~nomoto/21.html
+      coarseVal = _differenceVal / 2.0;
+      coarse = coarseVal.round().toDouble();
+      coarseDigit++;
     }
 
     _scaleNumbers = List<String>();
@@ -70,9 +75,9 @@ class ChartData {
     double scaleYMin = 0;
 
     var digit = 0;
-    while(coarese > 10.0){
-    coarese /= 10.0;
-    digit++;
+    while (coarse > 10.0) {
+      coarse /= 10.0;
+      digit++;
     }
 
     List<int> scaleValues = [1, 2, 5];
@@ -80,18 +85,18 @@ class ChartData {
     var count = 0;
     var multiple = 0;
     int scaleUnitVal = 0;
-    while(!isFinish){
-    scaleUnitVal = scaleValues[count] * math.pow(10, (digit + multiple));
-    if ((scaleUnitVal * 2) > coarseVal) {
-    isFinish = true;
-    }
+    while (!isFinish) {
+      scaleUnitVal = scaleValues[count] * math.pow(10, (digit + multiple));
+      if ((scaleUnitVal * 2) > coarseVal) {
+        isFinish = true;
+      }
 
-    if (count == (scaleValues.length - 1)) {
-    count = 0;
-    multiple++;
-    } else {
-    count++;
-    }
+      if (count == (scaleValues.length - 1)) {
+        count = 0;
+        multiple++;
+      } else {
+        count++;
+      }
     }
 
     // 目盛りの数値が整数値か
@@ -99,7 +104,7 @@ class ChartData {
 
     // 目盛りの下限値を算出
     var lowerScaleVal = yMin - (yMin % scaleUnitVal);
-    _addScaleNumberList(lowerScaleVal, isInteger, coareseDigit);
+    _addScaleNumberList(lowerScaleVal, isInteger, coarseDigit);
 
 
     // 目盛りの数値一覧を生成する
@@ -108,17 +113,16 @@ class ChartData {
     while(yMax > scaleVal){
       scaleVal += scaleUnitVal;
       scaleYMax = scaleVal;
-      _addScaleNumberList(scaleVal, isInteger, coareseDigit);
+      _addScaleNumberList(scaleVal, isInteger, coarseDigit);
     }
     _scaleNumbers = _scaleNumbers.reversed.toList();
-
 
     // 一座標の数値を算出
     double _unitPoint = 100.0 / (scaleYMax - scaleYMin);
 
     List<ChartData> _chartList = List<ChartData>();
     for (var chatData in _charDataList) {
-      double _newY= (100.0 - (((chatData.y * math.pow(10, (coareseDigit - 1))) - scaleYMin) * _unitPoint)) / 100.0;
+      double _newY= (100.0 - (((chatData.y * math.pow(10, (coarseDigit - 1))) - scaleYMin) * _unitPoint)) / 100.0;
       _chartList.add(new ChartData(chatData.x, _newY,chatData.z,chatData.textMoney));
     }
     return _chartList;
@@ -146,7 +150,6 @@ class ChartData {
     }
   }
 
-
   // データ内の数値はすべて整数か判断
   bool _isIntegerInData(List<ChartData> list) {
     for (var data in list) {
@@ -173,19 +176,11 @@ class ChartData {
           children: <Widget>[
             Container(
               height:20,
-              child: Text(
-                chartData.z,
-                style: TextStyle(
-                    color: Colors.grey,
-                ),
-              ),
+              child: Text(chartData.z,
+                style: TextStyle(color: Colors.grey,),),
             ),
-            Text(
-              chartData.x,
-              style: TextStyle(
-                  color: Colors.grey
-              ),
-            ),
+            Text(chartData.x,
+              style: TextStyle(color: Colors.grey),),
           ],
         ),
         alignment: Alignment.topCenter,
@@ -228,8 +223,6 @@ class ChartData {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     List<ChartData> _chartDataList = _getChartDataList();
@@ -262,6 +255,7 @@ class ChartData {
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
+                  controller: ScrollController(initialScrollOffset: 80.0*_charDataList.length),
                   child: Container(
                     //修正
                     width: _charDataList.length <= 4 ? 430 : (65.0*_charDataList.length),
@@ -291,7 +285,6 @@ class ChartData {
   graphWidth(){
    // GraphPage.graphMonth();
   }
-
 }
 
 // チャートグラフ
@@ -299,10 +292,10 @@ class ChartPainter extends CustomPainter {
   final _circleSize = 7.0;
   var _horizontalBarNum;
   var _horizontalAdjustHeight = 10.0;
-  var _varticalAdjustWidth = 20.0;
+  var _verticalAdjustWidth = 20.0;
   List<ChartData> _chartList = List<ChartData>();
 
-  ChartPainter(this._horizontalBarNum, this._horizontalAdjustHeight, this._chartList, this._varticalAdjustWidth): super();
+  ChartPainter(this._horizontalBarNum, this._horizontalAdjustHeight, this._chartList, this._verticalAdjustWidth): super();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -311,7 +304,6 @@ class ChartPainter extends CustomPainter {
     var rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.drawRect(rect, paint);
 
-
     // 横線
     paint.color = Colors.grey;
     var horizontalHeight = (size.height - _horizontalAdjustHeight * 2) / (_horizontalBarNum - 1);
@@ -319,7 +311,6 @@ class ChartPainter extends CustomPainter {
       var y = horizontalHeight * i + _horizontalAdjustHeight;
       canvas.drawLine(Offset(10, y), Offset(size.width - 10, y), paint);
     }
-
     // ポイントの描写
     if(_chartList.length ==1 && _chartList[0].textMoney == "0") {
 
@@ -332,17 +323,17 @@ class ChartPainter extends CustomPainter {
 
   void _createPoint(Canvas canvas, Size size, Paint paint, double y, int count) {
     double pointY = _horizontalAdjustHeight + ((size.height - _horizontalAdjustHeight * 2) * y);
-    double scopeWidth = size.width - (_varticalAdjustWidth * 2);
-    double pointX = (scopeWidth / (_chartList.length * 2) * (count + 1)) + (scopeWidth / (_chartList.length * 2) * count) + _varticalAdjustWidth;
+    double scopeWidth = size.width - (_verticalAdjustWidth * 2);
+    double pointX = (scopeWidth / (_chartList.length * 2) * (count + 1)) + (scopeWidth / (_chartList.length * 2) * count) + _verticalAdjustWidth;
     double textPointY = _horizontalAdjustHeight + ((size.height - _horizontalAdjustHeight * 2) * y)-28;
-    double textPointX = (scopeWidth / (_chartList.length * 2) * (count + 1)) + (scopeWidth / (_chartList.length * 2) * count) + _varticalAdjustWidth-((_chartList[count].textMoney.length+1)/2)*6;
+    double textPointX = (scopeWidth / (_chartList.length * 2) * (count + 1)) + (scopeWidth / (_chartList.length * 2) * count) + _verticalAdjustWidth-((_chartList[count].textMoney.length+1)/2)*6;
 
     // 円背景
     paint.color = Colors.white;
     canvas.drawCircle(Offset(pointX, pointY), _circleSize, paint);
 
     // 円線
-    Paint line = new Paint()
+    Paint line = Paint()
       ..color = Colors.grey
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
@@ -360,14 +351,9 @@ class ChartPainter extends CustomPainter {
                           ),
                         text: "${Utils.commaSeparated(int.parse(_chartList[count].textMoney))}${SharedPrefs.getUnit()}",
                       );
-
-
         TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
         tp.layout();
         tp.paint(canvas, Offset(textPointX, textPointY));
-
-
-
   }
 
   @override

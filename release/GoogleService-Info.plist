@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>481225551557-sg5ieo5cg2ant76qepp99gpqcmpq8uia.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.481225551557-sg5ieo5cg2ant76qepp99gpqcmpq8uia</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAqhBeWaRlWOkbyKKl26x6alfQKGH-4P3M</string>
+	<key>GCM_SENDER_ID</key>
+	<string>481225551557</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>work.syuusi365.balancemanagement</string>
+	<key>PROJECT_ID</key>
+	<string>syuushi-e15bd</string>
+	<key>STORAGE_BUCKET</key>
+	<string>syuushi-e15bd.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:481225551557:ios:d91e2e14abb6784273caac</string>
+	<key>DATABASE_URL</key>
+	<string>https://syuushi-e15bd.firebaseio.com</string>
+</dict>
+</plist>

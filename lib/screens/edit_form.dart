@@ -1,15 +1,13 @@
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
+import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_google_ad_manager/flutter_google_ad_manager.dart';
-
 import 'category_form.dart';
-import 'home_page.dart';
 
 enum InputMode{
   create,
@@ -201,7 +199,6 @@ class _EditFormState extends State<EditForm> {
                                   )
                               )
                             )
-,
                             ],
                           ),
                           Row(children: <Widget>[
@@ -211,7 +208,7 @@ class _EditFormState extends State<EditForm> {
                               child:Padding(
                                   padding: EdgeInsets.only(top:15,bottom:15),
                                   child:TextFormField(
-                                      autofocus: true,
+                                      //autofocus: true,
                                       controller: numberController,
                                       keyboardType: TextInputType.number,
                                       inputFormatters: <TextInputFormatter>[
@@ -250,27 +247,7 @@ class _EditFormState extends State<EditForm> {
                   ),
                 ),
             ),
-            DFPBanner(
-              isDevelop: true,
-              testDevices: MyTestDevices(),
-              adUnitId: '/XXXXXXXXX/XXXXXXXXX',
-              adSize: DFPAdSize.BANNER,
-              onAdLoaded: () {
-                print('Banner onAdLoaded');
-              },
-              onAdFailedToLoad: (errorCode) {
-                print('Banner onAdFailedToLoad: errorCode:$errorCode');
-              },
-              onAdOpened: () {
-                print('Banner onAdOpened');
-              },
-              onAdClosed: () {
-                print('Banner onAdClosed');
-              },
-              onAdLeftApplication: () {
-                print('Banner onAdLeftApplication');
-              },
-            ),
+            AdMob.banner()
           ],
         ),
     );

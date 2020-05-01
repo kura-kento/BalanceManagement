@@ -7,6 +7,7 @@ import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:infinity_page_view/infinity_page_view.dart';
 import 'package:intl/intl.dart';
@@ -35,9 +36,7 @@ class _CalendarPageState extends State<CalendarPage> {
   InfinityPageController _infinityPageController;
   int _initialPage = 0;
   int _scrollIndex = 0;
-  int _tapIndex = 0;
-
-
+  bool isLoding = true;
 
   var _week = ["日", "月", "火", "水", "木", "金", "土"];
   var _weekColor = [Colors.red[200],
@@ -58,156 +57,185 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void dispose() {
-    // コントローラ破棄
     _infinityPageController.dispose();
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      body: Column(
-        //上から合計額、カレンダー、メモ
-        children: <Widget>[
-          Container(height: 18,color: Colors.grey[300]),
-          Container(
-            height: 40,
-            color: Colors.grey[300],
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Container(),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Stack(
-                    children: <Widget>[
-                      appbarWidgets().elementAt(_tapIndex),
-                      InkWell(
-                        onTap: (){
-                          _tapIndex = (_tapIndex+1)%2 ;
-                          setState(() {});
-                        },
+    return Container(
+      color: Colors.grey[300],
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            //上から合計額、カレンダー、メモ
+            children: <Widget>[
+              Container(
+                height: 40,
+                color: Colors.grey[300],
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Stack(
+                        children: <Widget>[
+                          isLoding ? Text("") : appbarWidgetsMap()[SharedPrefs.getTapIndex()],
+                          InkWell(
+                            onTap: ()async{
+                              int nextIndex = (_title.indexOf(SharedPrefs.getTapIndex()) +1)%_title.length;
+                              await SharedPrefs.setTapIndex(_title[nextIndex]);
+                              setState(() {});
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    onPressed: ()async {
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return EditForm(selectDay: selectDay,inputMode: InputMode.create);
-                          },
-                        ),
-                      );
-                      updateListView();
-                      updateListViewCategory();
-                    },
-                    icon: Icon(Icons.add),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Container(
-            height:40,
-            child: Row(children: <Widget>[
-              Expanded(
-                flex:1,
-                child: IconButton(
-                  onPressed: (){
-                    setState(() {
-                      selectMonthValue--;
-                      selectDay = selectOfMonth(selectMonthValue);
-                    });
-                  },
-                  iconSize:30,
-                  icon: Icon(Icons.arrow_left),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        onPressed: ()async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return EditForm(selectDay: selectDay,inputMode: InputMode.create);
+                              },
+                            ),
+                          );
+                          updateListView();
+                          updateListViewCategory();
+                        },
+                        icon: Icon(Icons.add),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Expanded(
-                flex:5,
-                //アイコン
-                child:Align(
-                  alignment: Alignment.center,
-                  child: AutoSizeText(
-                        DateFormat.yMMM("ja_JP").format(selectOfMonth(selectMonthValue)),
-                        style: TextStyle(
-                          fontSize: 30
+
+              Container(
+                height:40,
+                child: Row(children: <Widget>[
+                  Expanded(
+                    flex:1,
+                    child: IconButton(
+                      onPressed: (){
+                        setState(() {
+                          selectMonthValue--;
+                          selectDay = selectOfMonth(selectMonthValue);
+                        });
+                      },
+                      iconSize:30,
+                      icon: Icon(Icons.arrow_left),
+                    ),
+                  ),
+                  Expanded(
+                    flex:5,
+                    //アイコン
+                    child:Align(
+                      alignment: Alignment.center,
+                      child: AutoSizeText(
+                            DateFormat.yMMM("ja_JP").format(selectOfMonth(selectMonthValue)),
+                            style: TextStyle(
+                              fontSize: 30
+                            ),
                         ),
                     ),
-                ),
+                  ),
+                  Expanded(
+                    flex:1,
+                    //アイコン
+                    child: IconButton(
+                      onPressed: (){
+                        setState(() {
+                          selectMonthValue++;
+                          selectDay = selectOfMonth(selectMonthValue);
+                        });
+                      },
+                      iconSize:30,
+                      icon: Icon(Icons.arrow_right),
+                    ),
+                  ),
+                ]),
               ),
               Expanded(
-                flex:1,
-                //アイコン
-                child: IconButton(
-                  onPressed: (){
-                    setState(() {
-                      selectMonthValue++;
-                      selectDay = selectOfMonth(selectMonthValue);
-                    });
+                child: InfinityPageView(
+                  controller: _infinityPageController,
+                  itemCount: 3,
+                  itemBuilder: (content, index){
+                    return Column(
+                          children: <Widget>[
+                            //曜日用に1行作る。
+                            Row(children: weekList(),),
+                            scrollPage(index),
+                            (_initialPage == index ) ? Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) : Container()
+                          ],
+                        );
                   },
-                  iconSize:30,
-                  icon: Icon(Icons.arrow_right),
+                  onPageChanged: (index) {
+                    _scrollIndex = 0;
+                    scrollValue(index);
+                    setState(() {});
+                  },
                 ),
               ),
-            ]),
+            ],
           ),
-          Expanded(
-            child: InfinityPageView(
-              controller: _infinityPageController,
-              itemCount: 3,
-              itemBuilder: (content, index){
-                return Column(
-                      children: <Widget>[
-                        //曜日用に1行作る。
-                        Row(children: weekList(),),
-                        scrollPage(index),
-                        (_initialPage == index ) ? Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) : Container()
-                      ],
-                    );
-              },
-              onPageChanged: (index) {
-                _scrollIndex = 0;
-                scrollValue(index);
-                setState(() {});
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
-  List<Widget> appbarWidgets(){
-    List<Widget> _widgets = [];
+  Future<void> delay(value)async{
+    print("BEFORE SLEEP");
+    await new Future.delayed(new Duration(seconds: 3));
+    print("COMPLETE!");
+  }
+
+  List<String> _title =["month","year","both"];
+
+  Map<String,Widget> appbarWidgetsMap(){
+    Map<String,Widget> _widgets = {};
     List<String> _string =[
       "月合計：${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}",
       "年合計：${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}",
     ];
     for(int i=0;i<2;i++){
-      _widgets.add(
+      _widgets[_title[i]]=(
           Center(
               child: AutoSizeText(
                 _string[i],
                 minFontSize: 4,
                 maxLines: 1,
-                style: TextStyle(
-                    fontSize: 25
-                ),
+                style: TextStyle(fontSize: 25),
               )
           )
       );
     }
-
-
+    _widgets["both"]=(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Text("年合計：",style: TextStyle(fontSize: 12.5),),
+              Text("月合計：",style: TextStyle(fontSize: 12.5),)
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Text("${Utils.commaSeparated(yearSum())}${SharedPrefs.getUnit()}",
+                style: TextStyle(fontSize: 12.5),),
+              Text("${Utils.commaSeparated(monthSum())}${SharedPrefs.getUnit()}",
+                  style: TextStyle(fontSize: 12.5)),
+            ],
+          ),
+        ],
+      )
+    );
     return _widgets;
   }
 
@@ -406,7 +434,8 @@ class _CalendarPageState extends State<CalendarPage> {
   Future<void> updateListView() async{
 //全てのDBを取得
     this.calendarList = await databaseHelper.getCalendarList();
-          setState(() {});
+    isLoding = false;
+    setState(() {});
   }
 
   Future<void> updateListViewCategory() async{

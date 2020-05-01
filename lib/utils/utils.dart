@@ -1,3 +1,4 @@
+
 import 'package:intl/intl.dart';
 
 class Utils{
@@ -16,3 +17,4 @@ class Utils{
 //何文字以上で…に変える
 
 }
+
