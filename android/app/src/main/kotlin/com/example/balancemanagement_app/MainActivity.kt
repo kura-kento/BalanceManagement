@@ -1,4 +1,4 @@
-package com.example.balancemanagement_app
+package work.syuusi365.balancemanagement
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

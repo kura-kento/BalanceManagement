@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_ad_manager/flutter_google_ad_manager.dart';
 
 class AdMob{
+
   static Widget banner(){
     return   DFPBanner(
-      isDevelop: false,
+      isDevelop: true,
       testDevices: MyTestDevices(),
-      adUnitId: 'ca-app-pub-3940256099942544/2934735716',
+      adUnitId: 'ca-app-pub-7136658286637435/7202771519',
       adSize: DFPAdSize.BANNER,
       onAdLoaded: () {
         print('Banner onAdLoaded');

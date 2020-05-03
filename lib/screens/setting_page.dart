@@ -239,7 +239,6 @@ class _SettingPageState extends State<SettingPage> {
   Future <void> _delete(int id) async{
     int result;
     result = await databaseHelper.deleteCalendar(id);
-    print(result);
   }
 //カテゴリーの名前を取得。
   List<Category> categories(value){

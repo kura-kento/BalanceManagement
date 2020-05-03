@@ -63,13 +63,12 @@ class Calendar {
     map['memo'] = _memo;
     map['date'] = DateFormat('yyyy-MM-dd HH:mm').format(_date);
     map['categoryId'] = _categoryId;
-
 return map;
 }
 
 // MapオブジェクトからCalendarオブジェクトを抽出する
 Calendar.fromMapObject(Map<String, dynamic> map) {
-    //print(map);
+   // print(map);
     this._id = map['id'];
     this._money = map['money'];
     this._title = map['title'];

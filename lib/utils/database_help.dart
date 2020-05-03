@@ -1,4 +1,5 @@
 import 'package:balancemanagement_app/models/calendar.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
@@ -50,9 +51,20 @@ class DatabaseHelper {
 
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCalendarMapList() async {
-//		var result = await db.rawQuery('SELECT * FROM $noteTable order by $colPriority ASC');
     var result = await this.database.query(tableName, orderBy: '$colId ASC');
     return result;
+  }
+  //選択月を全て持ってくる
+  Future<int> getCalendarMonthInt(date) async{
+    String _text = DateFormat('yyyy-MM').format(date);
+    var result = await this.database.rawQuery("SELECT SUM($colMoney) AS MONEY FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
+    return   result[0]["MONEY"] ?? 0 ;
+  }
+
+  Future<int> getCalendarYearInt(date) async{
+    String _text = DateFormat('yyyy').format(date);
+    var result = await this.database.rawQuery("SELECT SUM($colMoney) AS MONEY FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
+    return   result[0]["MONEY"] ?? 0 ;
   }
 //挿入　更新　削除
   // Insert Operation: Insert a Note object to database
@@ -94,6 +106,8 @@ class DatabaseHelper {
     }
     return calendarList;
   }
+
+
 
   Future<List<Map<String, dynamic>>> getCalendarMonthMapList() async {
     var result = await this.database.query(tableName, orderBy: '$colId ASC');

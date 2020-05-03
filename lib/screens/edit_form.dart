@@ -259,7 +259,7 @@ class _EditFormState extends State<EditForm> {
         Expanded(
           flex: 1,
           child: RaisedButton(
-            child: Text("プラス"),
+            child: Text(index == 0 ? "プラス" : "マイナス"),
             color: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
             textColor: moneyValue == element ? Colors.white : Colors.grey[400],
             onPressed: () {

@@ -99,7 +99,6 @@ class _GraphPageState extends State<GraphPage> {
     Map<DateTime,int> _map = graphMonth();
 
     _map.forEach((DateTime key,int value){
-      print(value);
       _listCache.add(key);
     });
 
@@ -113,7 +112,6 @@ class _GraphPageState extends State<GraphPage> {
     }else{
       durationMonth = DateTime.now().month +12*(DateTime.now().year - _listCache[0].year) -_listCache[0].month;
     }
-    print(_listCache[0].month);
     for(int i=0;i <= durationMonth;i++){
       if(_map.containsKey(DateTime(_listCache[0].year,_listCache[0].month + i))){
         //または１月がない時
