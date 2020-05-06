@@ -247,7 +247,7 @@ class _EditFormState extends State<EditForm> {
                   ),
                 ),
             ),
-            AdMob.banner()
+         //   AdMob.banner()
           ],
         ),
     );

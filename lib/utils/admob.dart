@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_ad_manager/flutter_google_ad_manager.dart';
 
 class AdMob{
-
   static Widget banner(){
-    return   DFPBanner(
-      isDevelop: true,
-      testDevices: MyTestDevices(),
+    return DFPBanner(
+      isDevelop: false,
+//      testDevices: MyTestDevices(),
       adUnitId: 'ca-app-pub-7136658286637435/7202771519',
       adSize: DFPAdSize.BANNER,
       onAdLoaded: () {
@@ -41,5 +40,5 @@ class MyTestDevices extends TestDevices {
   @override
   List<String> get values => List()..add("75552646040bbf3d8fb887e5b108f30a")//iphoneSE2
                                    ..add("180c3203193a164f65d8315c594bc62c");//iphone6s+
-  // Set here.
+
 }

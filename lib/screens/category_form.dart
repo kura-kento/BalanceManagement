@@ -1,7 +1,5 @@
 import 'package:balancemanagement_app/models/category.dart';
-import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 
 enum MoneyValue{
@@ -47,7 +45,7 @@ class _CategoryPageState extends State<CategoryPage> {
             ),
             ),
           ),
-          AdMob.banner()
+    //      AdMob.banner()
         ],
       ),
     );

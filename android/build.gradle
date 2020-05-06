@@ -29,3 +29,10 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+//追加分
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-v4:27.0.2'
+    }
+}
+

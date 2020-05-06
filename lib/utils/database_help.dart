@@ -55,16 +55,20 @@ class DatabaseHelper {
     return result;
   }
   //選択月を全て持ってくる
-  Future<int> getCalendarMonthInt(date) async{
+  Future<Map<String,dynamic>> getCalendarMonthInt(date) async{
     String _text = DateFormat('yyyy-MM').format(date);
-    var result = await this.database.rawQuery("SELECT SUM($colMoney) AS MONEY FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
-    return   result[0]["MONEY"] ?? 0 ;
+    var result = await this.database.rawQuery("SELECT COALESCE(SUM($colMoney),0) AS SUM,"
+        "COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,"
+        "COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS "
+        "FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
+    print(result[0]);
+    return  result[0];
   }
 
   Future<int> getCalendarYearInt(date) async{
     String _text = DateFormat('yyyy').format(date);
-    var result = await this.database.rawQuery("SELECT SUM($colMoney) AS MONEY FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
-    return   result[0]["MONEY"] ?? 0 ;
+    var result = await this.database.rawQuery("SELECT COALESCE(SUM($colMoney),0) AS MONEY FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
+    return   result[0]["MONEY"] ;
   }
 //挿入　更新　削除
   // Insert Operation: Insert a Note object to database

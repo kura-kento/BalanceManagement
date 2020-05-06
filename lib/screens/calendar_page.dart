@@ -35,10 +35,7 @@ class _CalendarPageState extends State<CalendarPage> {
   InfinityPageController _infinityPageController;
   int _initialPage = 0;
   int _scrollIndex = 0;
-//  Map<String,dynamic> monthMap;
-  int monthSum;
-//  int monthPlus;
-//  int monthMinus;
+  Map<String,dynamic> monthMap;
  int yearSum;
 
 
@@ -205,7 +202,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Map<String,Widget> appbarWidgetsMap(){
     Map<String,Widget> _widgets = {};
     List<String> _string =[
-      "月合計：${Utils.commaSeparated(monthSum)}${SharedPrefs.getUnit()}",
+      "月合計：${Utils.commaSeparated(monthMap["SUM"])}${SharedPrefs.getUnit()}",
       "年合計：${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}",
     ];
     for(int i=0;i<2;i++){
@@ -235,7 +232,7 @@ class _CalendarPageState extends State<CalendarPage> {
             children: <Widget>[
               Text("${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}",
                 style: TextStyle(fontSize: 12.5),),
-              Text("${Utils.commaSeparated(monthSum)}${SharedPrefs.getUnit()}",
+              Text("${Utils.commaSeparated(monthMap["SUM"])}${SharedPrefs.getUnit()}",
                   style: TextStyle(fontSize: 12.5)),
             ],
           ),
@@ -246,18 +243,13 @@ class _CalendarPageState extends State<CalendarPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Column(
-              children: <Widget>[
-                Text("月合計(プラス)　：",style: TextStyle(fontSize: 12.5),),
-                Text("月合計(マイナス)：",style: TextStyle(fontSize: 12.5),)
-              ],
-            ),
+            Text("月合計：",style: TextStyle(fontSize: 20),),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                Text("${Utils.commaSeparated(monthSum)}${SharedPrefs.getUnit()}",
+                Text("${Utils.commaSeparated(monthMap["PLUS"])}${SharedPrefs.getUnit()}",
                   style: TextStyle(fontSize: 12.5, color: Colors.lightBlueAccent[200]),),
-                Text("${Utils.commaSeparated(monthSum)}${SharedPrefs.getUnit()}",
+                Text("${Utils.commaSeparated(monthMap["MINUS"])}${SharedPrefs.getUnit()}",
                     style: TextStyle(fontSize: 12.5, color:Colors.redAccent[200])),
               ],
             ),
@@ -475,7 +467,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Future<void> monthChange() async{
     final DateTime _date = DateTime.now();
     var selectMonthDate = DateTime(_date.year, _date.month + selectMonthValue+_scrollIndex, 1);
-    monthSum = await databaseHelper.getCalendarMonthInt(selectMonthDate);
+    monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);
     //monthSum = monthMap["SUM"];
    // monthPlus = monthMap["PLUS"];
    // monthMinus = monthMap["MINUS"];

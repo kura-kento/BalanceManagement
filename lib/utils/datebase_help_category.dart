@@ -85,8 +85,6 @@ class DatabaseHelperCategory {
     return result;
   }
 
-
-
   //データベース内のNoteオブジェクトの数を取得します
   Future<int> getCount() async {
     //rawQuery括弧ないにSQL文が使える。

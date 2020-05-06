@@ -43,11 +43,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>io.flutter.embedded_views_preview</key>
-    <true/>
-    <key>GADIsAdManagerApp</key>
+    <key>io.flutter.embedded_views_preview</key>
     <true/>
     <key>GADApplicationIdentifier</key>
-    <string>ca-app-pub-7136658286637435~8780944043</string>
+    <string>ca-app-pub-7136658286637435~6189992615</string>
 </dict>
 </plist>
