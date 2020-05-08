@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "752979807714",
+    "firebase_url": "https://balance-a0aeb.firebaseio.com",
+    "project_id": "balance-a0aeb",
+    "storage_bucket": "balance-a0aeb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752979807714:android:93138e9b90d18e12733dbb",
+        "android_client_info": {
+          "package_name": "work.syuusi365.balancemanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752979807714-17bub4333rtvokl2uffrm6dedlfr9atn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfLbtdrzR9XR1P9u7LkoP030L6DGNlPzU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752979807714-17bub4333rtvokl2uffrm6dedlfr9atn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "752979807714-da5d9t4rrn33dlot74ok2kg6u4lrpnaf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.androidstafdioapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

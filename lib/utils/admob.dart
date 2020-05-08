@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_ad_manager/flutter_google_ad_manager.dart';
 
@@ -6,7 +8,7 @@ class AdMob{
     return DFPBanner(
       isDevelop: false,
       testDevices: MyTestDevices(),
-      adUnitId: 'ca-app-pub-7136658286637435/7202771519',
+      adUnitId: Platform.isIOS ? 'ca-app-pub-7136658286637435/7202771519' :'ca-app-pub-7136658286637435/7436653342',
       adSize: DFPAdSize.BANNER,
       onAdLoaded: () {
         print('Banner onAdLoaded');
