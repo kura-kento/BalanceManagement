@@ -72,196 +72,201 @@ class _EditFormState extends State<EditForm> {
                 dustButton(),
             ]
         ),
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              child: GestureDetector(
-                  onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-                  child: Padding(
-                      padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
-                      child: ListView(
-                        children: <Widget>[
-                          Row(children: btnPlusMinus()),
-                          Row(children: <Widget>[
-                            Expanded(
-                              flex: 1,
-                              child: FlatButton(
-                                child:Row(children: <Widget>[
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(_categoryItems[_selectCategory].title),
+        body: Stack(
+          children: [
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: AdMob.banner(),
+            ),
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+                    child: Padding(
+                        padding: EdgeInsets.only(top:15.0,left:10.0,right:10.0),
+                        child: ListView(
+                          children: <Widget>[
+                            Row(children: btnPlusMinus()),
+                            Row(children: <Widget>[
+                              Expanded(
+                                flex: 1,
+                                child: FlatButton(
+                                  child:Row(children: <Widget>[
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(_categoryItems[_selectCategory].title),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child:Text("＞"),
+                                    )
+                                  ],
                                   ),
-                                  Expanded(
-                                    flex: 1,
-                                    child:Text("＞"),
-                                  )
-                                ],
-                                ),
-                                onPressed: (){
-                                  showCupertinoModalPopup(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return StatefulBuilder(
-                                        builder: (context, setState1) {
-                                          return Column(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: <Widget>[
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xffffffff),
-                                                  border: Border(
-                                                    bottom: BorderSide(
-                                                      color: Color(0xff999999),
-                                                      width: 0.0,
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: <Widget>[
-                                                    CupertinoButton(
-                                                      child: Text('編集',
-                                                        style: TextStyle(
-                                                            color: Colors.cyan
+                                  onPressed: (){
+                                    showCupertinoModalPopup(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                            builder: (context, setState1) {
+                                              return Column(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: <Widget>[
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xffffffff),
+                                                      border: Border(
+                                                        bottom: BorderSide(
+                                                          color: Color(0xff999999),
+                                                          width: 0.0,
                                                         ),
                                                       ),
-                                                      onPressed: () async{
-                                                        await Navigator.of(context).push(
-                                                            MaterialPageRoute(
-                                                              builder: (context) {
-                                                                return CategoryPage(moneyValue: moneyValue);
-                                                              },
-                                                            )
-                                                        );
-                                                        updateListViewCategory();
-                                                        setState1(() {});
-                                                      },
-                                                      padding: const EdgeInsets.symmetric(
-                                                        horizontal: 16.0,
-                                                        vertical: 5.0,
-                                                      ),
                                                     ),
-                                                    CupertinoButton(
-                                                      child: Text('決定',
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: <Widget>[
+                                                        CupertinoButton(
+                                                          child: Text('編集',
+                                                            style: TextStyle(
+                                                                color: Colors.cyan
+                                                            ),
+                                                          ),
+                                                          onPressed: () async{
+                                                            await Navigator.of(context).push(
+                                                                MaterialPageRoute(
+                                                                  builder: (context) {
+                                                                    return CategoryPage(moneyValue: moneyValue);
+                                                                  },
+                                                                )
+                                                            );
+                                                            updateListViewCategory();
+                                                            setState1(() {});
+                                                          },
+                                                          padding: const EdgeInsets.symmetric(
+                                                            horizontal: 16.0,
+                                                            vertical: 5.0,
+                                                          ),
+                                                        ),
+                                                        CupertinoButton(
+                                                          child: Text('決定',
                                                             style: TextStyle(color: Colors.cyan),
-                                                      ),
-                                                      onPressed: () {
-                                                        moveToLastScreen();
-                                                      },
-                                                      padding: const EdgeInsets.symmetric(
-                                                        horizontal: 16.0,
-                                                        vertical: 5.0,
-                                                      ),
+                                                          ),
+                                                          onPressed: () {
+                                                            moveToLastScreen();
+                                                          },
+                                                          padding: const EdgeInsets.symmetric(
+                                                            horizontal: 16.0,
+                                                            vertical: 5.0,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                color: Color(0xffffffff),
-                                                height: MediaQuery.of(context).size.height / 3,
-                                                child: CupertinoPicker(
-                                                    scrollController: FixedExtentScrollController(
-                                                        initialItem: _selectCategory
-                                                    ) ,
-                                                    diameterRatio: 1.0,
-                                                    itemExtent: 40.0,
-                                                    children: _categoryItems.map(_pickerItem).toList(),
-                                                    onSelectedItemChanged: (int index){
-                                                      setState(() {
-                                                        _selectCategory = index;
-                                                      });
-                                                    }
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        }
-                                      );
-                                    },
-                                  );
-                                },
+                                                  ),
+                                                  Container(
+                                                    color: Color(0xffffffff),
+                                                    height: MediaQuery.of(context).size.height / 3,
+                                                    child: CupertinoPicker(
+                                                        scrollController: FixedExtentScrollController(
+                                                            initialItem: _selectCategory
+                                                        ) ,
+                                                        diameterRatio: 1.0,
+                                                        itemExtent: 40.0,
+                                                        children: _categoryItems.map(_pickerItem).toList(),
+                                                        onSelectedItemChanged: (int index){
+                                                          setState(() {
+                                                            _selectCategory = index;
+                                                          });
+                                                        }
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child:Padding(
-                                  padding: EdgeInsets.only(top:15,bottom:15),
-                                  child: TextField(
-                                    controller: titleController,
-                                    style: textStyle,
-                                    decoration: InputDecoration(
-                                        labelText: 'タイトル',
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5.0)
-                                        )
-                                    ),
-                                  )
-                              )
-                            )
-                            ],
-                          ),
-                          Row(children: <Widget>[
-                            expandedNull(1),
-                            Expanded(
-                              flex: 2,
-                              child:Padding(
-                                  padding: EdgeInsets.only(top:15,bottom:15),
-                                  child:TextFormField(
-                                      //autofocus: true,
-                                      controller: numberController,
-                                      keyboardType: TextInputType.number,
-                                      inputFormatters: <TextInputFormatter>[
-                                        WhitelistingTextInputFormatter.digitsOnly
-                                      ],
-                                      decoration: InputDecoration(
-                                          labelText: moneyValue == MoneyValue.income ? "収入":"支出",
-                                          border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(5.0)
-                                          )
+                              Expanded(
+                                  flex: 2,
+                                  child:Padding(
+                                      padding: EdgeInsets.only(top:15,bottom:15),
+                                      child: TextField(
+                                        controller: titleController,
+                                        style: textStyle,
+                                        decoration: InputDecoration(
+                                            labelText: 'タイトル',
+                                            border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(5.0)
+                                            )
+                                        ),
                                       )
                                   )
-                              ),
-                            )
-                            ],
-                          ),
-                          Padding(
-                              padding:EdgeInsets.only(top:15.0,bottom:15.0),
-                              child: RaisedButton(
-                                color: Theme.of(context).primaryColorDark,
-                                textColor: Theme.of(context).primaryColorLight,
-                                child: Text(
-                                  '保存',
-                                  textScaleFactor: 1.5,
-                                ),
-                                onPressed: (){
-                                  _save();
-                                  moveToLastScreen();
-                                  setState(() {});
-                                },
                               )
-                          ),
-                          TextField(
-                            controller: memoController,
-                            minLines: 5,
-                            maxLength: 1000,
-                            decoration: InputDecoration(
-                              labelText: 'メモ',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0)
-                              ),
+                            ],
                             ),
-                            maxLines: null,
-                          ),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-//                            child: AdMob.banner(),
-                          )
-                        ],
-                      )
+                            Row(children: <Widget>[
+                              expandedNull(1),
+                              Expanded(
+                                flex: 2,
+                                child:Padding(
+                                    padding: EdgeInsets.only(top:15,bottom:15),
+                                    child:TextFormField(
+                                      //autofocus: true,
+                                        controller: numberController,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: <TextInputFormatter>[
+                                          WhitelistingTextInputFormatter.digitsOnly
+                                        ],
+                                        decoration: InputDecoration(
+                                            labelText: moneyValue == MoneyValue.income ? "収入":"支出",
+                                            border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(5.0)
+                                            )
+                                        )
+                                    )
+                                ),
+                              )
+                            ],
+                            ),
+                            Padding(
+                                padding:EdgeInsets.only(top:15.0,bottom:15.0),
+                                child: RaisedButton(
+                                  color: Theme.of(context).primaryColorDark,
+                                  textColor: Theme.of(context).primaryColorLight,
+                                  child: Text(
+                                    '保存',
+                                    textScaleFactor: 1.5,
+                                  ),
+                                  onPressed: (){
+                                    _save();
+                                    moveToLastScreen();
+                                    setState(() {});
+                                  },
+                                )
+                            ),
+                            TextField(
+                              controller: memoController,
+                              minLines: 5,
+                              maxLength: 1000,
+                              decoration: InputDecoration(
+                                labelText: 'メモ',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0)
+                                ),
+                              ),
+                              maxLines: null,
+                            ),
+                          ],
+                        )
+                    ),
                   ),
                 ),
+              ],
             ),
           ],
+
         ),
     );
   }

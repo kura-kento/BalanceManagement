@@ -29,12 +29,10 @@ class _HomePageState extends State<HomePage> {
             body: Column(
               children: <Widget>[
                 Expanded(child:_pageWidgets.elementAt(_currentIndex)),
-//                AdMob.banner()
+                AdMob.banner()
               ],
             ),
-            bottomNavigationBar: Container(
-              height: 45,
-              child: BottomNavigationBar(
+            bottomNavigationBar:BottomNavigationBar(
                 items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
                   BottomNavigationBarItem(icon: Icon(Icons.equalizer), title: Text('グラフ')),
@@ -48,7 +46,6 @@ class _HomePageState extends State<HomePage> {
                 onTap: _onItemTapped,
                 type: BottomNavigationBarType.fixed,
               ),
-            ),
     );
   }
   void _onItemTapped(int index) => setState(() => _currentIndex = index );
