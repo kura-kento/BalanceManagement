@@ -1,4 +1,5 @@
 import 'package:balancemanagement_app/models/category.dart';
+import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:flutter/material.dart';
 
@@ -40,19 +41,17 @@ class _CategoryPageState extends State<CategoryPage> {
             child: GestureDetector(
               onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
 
-            child: (titleControllerList.length==0) ? Container():SingleChildScrollView(
-                child: Column(children: categoryListWidget())
-            ),
+            child: categoryListWidget()
             ),
           ),
-    //      AdMob.banner()
         ],
       ),
     );
   }
 
-  List<Widget> categoryListWidget(){
+  Widget categoryListWidget(){
     List<Widget> _list = [];
+    _list.add(AdMob.banner());
     for (int i = 0; i < categoryList.length; i++) {
       _list.add(
         Row(
@@ -95,7 +94,10 @@ class _CategoryPageState extends State<CategoryPage> {
         ),
       );
     }
-      return _list;
+
+    return (titleControllerList.length==0) ? Container() : SingleChildScrollView(
+      child: Column(children: _list),
+    );
   }
 
   Future<void> updateListViewCategory(value) async{

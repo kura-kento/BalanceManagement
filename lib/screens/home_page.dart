@@ -32,16 +32,22 @@ class _HomePageState extends State<HomePage> {
                 AdMob.banner()
               ],
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
-                BottomNavigationBarItem(icon: Icon(Icons.equalizer), title: Text('グラフ')),
-                BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('設定')),
-              ],
-              currentIndex: _currentIndex,
-              fixedColor: Colors.blueAccent,
-              onTap: _onItemTapped,
-              type: BottomNavigationBarType.fixed,
+            bottomNavigationBar: Container(
+              height: 45,
+              child: BottomNavigationBar(
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
+                  BottomNavigationBarItem(icon: Icon(Icons.equalizer), title: Text('グラフ')),
+                  BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('設定')),
+                ],
+                iconSize: 20.0,
+                selectedFontSize: 10.0,
+                unselectedFontSize: 8.0,
+                currentIndex: _currentIndex,
+                fixedColor: Colors.blueAccent,
+                onTap: _onItemTapped,
+                type: BottomNavigationBarType.fixed,
+              ),
             ),
     );
   }

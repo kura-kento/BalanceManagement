@@ -255,7 +255,7 @@ class ChartContainer extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  controller: ScrollController(initialScrollOffset: 80.0*_charDataList.length),
+                  controller: ScrollController(initialScrollOffset: 300.0),
                   child: Container(
                     //修正
                     width: _charDataList.length <= 4 ? 430 : (65.0*_charDataList.length),

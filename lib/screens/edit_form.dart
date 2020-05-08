@@ -41,6 +41,7 @@ class _EditFormState extends State<EditForm> {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController numberController = TextEditingController();
+  TextEditingController memoController = TextEditingController();
   FixedExtentScrollController scrollController = FixedExtentScrollController();
 
   @override
@@ -49,6 +50,7 @@ class _EditFormState extends State<EditForm> {
       moneyValue = widget.selectCalendarList.money >= 0 ? MoneyValue.income:MoneyValue.spending;
       numberController = TextEditingController(text: '${widget.selectCalendarList.money * (widget.selectCalendarList.money < 0 ? -1:1 )}');
       titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
+      memoController = TextEditingController(text: '${widget.selectCalendarList.memo}');
       defaultButton();
     }
     updateListViewCategory();
@@ -191,7 +193,6 @@ class _EditFormState extends State<EditForm> {
                                     style: textStyle,
                                     decoration: InputDecoration(
                                         labelText: 'タイトル',
-                                        labelStyle: textStyle,
                                         border: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(5.0)
                                         )
@@ -216,7 +217,6 @@ class _EditFormState extends State<EditForm> {
                                       ],
                                       decoration: InputDecoration(
                                           labelText: moneyValue == MoneyValue.income ? "収入":"支出",
-                                          labelStyle: textStyle,
                                           border: OutlineInputBorder(
                                               borderRadius: BorderRadius.circular(5.0)
                                           )
@@ -228,26 +228,41 @@ class _EditFormState extends State<EditForm> {
                           ),
                           Padding(
                               padding:EdgeInsets.only(top:15.0,bottom:15.0),
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColorDark,
-                                  textColor: Theme.of(context).primaryColorLight,
-                                  child: Text(
-                                    '保存',
-                                    textScaleFactor: 1.5,
-                                  ),
-                                  onPressed: (){
-                                      _save();
-                                      moveToLastScreen();
-                                      setState(() {});
-                                  },
-                                )
+                              child: RaisedButton(
+                                color: Theme.of(context).primaryColorDark,
+                                textColor: Theme.of(context).primaryColorLight,
+                                child: Text(
+                                  '保存',
+                                  textScaleFactor: 1.5,
+                                ),
+                                onPressed: (){
+                                  _save();
+                                  moveToLastScreen();
+                                  setState(() {});
+                                },
+                              )
+                          ),
+                          TextField(
+                            controller: memoController,
+                            minLines: 5,
+                            maxLength: 1000,
+                            decoration: InputDecoration(
+                              labelText: 'メモ',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0)
+                              ),
+                            ),
+                            maxLines: null,
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: AdMob.banner(),
                           )
                         ],
                       )
                   ),
                 ),
             ),
-         //   AdMob.banner()
           ],
         ),
     );
@@ -274,7 +289,9 @@ class _EditFormState extends State<EditForm> {
     });
     return _list;
   }
-  void moveToLastScreen(){
+   moveToLastScreen() async{
+    FocusScope.of(context).unfocus();
+    await new Future.delayed(new Duration(microseconds: 2000));
     Navigator.pop(context);
   }
 
@@ -282,14 +299,15 @@ class _EditFormState extends State<EditForm> {
     if (widget.inputMode == InputMode.edit) {  // Case 1: Update operation
       await databaseHelper.updateCalendar(Calendar.withId(widget.selectCalendarList.id,
                                                                   Utils.toInt(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
-                                                                  '${titleController.text}','${titleController.text}',
+                                                                  '${titleController.text}',
+                                                                  '${memoController.text}',
                                                                   widget.selectCalendarList.date,
                                                                   _categoryItems[_selectCategory].id)
       );
     } else { // Case 2: Insert Operation
       await databaseHelper.insertCalendar(Calendar(Utils.toInt(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
-                                                            '${titleController.text}',
+                                                            '${memoController.text}',
                                                             widget.selectDay,
                                                             _categoryItems[_selectCategory].id));
     }

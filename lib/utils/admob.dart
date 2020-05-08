@@ -5,7 +5,7 @@ class AdMob{
   static Widget banner(){
     return DFPBanner(
       isDevelop: false,
-//      testDevices: MyTestDevices(),
+      testDevices: MyTestDevices(),
       adUnitId: 'ca-app-pub-7136658286637435/7202771519',
       adSize: DFPAdSize.BANNER,
       onAdLoaded: () {

@@ -22,8 +22,6 @@ class _SettingPageState extends State<SettingPage> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
 
-  TextEditingController incomeTitleController = TextEditingController();
-  TextEditingController spendingTitleController = TextEditingController();
   TextEditingController unitController = TextEditingController();
 
   @override

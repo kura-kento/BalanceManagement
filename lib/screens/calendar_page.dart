@@ -120,7 +120,6 @@ class _CalendarPageState extends State<CalendarPage> {
                   ],
                 ),
               ),
-
               Container(
                 height:40,
                 child: Row(children: <Widget>[
@@ -243,7 +242,12 @@ class _CalendarPageState extends State<CalendarPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("月合計：",style: TextStyle(fontSize: 20),),
+            Column(
+              children: [
+                Text("月合計（プラス）　：",style: TextStyle(fontSize: 12.5),),
+                Text("月合計（マイナス）：",style: TextStyle(fontSize: 12.5),),
+              ],
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
@@ -468,9 +472,6 @@ class _CalendarPageState extends State<CalendarPage> {
     final DateTime _date = DateTime.now();
     var selectMonthDate = DateTime(_date.year, _date.month + selectMonthValue+_scrollIndex, 1);
     monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);
-    //monthSum = monthMap["SUM"];
-   // monthPlus = monthMap["PLUS"];
-   // monthMinus = monthMap["MINUS"];
     yearSum = await databaseHelper.getCalendarYearInt(selectMonthDate);
     isLoading = false;
     setState(() {});
@@ -514,7 +515,7 @@ class _CalendarPageState extends State<CalendarPage> {
         }
       }
     }
-    return   "${Utils.commaSeparated(value == 0 ? _plusMoney : _minusMoney*(-1) )}${SharedPrefs.getUnit()}";
+      return   "${Utils.commaSeparated(value == 0 ? _plusMoney : _minusMoney*(-1) )}${SharedPrefs.getUnit()}";
   }
 //iとjから日程のデータを出す（Date型）
   DateTime calendarDay(i, j) {

@@ -70,6 +70,7 @@ class DatabaseHelper {
     var result = await this.database.rawQuery("SELECT COALESCE(SUM($colMoney),0) AS MONEY FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
     return   result[0]["MONEY"] ;
   }
+
 //挿入　更新　削除
   // Insert Operation: Insert a Note object to database
   Future<int> insertCalendar(Calendar calendar) async {
@@ -109,28 +110,5 @@ class DatabaseHelper {
       calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
     }
     return calendarList;
-  }
-
-
-
-  Future<List<Map<String, dynamic>>> getCalendarMonthMapList() async {
-    var result = await this.database.query(tableName, orderBy: '$colId ASC');
-    return result;
-  }
-
-  Future<List<Calendar>> getCalendarDayList(selectDay) async {
-    var calendarMapList = await getCalendarDayMapList(selectDay); // Get 'Map List' from database
-    int count = calendarMapList.length;         // Count the number of map entries in db table
-
-    List<Calendar> calendarList = List<Calendar>();
-    // For loop to create a 'Note List' from a 'Map List'
-    for (int i = 0; i < count; i++) {
-      calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
-    }
-    return calendarList;
-  }
-  Future<List<Map<String, dynamic>>> getCalendarDayMapList(selectDay) async {
-    var result = await this.database.query(tableName,where: 'date <= ?' ,whereArgs: selectDay, orderBy: '$colId ASC');
-    return result;
   }
 }
