@@ -143,9 +143,7 @@ class _EditFormState extends State<EditForm> {
                                                     ),
                                                     CupertinoButton(
                                                       child: Text('決定',
-                                                            style: TextStyle(
-                                                            color: Colors.cyan
-                                                            ),
+                                                            style: TextStyle(color: Colors.cyan),
                                                       ),
                                                       onPressed: () {
                                                         moveToLastScreen();
@@ -256,7 +254,7 @@ class _EditFormState extends State<EditForm> {
                           ),
                           Align(
                             alignment: Alignment.bottomCenter,
-                            child: AdMob.banner(),
+//                            child: AdMob.banner(),
                           )
                         ],
                       )
