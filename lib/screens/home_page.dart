@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
             body: Column(
               children: <Widget>[
                 Expanded(child:_pageWidgets.elementAt(_currentIndex)),
-                AdMob.banner()
+//                AdMob.banner()
               ],
             ),
             bottomNavigationBar:BottomNavigationBar(

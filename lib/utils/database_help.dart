@@ -61,7 +61,6 @@ class DatabaseHelper {
         "COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,"
         "COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS "
         "FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
-    print(result[0]);
     return  result[0];
   }
 
