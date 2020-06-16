@@ -124,6 +124,7 @@ class _SettingPageState extends State<SettingPage> {
                                         onPressed: (){
                                           setState(() {
                                             SharedPrefs.setUnit("${unitController.text}");
+                                            FocusScope.of(context).unfocus();
                                           });
                                         },child: Center(child: Text("更新")),
                                       ),

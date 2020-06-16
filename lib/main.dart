@@ -30,8 +30,7 @@ class MyApp extends StatelessWidget {
             }else{
               return Scaffold(
                 body: Center(
-                  child: CircularProgressIndicator(
-                  ),
+                  child: CircularProgressIndicator(),
                 ),
               );
             }

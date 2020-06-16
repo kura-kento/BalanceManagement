@@ -62,6 +62,7 @@ class _EditFormState extends State<EditForm> {
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(widget.inputMode == InputMode.edit ? "編集フォーム" : "新規追加フォーム"),
           leading: IconButton(icon: Icon(
@@ -74,10 +75,6 @@ class _EditFormState extends State<EditForm> {
         ),
         body: Stack(
           children: [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: AdMob.banner(),
-            ),
             Column(
               children: <Widget>[
                 Expanded(
@@ -265,8 +262,11 @@ class _EditFormState extends State<EditForm> {
                 ),
               ],
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: AdMob.banner(),
+            ),
           ],
-
         ),
     );
   }
@@ -294,7 +294,7 @@ class _EditFormState extends State<EditForm> {
   }
    moveToLastScreen() async{
     FocusScope.of(context).unfocus();
-    await new Future.delayed(new Duration(microseconds: 2000));
+    await new Future.delayed(new Duration(microseconds: 3000));
     Navigator.pop(context);
   }
 

@@ -26,10 +26,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
             body: Column(
               children: <Widget>[
                 Expanded(child:_pageWidgets.elementAt(_currentIndex)),
-//                AdMob.banner()
+                AdMob.banner()
               ],
             ),
             bottomNavigationBar:BottomNavigationBar(
