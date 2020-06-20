@@ -41,10 +41,10 @@ class MyApp extends StatelessWidget {
   }
   Future<Widget> setting()async{
     //await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
     await SharedPrefs.setInstance();
     DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
     DatabaseHelperCategory.db = await DatabaseHelperCategory.initializeDatabase();
     return HomePage();
   }
 }
+

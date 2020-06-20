@@ -25,28 +25,34 @@ class _HomePageState extends State<HomePage> {
 //メインのページ
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-            body: Column(
-              children: <Widget>[
-                Expanded(child:_pageWidgets.elementAt(_currentIndex)),
-                AdMob.banner()
+    return Container(
+      color: Colors.grey[300],
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Column(
+            children: <Widget>[
+              AdMob.banner(),
+              Expanded(child:_pageWidgets.elementAt(_currentIndex)),
+
+            ],
+          ),
+          bottomNavigationBar:BottomNavigationBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
+                BottomNavigationBarItem(icon: Icon(Icons.equalizer), title: Text('グラフ')),
+                BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('設定')),
               ],
+              iconSize: 20.0,
+              selectedFontSize: 10.0,
+              unselectedFontSize: 8.0,
+              currentIndex: _currentIndex,
+              fixedColor: Colors.blueAccent,
+              onTap: _onItemTapped,
+              type: BottomNavigationBarType.fixed,
             ),
-            bottomNavigationBar:BottomNavigationBar(
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
-                  BottomNavigationBarItem(icon: Icon(Icons.equalizer), title: Text('グラフ')),
-                  BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('設定')),
-                ],
-                iconSize: 20.0,
-                selectedFontSize: 10.0,
-                unselectedFontSize: 8.0,
-                currentIndex: _currentIndex,
-                fixedColor: Colors.blueAccent,
-                onTap: _onItemTapped,
-                type: BottomNavigationBarType.fixed,
-              ),
+        ),
+      ),
     );
   }
   void _onItemTapped(int index) => setState(() => _currentIndex = index );

@@ -4,6 +4,7 @@ class SharedPrefs {
 
   static final unit = 'unit';
   static final tapIndex = 'tapTitle';
+  static final loginCount = 'loginCount';
 
   static SharedPreferences _sharedPreferences;
 
@@ -16,7 +17,8 @@ class SharedPrefs {
   static String getUnit() => _sharedPreferences.getString(unit) ?? '円';
   //static Future<void> removeUnit() => _sharedPreferences.remove(unit);
 
-
+  static Future<bool> setLoginCount(int value) => _sharedPreferences.setInt(loginCount, value);
+  static int getLoginCount() => _sharedPreferences.getInt(loginCount) ?? 0;
 
   static Future<bool> setTapIndex(String value) => _sharedPreferences.setString(tapIndex, value);
   static String getTapIndex() => _sharedPreferences.getString(tapIndex) ?? "both";

@@ -28,30 +28,41 @@ class _GraphPageState extends State<GraphPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("グラフ", style: TextStyle(color: Colors.black),),
-      ),
-      body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 10.0),
-          child: SingleChildScrollView(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      height: 320,
-                      margin: EdgeInsets.only(top: 10.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: ChartContainer(_debugChartList, "合計値：月")
-                      ),
-                    ),
-                  ]
+      body: Column(
+        children: [
+          Container(
+              height: 40,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.grey[300],
+              child: Align(
+                alignment: Alignment.center,
+                child: Text("グラフ", style: TextStyle(fontSize: 20,color: Colors.black)),
               )
-          )
+          ),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              child: SingleChildScrollView(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          height: 320,
+                          margin: EdgeInsets.only(top: 10.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: ChartContainer(_debugChartList, "合計値：月")
+                          ),
+                        ),
+                      ]
+                  )
+              )
+          ),
+        ],
+
       ),
     );
   }

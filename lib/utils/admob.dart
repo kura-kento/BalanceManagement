@@ -1,30 +1,35 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_google_ad_manager/flutter_google_ad_manager.dart';
 
 class AdMob{
   static Widget banner(){
-    return DFPBanner(
-      isDevelop: false,
-      testDevices: MyTestDevices(),
-      adUnitId: Platform.isIOS ? 'ca-app-pub-7136658286637435/7202771519' :'ca-app-pub-7136658286637435/7436653342',
-      adSize: DFPAdSize.BANNER,
-      onAdLoaded: () {
-        print('Banner onAdLoaded');
-      },
-      onAdFailedToLoad: (errorCode) {
-        print('Banner onAdFailedToLoad: errorCode:$errorCode');
-      },
-      onAdOpened: () {
-        print('Banner onAdOpened');
-      },
-      onAdClosed: () {
-        print('Banner onAdClosed');
-      },
-      onAdLeftApplication: () {
-        print('Banner onAdLeftApplication');
-      },
+    return Container(
+      width: 1000,
+      color: Colors.grey[300],
+      child: DFPBanner(
+        isDevelop: true,
+        testDevices: MyTestDevices(),
+        adUnitId: Platform.isIOS ? 'ca-app-pub-7136658286637435/8481175075' :'ca-app-pub-7136658286637435/7436653342',
+        adSize: DFPAdSize.BANNER,
+        onAdLoaded: () {
+          print('Banner onAdLoaded');
+        },
+        onAdFailedToLoad: (errorCode) {
+          print('Banner onAdFailedToLoad: errorCode:$errorCode');
+        },
+        onAdOpened: () {
+          print('Banner onAdOpened');
+        },
+        onAdClosed: () {
+          print('Banner onAdClosed');
+        },
+        onAdLeftApplication: () {
+          print('Banner onAdLeftApplication');
+        },
+      ),
     );
   }
 }
@@ -44,3 +49,5 @@ class MyTestDevices extends TestDevices {
                                    ..add("180c3203193a164f65d8315c594bc62c")//iphone6s+
                                    ..add("F6E54DB22F15DE9080D5A43D74CE5DA2");
 }
+
+

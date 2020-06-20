@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_store_listing/flutter_store_listing.dart';
 import 'package:infinity_page_view/infinity_page_view.dart';
 import 'package:intl/intl.dart';
 import 'edit_form.dart';
@@ -50,12 +53,17 @@ class _CalendarPageState extends State<CalendarPage> {
     Colors.grey[300],
     Colors.blue[200]];
 
+
   @override
   void initState() {
     updateListView();
     updateListViewCategory();
     _infinityPageController = InfinityPageController(initialPage: 0);
     monthChange();
+    SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
+    if(Platform.isIOS && SharedPrefs.getLoginCount() % 30 == 0){
+        FlutterStoreListing().launchRequestReview(onlyNative: true);
+    }
     super.initState();
   }
 

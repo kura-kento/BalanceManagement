@@ -51,7 +51,6 @@ class _CategoryPageState extends State<CategoryPage> {
 
   Widget categoryListWidget(){
     List<Widget> _list = [];
-    _list.add(AdMob.banner());
     for (int i = 0; i < categoryList.length; i++) {
       _list.add(
         Row(

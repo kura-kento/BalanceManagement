@@ -38,15 +38,23 @@ class _SettingPageState extends State<SettingPage> {
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
     return Scaffold(
-        appBar: AppBar(
-            title: Text("設定"),
-        ),
         body: GestureDetector(
             onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-            child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      InkWell(
+            child: Column(
+              children: [
+                Container(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.grey[300],
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text("設定", style: TextStyle(fontSize: 20,color: Colors.black)),
+                    )
+                ),
+                SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        InkWell(
                           child: Container(
                             padding: EdgeInsets.all(15.0),
                             child: Center(child: Text(
@@ -56,133 +64,136 @@ class _SettingPageState extends State<SettingPage> {
                           ) ,
                           onTap: (){
                             Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return CategoryPage(moneyValue: MoneyValue.income);
-                                  },
-                                ),
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return CategoryPage(moneyValue: MoneyValue.income);
+                                },
+                              ),
                             );
                           },
                         ),
-                      Divider(color: Colors.grey,height:0),
-                      InkWell(
-                        child: Container(
+                        Divider(color: Colors.grey,height:0),
+                        InkWell(
+                          child: Container(
+                              padding: EdgeInsets.all(15.0),
+                              width: MediaQuery.of(context).size.width,
+                              child: Center(child: Text(
+                                "カテゴリー編集（マイナス）",
+                                textScaleFactor: 1.5,
+                              ))
+                          ),
+                          onTap: (){
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return CategoryPage(moneyValue: MoneyValue.spending,);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        Divider(color: Colors.grey,height:0),
+                        Padding(
+                            padding: EdgeInsets.only(top:5,bottom:5),
+                            child:Column(
+                              children: <Widget>[
+                                Text("単位編集"),
+                                Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text("  単位：",
+                                        textScaleFactor: 1.5,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex:2,
+                                      child: TextField(
+                                        onTap: (){
+                                          unitController.text = SharedPrefs.getUnit();
+                                        },
+                                        controller: unitController,
+                                        style: textStyle,
+                                        decoration: InputDecoration(
+                                            labelText: '${SharedPrefs.getUnit()}',
+                                            labelStyle: textStyle,
+                                            border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(5.0)
+                                            )
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: FlatButton(
+                                            color: Colors.grey[400],
+                                            onPressed: (){
+                                              setState(() {
+                                                SharedPrefs.setUnit("${unitController.text}");
+                                                FocusScope.of(context).unfocus();
+                                              });
+                                            },child: Center(child: Text("更新")),
+                                          ),
+                                        )
+                                    )
+                                  ],
+                                ),
+                              ],
+                            )
+                        ),
+                        Padding(
+                          padding:EdgeInsets.only(top:10.0),
+                        ),
+                        Divider(color: Colors.grey,height:0),
+                        InkWell(
+                          child: Container(
                             padding: EdgeInsets.all(15.0),
                             width: MediaQuery.of(context).size.width,
-                            child: Center(child: Text(
-                              "カテゴリー編集（マイナス）",
-                              textScaleFactor: 1.5,
-                            ))
-                        ),
-                        onTap: (){
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return CategoryPage(moneyValue: MoneyValue.spending,);
-                              },
+                            child: Center(
+                              child: Text(
+                                '収支データの全削除',
+                                textScaleFactor: 1.5,
+                                style: TextStyle(color: Colors.red),
+                              ),
                             ),
-                          );
-                        },
-                      ),
-                      Divider(color: Colors.grey,height:0),
-                      Padding(
-                          padding: EdgeInsets.only(top:5,bottom:5),
-                          child:Column(
-                            children: <Widget>[
-                              Text("単位編集"),
-                              Row(
-                                children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: Text("  単位：",
-                                    textScaleFactor: 1.5,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex:2,
-                                  child: TextField(
-                                    onTap: (){
-                                      unitController.text = SharedPrefs.getUnit();
-                                    },
-                                    controller: unitController,
-                                    style: textStyle,
-                                    decoration: InputDecoration(
-                                        labelText: '${SharedPrefs.getUnit()}',
-                                        labelStyle: textStyle,
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5.0)
-                                        )
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                    flex: 1,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: FlatButton(
-                                        color: Colors.grey[400],
-                                        onPressed: (){
-                                          setState(() {
-                                            SharedPrefs.setUnit("${unitController.text}");
-                                            FocusScope.of(context).unfocus();
-                                          });
-                                        },child: Center(child: Text("更新")),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              showCupertinoDialog(
+                                context: context,
+                                builder: (BuildContext context)
+                                {
+                                  return CupertinoAlertDialog(
+                                    title: Text("全ての収支データを消しますか？"),
+                                    //content: Text(""),
+                                    actions: <Widget>[
+                                      CupertinoDialogAction(
+                                        child: Text("削除"),
+                                        onPressed: () =>
+                                            allDelete(),
+                                        isDestructiveAction: true,
                                       ),
-                                    )
-                                )
-                                ],
-                              ),
-                            ],
-                          )
-                      ),
-                      Padding(
-                        padding:EdgeInsets.only(top:10.0),
-                      ),
-                      Divider(color: Colors.grey,height:0),
-                      InkWell(
-                              child: Container(
-                                padding: EdgeInsets.all(15.0),
-                                width: MediaQuery.of(context).size.width,
-                                child: Center(
-                                  child: Text(
-                                    '収支データの全削除',
-                                    textScaleFactor: 1.5,
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                ),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  showCupertinoDialog(
-                                  context: context,
-                                  builder: (BuildContext context)
-                                  {
-                                    return CupertinoAlertDialog(
-                                      title: Text("全ての収支データを消しますか？"),
-                                      //content: Text(""),
-                                      actions: <Widget>[
-                                        CupertinoDialogAction(
-                                          child: Text("削除"),
-                                          onPressed: () =>
-                                              allDelete(),
-                                          isDestructiveAction: true,
-                                        ),
-                                        CupertinoDialogAction(
-                                          child: Text("キャンセル"),
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          isDefaultAction: true,
-                                        ),
-                                      ],
-                                    );
-                                  },
+                                      CupertinoDialogAction(
+                                        child: Text("キャンセル"),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        isDefaultAction: true,
+                                      ),
+                                    ],
                                   );
-                                });
-                              },
-                            ),
-                      Divider(color: Colors.grey,height:0),
-                    ],
-                  )
+                                },
+                              );
+                            });
+                          },
+                        ),
+                        Divider(color: Colors.grey,height:0),
+                      ],
+                    )
+                ),
+              ],
+
             ),
           ),
     );
