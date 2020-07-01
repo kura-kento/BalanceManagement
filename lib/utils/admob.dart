@@ -10,9 +10,9 @@ class AdMob{
       width: 1000,
       color: Colors.grey[300],
       child: DFPBanner(
-        isDevelop: true,
+        isDevelop: false,
         testDevices: MyTestDevices(),
-        adUnitId: Platform.isIOS ? 'ca-app-pub-7136658286637435/8481175075' :'ca-app-pub-7136658286637435/7436653342',
+        adUnitId: Platform.isIOS ? 'ca-app-pub-7136658286637435/7202771519' :'ca-app-pub-7136658286637435/7436653342',
         adSize: DFPAdSize.BANNER,
         onAdLoaded: () {
           print('Banner onAdLoaded');
