@@ -39,8 +39,11 @@ class _CalendarPageState extends State<CalendarPage> {
   int _initialPage = 0;
   int _scrollIndex = 0;
   Map<String,dynamic> monthMap;
- int yearSum;
+  int yearSum;
 
+  InfinityPageController _infinityPageControllerList;
+  int calendarClose = 0;
+  int _realIndex= 1000000000;
 
   bool isLoading = true;
 
@@ -58,6 +61,7 @@ class _CalendarPageState extends State<CalendarPage> {
   void initState() {
     updateListView();
     updateListViewCategory();
+    _infinityPageControllerList = InfinityPageController(initialPage: 0);
     _infinityPageController = InfinityPageController(initialPage: 0);
     monthChange();
     SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
@@ -69,6 +73,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void dispose() {
+    _infinityPageControllerList.dispose();
     _infinityPageController.dispose();
     super.dispose();
   }
@@ -90,7 +95,13 @@ class _CalendarPageState extends State<CalendarPage> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Container(),
+                      child: IconButton(
+                        icon:  Icon(calendarClose%2==0 ? Icons.file_upload : Icons.file_download),
+                        onPressed: () {
+                          calendarClose++;
+                          setState(() {});
+                        },
+                      ),
                     ),
                     Expanded(
                       flex: 5,
@@ -128,7 +139,8 @@ class _CalendarPageState extends State<CalendarPage> {
                   ],
                 ),
               ),
-              Container(
+              calendarClose % 2 == 0
+              ? Container(
                 height:40,
                 child: Row(children: <Widget>[
                   Expanded(
@@ -174,6 +186,28 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                   ),
                 ]),
+              )
+              :Container(
+                height: 40,
+                child: InfinityPageView(
+                  itemCount: 3,
+                  controller: _infinityPageControllerList,
+                  itemBuilder: (content, index) {
+                    return Container(
+                      child: Text(DateFormat("yyyy年MM月dd日").format(selectDay),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 30
+                        ),
+                      ),
+                    );
+                  },
+                  onPageChanged: (index) {
+                    selectDay = selectDay.add(Duration(days: _infinityPageControllerList.realIndex-_realIndex));
+                    _realIndex =_infinityPageControllerList.realIndex;
+                    setState(() {});
+                  },
+                ),
               ),
               Expanded(
                 child: InfinityPageView(
@@ -308,7 +342,7 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
       );
     }
-    return _list;
+    return calendarClose % 2 == 0 ? _list : List<Widget>();
   }
 //カレンダーの日付部分（2行目以降）
   List<Widget> dayList() {
@@ -330,7 +364,7 @@ class _CalendarPageState extends State<CalendarPage> {
         break;
       }
     }
-    return _list;
+    return calendarClose % 2 == 0 ? _list : List<Widget>();
   }
 //カレンダー１日のマス（その月以外は空白にする）
   Widget calendarSquare(DateTime date){
