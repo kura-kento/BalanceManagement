@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:balancemanagement_app/screens/calendar_page.dart';
 import 'package:balancemanagement_app/screens/setting_page.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
+import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'graph_page.dart';
@@ -22,6 +25,26 @@ class _HomePageState extends State<HomePage> {
     SettingPage(),
   ];
 
+  @override
+  void initState(){
+    Timer.periodic(
+        Duration(seconds: 5),
+            (timer) {
+          setState(() {});
+        });
+    super.initState();
+  }
+
+Widget admob(){
+  if((DateTime.parse(SharedPrefs.getClickTime()).add(Duration(days: 1))).compareTo(DateTime.now()) <= 0 ){
+    return AdMob.banner();
+  }else{
+    print(SharedPrefs.getClickTime());
+    return Container();
+  }
+}
+
+
 //メインのページ
   @override
   Widget build(BuildContext context) {
@@ -32,7 +55,7 @@ class _HomePageState extends State<HomePage> {
           resizeToAvoidBottomInset: false,
           body: Column(
             children: <Widget>[
-              AdMob.banner(),
+              admob(),
               Expanded(child:_pageWidgets.elementAt(_currentIndex)),
 
             ],
