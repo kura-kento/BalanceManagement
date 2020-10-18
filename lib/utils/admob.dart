@@ -13,20 +13,20 @@ class AdMob{
         width: 1000,
         color: Colors.grey[300],
         child: DFPBanner(
-          isDevelop: true,
+          isDevelop: false,
           testDevices: MyTestDevices(),
           adUnitId: Platform.isIOS ? 'ca-app-pub-7136658286637435/7202771519' :'ca-app-pub-7136658286637435/7436653342',
           adSize: DFPAdSize.BANNER,
           onAdLoaded: () {
             print('Banner onAdLoaded');
-            print(SharedPrefs.getClickTime());
+            //print(SharedPrefs.getClickTime());
           },
           onAdFailedToLoad: (errorCode) {
             print('Banner onAdFailedToLoad: errorCode:$errorCode');
           },
           onAdOpened: () {
             print('Banner onAdOpened');
-            SharedPrefs.setClickTime(DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()));
+           // SharedPrefs.setClickTime(DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()));
           },
           onAdClosed: () {
             print('Banner onAdClosed');

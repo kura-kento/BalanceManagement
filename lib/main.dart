@@ -2,9 +2,13 @@ import 'package:balancemanagement_app/screens/home_page.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+FirebaseAnalytics analytics = FirebaseAnalytics();
 
 void main() {
   runApp(MyApp());
@@ -36,7 +40,10 @@ class MyApp extends StatelessWidget {
             }
           },
           future: setting(),
-        )
+        ),
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: analytics),
+        ],
       );
   }
   Future<Widget> setting()async{

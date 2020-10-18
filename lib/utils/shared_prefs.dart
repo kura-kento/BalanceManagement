@@ -24,9 +24,9 @@ class SharedPrefs {
   static String getTapIndex() => _sharedPreferences.getString(tapIndex) ?? "both";
 
   //admob用コード
-  static final clickTime = 'clickTime';
-
-  static Future<bool> setClickTime(String value) => _sharedPreferences.setString(clickTime, value);
-  static String getClickTime() => _sharedPreferences.getString(clickTime) ?? "2020-04-10 00:00:00";
+//  static final clickTime = 'clickTime';
+//
+//  static Future<bool> setClickTime(String value) => _sharedPreferences.setString(clickTime, value);
+//  static String getClickTime() => _sharedPreferences.getString(clickTime) ?? "2020-04-10 00:00:00";
 
 }

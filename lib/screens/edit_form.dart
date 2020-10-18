@@ -274,6 +274,7 @@ class _EditFormState extends State<EditForm> {
                                     ),
                                   ),
                                   maxLines: null,
+
                                 ),
                               ],
                             )

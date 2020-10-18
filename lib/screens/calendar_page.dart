@@ -225,10 +225,10 @@ class _CalendarPageState extends State<CalendarPage> {
                         );
                   },
                   onPageChanged: (index) {
-                    _scrollIndex = 0;
-                    scrollValue(index);
                     monthChange();
                     setState(() {});
+                    _scrollIndex = 0;
+                    scrollValue(index);
                   },
                 ),
               ),

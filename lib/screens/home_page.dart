@@ -35,16 +35,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-Widget admob(){
-  if((DateTime.parse(SharedPrefs.getClickTime()).add(Duration(days: 1))).compareTo(DateTime.now()) <= 0 ){
-    return AdMob.banner();
-  }else{
-    print(SharedPrefs.getClickTime());
-    return Container();
-  }
-}
-
-
 //メインのページ
   @override
   Widget build(BuildContext context) {
@@ -55,7 +45,7 @@ Widget admob(){
           resizeToAvoidBottomInset: false,
           body: Column(
             children: <Widget>[
-              admob(),
+              AdMob.banner(),
               Expanded(child:_pageWidgets.elementAt(_currentIndex)),
 
             ],
