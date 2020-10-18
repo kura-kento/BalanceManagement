@@ -68,7 +68,7 @@ return map;
 
 // MapオブジェクトからCalendarオブジェクトを抽出する
 Calendar.fromMapObject(Map<String, dynamic> map) {
-   // print(map);
+    print(map);
     this._id = map['id'];
     this._money = map['money'];
     this._title = map['title'];

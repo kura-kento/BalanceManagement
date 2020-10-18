@@ -16,17 +16,15 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
 
+  DatabaseHelper databaseHelper = DatabaseHelper();
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = List<Category>();
 
-  DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Calendar> calendarList = List<Calendar>();
 
   TextEditingController unitController = TextEditingController();
 
   @override
   void initState(){
-    updateListView();
     updateListViewCategory();
     super.initState();
   }
@@ -218,15 +216,6 @@ class _SettingPageState extends State<SettingPage> {
         this.categoryList = _categoryList;
       });
   }
-  void updateListView() {
-//全てのDBを取得
-    Future<List<Calendar>> calendarListFuture = databaseHelper.getCalendarList();
-    calendarListFuture.then((calendarList) {
-      setState(() {
-        this.calendarList = calendarList;
-      });
-    });
-  }
 
   String labelTextCategory(){
     String _labelTextCategory = "";
@@ -239,17 +228,10 @@ class _SettingPageState extends State<SettingPage> {
   }
 //ダイアログ
 
-  void allDelete(){
-    for(var i = 0; i < calendarList.length; i++){
-      _delete(calendarList[i].id);
-    }
-    Navigator.of(context).pop();
+  Future<void> allDelete() async{
+      await databaseHelper.allDeleteCalendar();
   }
 
-  Future <void> _delete(int id) async{
-    int result;
-    result = await databaseHelper.deleteCalendar(id);
-  }
 //カテゴリーの名前を取得。
   List<Category> categories(value){
     List<Category> _categories = List<Category>();

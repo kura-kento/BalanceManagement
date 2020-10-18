@@ -50,6 +50,13 @@ class DatabaseHelper {
   }
 
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
+  Future<List<Map<String, dynamic>>> getCalendarMonthMapList(month) async {
+    String _month = DateFormat('yyyy-MM').format(month);
+  //  var result = await this.database.query(tableName,where: '#colDate = ?', whereArgs: [_month+"%"], orderBy: '$colId ASC');
+    var result = await this.database.rawQuery("SELECT * FROM $tableName WHERE $colDate LIKE ?", [_month + "%"]);
+    return result;
+  }
+  // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCalendarMapList() async {
     var result = await this.database.query(tableName, orderBy: '$colId ASC');
     return result;
@@ -89,6 +96,10 @@ class DatabaseHelper {
     return result;
   }
 
+  Future<void> allDeleteCalendar() async {
+    await this.database.rawDelete('DELETE FROM $tableName');
+  }
+
   //データベース内のNoteオブジェクトの数を取得します
   Future<int> getCount() async {
     //rawQuery括弧ないにSQL文が使える。
@@ -96,6 +107,19 @@ class DatabaseHelper {
     //firstIntValueはlist型からint型に変更している。
     int result = Sqflite.firstIntValue(x);
     return result;
+  }
+
+  // 'Map List' [List <Map>]を取得し、それを 'Calendar List' [List <Note>]に変換します
+  Future<List<Calendar>> getCalendarMonthList(month) async {
+    //全てのデータを取得
+    var calendarMapList = await getCalendarMonthMapList(month); // Get 'Map List' from database
+    int count = calendarMapList.length;         // Count the number of map entries in db table
+
+    List<Calendar> calendarList = List<Calendar>();
+    for (int i = 0; i < count; i++) {
+      calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
+    }
+    return calendarList;
   }
 
   // 'Map List' [List <Map>]を取得し、それを 'Calendar List' [List <Note>]に変換します

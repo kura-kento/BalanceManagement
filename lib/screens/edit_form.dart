@@ -57,6 +57,13 @@ class _EditFormState extends State<EditForm> {
     updateListViewCategory();
     super.initState();
   }
+
+//  @override
+//  void dispose() {
+//    FocusScope.of(context).requestFocus(new FocusNode());
+//    super.dispose();
+//  }
+
   @override
   Widget build(BuildContext context) {
     //ここに入れてもいいのか？
@@ -66,7 +73,7 @@ class _EditFormState extends State<EditForm> {
       color: Colors.grey[300],
       child: SafeArea(
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
+        //  resizeToAvoidBottomInset: false,
             body: Column(
                   children: <Widget>[
                     Align(

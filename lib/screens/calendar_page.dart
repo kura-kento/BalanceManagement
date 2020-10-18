@@ -33,7 +33,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   //表示月
   int selectMonthValue = 0;
-  String selectMonth = DateFormat.yMMMd().format(DateTime.now());
+ // String selectMonth = DateFormat('yyyy-MM').format(DateTime.now());
   //選択している日
   DateTime selectDay = DateTime.now();
   InfinityPageController _infinityPageController;
@@ -60,7 +60,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void initState() {
-    updateListView();
+    updateListView(selectOfMonth(selectMonthValue));
     updateListViewCategory();
     _infinityPageControllerList = InfinityPageController(initialPage: 0);
     _infinityPageController = InfinityPageController(initialPage: 0);
@@ -97,7 +97,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     Expanded(
                       flex: 1,
                       child: IconButton(
-                        icon:  Icon(calendarClose%2==0 ? Icons.file_upload : Icons.file_download),
+                        icon:  Icon(calendarClose % 2 == 0 ? Icons.file_upload : Icons.file_download),
                         onPressed: () {
                           calendarClose++;
                           setState(() {});
@@ -130,7 +130,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               },
                             ),
                           );
-                          updateListView();
+                          updateListView(selectOfMonth(selectMonthValue));
                           updateListViewCategory();
                           monthChange();
                         },
@@ -474,8 +474,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               icon: Icons.delete,
                               onTap: () {
                                 _delete(calendarList[i].id);
-                                updateListView();
-                                monthChange();
+                                updateListView(selectOfMonth(selectMonthValue));
                                 setState(() {});
                               }
                     )
@@ -490,9 +489,9 @@ class _CalendarPageState extends State<CalendarPage> {
                     },
                   ),
                 );
-                updateListView();
                 updateListViewCategory();
-             //   monthChange();
+                updateListView(selectOfMonth(selectMonthValue));
+               // monthChange();
               },
             ),
         );
@@ -500,9 +499,9 @@ class _CalendarPageState extends State<CalendarPage> {
     }
     return _list;
   }
-  Future<void> updateListView() async{
+  Future<void> updateListView(month) async{
 //全てのDBを取得
-    calendarList = await databaseHelper.getCalendarList();
+    calendarList = await databaseHelper.getCalendarMonthList(month);
     setState(() {});
   }
 
@@ -517,6 +516,7 @@ class _CalendarPageState extends State<CalendarPage> {
     monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);
     yearSum = await databaseHelper.getCalendarYearInt(selectMonthDate);
     isLoading = false;
+    updateListView(selectOfMonth(selectMonthValue));
     setState(() {});
   }
 

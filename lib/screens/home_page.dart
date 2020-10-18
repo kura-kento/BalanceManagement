@@ -47,7 +47,6 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               AdMob.banner(),
               Expanded(child:_pageWidgets.elementAt(_currentIndex)),
-
             ],
           ),
           bottomNavigationBar:BottomNavigationBar(
