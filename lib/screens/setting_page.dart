@@ -230,6 +230,7 @@ class _SettingPageState extends State<SettingPage> {
 
   Future<void> allDelete() async{
       await databaseHelper.allDeleteCalendar();
+      Navigator.of(context).pop();
   }
 
 //カテゴリーの名前を取得。

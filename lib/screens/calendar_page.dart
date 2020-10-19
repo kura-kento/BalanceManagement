@@ -60,11 +60,10 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void initState() {
-    updateListView(selectOfMonth(selectMonthValue));
     updateListViewCategory();
     _infinityPageControllerList = InfinityPageController(initialPage: 0);
     _infinityPageController = InfinityPageController(initialPage: 0);
-    monthChange();
+    dataUpdate();
     SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
     if(Platform.isIOS && SharedPrefs.getLoginCount() % 30 == 0){
         FlutterStoreListing().launchRequestReview(onlyNative: true);
@@ -78,6 +77,7 @@ class _CalendarPageState extends State<CalendarPage> {
     _infinityPageController.dispose();
     super.dispose();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +130,8 @@ class _CalendarPageState extends State<CalendarPage> {
                               },
                             ),
                           );
-                          updateListView(selectOfMonth(selectMonthValue));
                           updateListViewCategory();
-                          monthChange();
+                          dataUpdate();
                         },
                         icon: Icon(Icons.add),
                       ),
@@ -151,7 +150,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         setState(() {
                           selectMonthValue--;
                           selectDay = selectOfMonth(selectMonthValue);
-                          monthChange();
+                          dataUpdate();
                         });
                       },
                       iconSize:30,
@@ -179,7 +178,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         setState(() {
                           selectMonthValue++;
                           selectDay = selectOfMonth(selectMonthValue);
-                          monthChange();
+                          dataUpdate();
                         });
                       },
                       iconSize:30,
@@ -225,8 +224,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         );
                   },
                   onPageChanged: (index) {
-                    monthChange();
-                    setState(() {});
+                    dataUpdate();
                     _scrollIndex = 0;
                     scrollValue(index);
                   },
@@ -474,7 +472,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               icon: Icons.delete,
                               onTap: () {
                                 _delete(calendarList[i].id);
-                                updateListView(selectOfMonth(selectMonthValue));
+                                dataUpdate();
                                 setState(() {});
                               }
                     )
@@ -490,8 +488,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 );
                 updateListViewCategory();
-                updateListView(selectOfMonth(selectMonthValue));
-               // monthChange();
+                dataUpdate();
               },
             ),
         );
@@ -510,7 +507,7 @@ class _CalendarPageState extends State<CalendarPage> {
     this.categoryList = await databaseHelperCategory.getCategoryListAll();
     setState(() {});
   }
-  Future<void> monthChange() async{
+  Future<void> dataUpdate() async{
     final DateTime _date = DateTime.now();
     var selectMonthDate = DateTime(_date.year, _date.month + selectMonthValue+_scrollIndex, 1);
     monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);

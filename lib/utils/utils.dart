@@ -11,7 +11,8 @@ class Utils{
 
 //int型に変更
   static int toInt(value) {
-    final int _value = int.parse(value.toString());
+     int _value = 0;
+     if(value != ""){_value = int.parse(value.toString());}
     return _value;
   }
 //何文字以上で…に変える
