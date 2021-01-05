@@ -56,6 +56,21 @@ class _SettingPageState extends State<SettingPage> {
                           child: Container(
                             padding: EdgeInsets.all(15.0),
                             child: Center(child: Text(
+                              "広告の位置"+"（" + (SharedPrefs.getAdPositionTop() ? "下":"上") + "に変更）",
+                              textScaleFactor: 1.5,
+                            )),
+                          ) ,
+                          onTap: (){
+                            setState(() {
+                              SharedPrefs.setAdPositionTop(!SharedPrefs.getAdPositionTop());
+                            });
+                          },
+                        ),
+                        Divider(color: Colors.grey,height:0),
+                        InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(15.0),
+                            child: Center(child: Text(
                               "カテゴリー編集（プラス）",
                               textScaleFactor: 1.5,
                             )),

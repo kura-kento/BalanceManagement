@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+//final myAppKey = GlobalKey<MyApp>();
+
 FirebaseAnalytics analytics = FirebaseAnalytics();
 
 void main() {
@@ -57,5 +59,5 @@ class MyApp extends StatelessWidget {
 
 //todo データ削除時　スナップショット
 //todo データ削除　月ごとに
-//todo　
+//todo　広告配置　変更
 //todo

@@ -5,6 +5,7 @@ class SharedPrefs {
   static final unit = 'unit';
   static final tapIndex = 'tapTitle';
   static final loginCount = 'loginCount';
+  static final adPositionTop = 'adPositionTop';
 
   static SharedPreferences _sharedPreferences;
 
@@ -23,6 +24,8 @@ class SharedPrefs {
   static Future<bool> setTapIndex(String value) => _sharedPreferences.setString(tapIndex, value);
   static String getTapIndex() => _sharedPreferences.getString(tapIndex) ?? "both";
 
+  static Future<bool> setAdPositionTop(bool value) => _sharedPreferences.setBool(adPositionTop, value);
+  static bool getAdPositionTop() => _sharedPreferences.getBool(adPositionTop) ?? true;
   //admob用コード
 //  static final clickTime = 'clickTime';
 //

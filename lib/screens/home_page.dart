@@ -16,7 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   //以下BottomNavigationBar設定
   int _currentIndex = 0;
   final _pageWidgets = [
@@ -26,13 +25,18 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
-  void initState(){
-    Timer.periodic(
-        Duration(seconds: 5),
-            (timer) {
-          setState(() {});
-        });
+  void initState() {
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      setState(() {});
+    });
     super.initState();
+  }
+
+  List<Widget> list() {
+    return <Widget>[
+      AdMob.banner(),
+      Expanded(child: _pageWidgets.elementAt(_currentIndex)),
+    ];
   }
 
 //メインのページ
@@ -44,29 +48,30 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Column(
-            children: <Widget>[
-              AdMob.banner(),
-              Expanded(child:_pageWidgets.elementAt(_currentIndex)),
+              children: SharedPrefs.getAdPositionTop()
+                  ? list()
+                  : list().reversed.toList()),
+          bottomNavigationBar: BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.equalizer), title: Text('グラフ')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.settings), title: Text('設定')),
             ],
+            iconSize: 20.0,
+            selectedFontSize: 10.0,
+            unselectedFontSize: 8.0,
+            currentIndex: _currentIndex,
+            fixedColor: Colors.blueAccent,
+            onTap: _onItemTapped,
+            type: BottomNavigationBarType.fixed,
           ),
-          bottomNavigationBar:BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
-                BottomNavigationBarItem(icon: Icon(Icons.equalizer), title: Text('グラフ')),
-                BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('設定')),
-              ],
-              iconSize: 20.0,
-              selectedFontSize: 10.0,
-              unselectedFontSize: 8.0,
-              currentIndex: _currentIndex,
-              fixedColor: Colors.blueAccent,
-              onTap: _onItemTapped,
-              type: BottomNavigationBarType.fixed,
-            ),
         ),
       ),
     );
   }
-  void _onItemTapped(int index) => setState(() => _currentIndex = index );
-}
 
+  void _onItemTapped(int index) => setState(() => _currentIndex = index);
+}
