@@ -15,7 +15,7 @@
 		<string>ja</string>
 	</array>
 	<key>CFBundleName</key>
-	<string>収支管理アプリ</string>
+	<string>Balance management app</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

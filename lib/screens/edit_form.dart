@@ -378,7 +378,7 @@ class _EditFormState extends State<EditForm> {
   Future<void> updateListViewCategory() async{
 //収支どちらか全てのDBを取得
     this.categoryList = await databaseHelperCategory.getCategoryList(moneyValue == MoneyValue.income);
-    List<Category> _categoryItemsCache =[Category.withId(0, "空白", moneyValue == MoneyValue.income)];
+    List<Category> _categoryItemsCache =[Category.withId(0, AppLocalizations.of(context).space, moneyValue == MoneyValue.income)];
     for(int i=0;i<categoryList.length;i++){
       _categoryItemsCache.add(categoryList[i]);
     }

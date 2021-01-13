@@ -211,8 +211,8 @@ class _CalendarPageState extends State<CalendarPage> {
                     );
                   },
                   onPageChanged: (index) {
-                    selectDay = selectDay.add(Duration(days: _infinityPageControllerList.realIndex-_realIndex));
-                    _realIndex =_infinityPageControllerList.realIndex;
+                    selectDay = selectDay.add(Duration(days: _infinityPageControllerList.realIndex - _realIndex));
+                    _realIndex = _infinityPageControllerList.realIndex;
                     setState(() {});
                   },
                 ),
@@ -250,19 +250,19 @@ class _CalendarPageState extends State<CalendarPage> {
   Map<String,Widget> appbarWidgetsMap(){
     Map<String,Widget> _widgets = {};
     List<String> _string =[
-    "${AppLocalizations.of(context).monthlyTotal}：${Utils.commaSeparated(monthMap["SUM"])}${SharedPrefs.getUnit()}",
-    "${AppLocalizations.of(context).annualTotal}：${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}",
+      "${AppLocalizations.of(context).monthlyTotal}：${Utils.commaSeparated(monthMap["SUM"])}${SharedPrefs.getUnit()}",
+      "${AppLocalizations.of(context).annualTotal}：${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}",
     ];
     for(int i=0;i<2;i++){
       _widgets[_title[i]]=(
-          Center(
-              child: AutoSizeText(
-                _string[i],
-                minFontSize: 4,
-                maxLines: 1,
-                style: TextStyle(fontSize: 25),
-              )
+        Center(
+          child: AutoSizeText(
+            _string[i],
+            minFontSize: 4,
+            maxLines: 1,
+            style: TextStyle(fontSize: 25),
           )
+        )
       );
     }
     _widgets["both"]=(
@@ -270,12 +270,14 @@ class _CalendarPageState extends State<CalendarPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Text("${AppLocalizations.of(context).monthlyTotal}：",style: TextStyle(fontSize: 12.5),),
               Text("${AppLocalizations.of(context).monthlyTotal}：",style: TextStyle(fontSize: 12.5),)
             ],
           ),
           Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Text("${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}",

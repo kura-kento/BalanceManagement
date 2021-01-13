@@ -37,11 +37,15 @@ class Messages
     @required this.categoryEditing,
     @required this.addPosition,
     @required this.unit,
-
     @required this.top,
     @required this.bottom,
     @required this.changeTo,
     @required this.deleteAllBalancedata,
+
+    @required this.deleteAllDialog,
+    @required this.delete,
+    @required this.cancel,
+    @required this.wednesday1,
     
     @required this.weekAgo,
     @required this.weekLater,
@@ -80,11 +84,15 @@ class Messages
   final String categoryEditing;
   final String addPosition;
   final String unit;
-
   final String top;
   final String bottom;
   final String changeTo;
   final String deleteAllBalancedata;
+
+  final String deleteAllDialog;
+  final String delete;
+  final String cancel;
+  final String wednesday1;
 
   final String Function(int) weekAgo;
   final String Function(int) weekLater;
@@ -143,6 +151,11 @@ class Messages
     changeTo: 'に変更',
     deleteAllBalancedata: '収支データの全削除',
 
+    deleteAllDialog: '全ての収支データを削除しますか？',
+    delete: '削除',
+    cancel: 'キャンセル',
+    wednesday1: '水',
+
     weekAgo: (day) => '$day週間前の日記',
     weekLater: (day) => '$day週間後の日記',
   );
@@ -185,6 +198,11 @@ class Messages
     bottom: 'bottom',
     changeTo: 'change to',
     deleteAllBalancedata: 'Delete all balance data',
+
+    deleteAllDialog: 'Do you want to delete all balance data?',
+    delete: 'Delete',
+    cancel: 'Cancel',
+    wednesday1: 'We.',
 
     weekAgo: (day) => 'Diary $day weeks ago',
     weekLater: (day) => 'Diary after $day weeks',

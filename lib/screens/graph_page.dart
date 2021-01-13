@@ -15,7 +15,7 @@ class _GraphPageState extends State<GraphPage> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = List<Calendar>();
-
+  bool isJapanese = true;
   List<ChartData> _debugChartList = [
     ChartData("", 1000.0,"","0"),
   ];
@@ -28,6 +28,7 @@ class _GraphPageState extends State<GraphPage> {
 
   @override
   Widget build(BuildContext context) {
+    isJapanese = Localizations.localeOf(context).languageCode == 'ja';
     return Scaffold(
       body: Column(
         children: [
@@ -127,24 +128,24 @@ class _GraphPageState extends State<GraphPage> {
       if(_map.containsKey(DateTime(_listCache[0].year,_listCache[0].month + i))){
         //または１月がない時
         if((_listCache[0].month+i)%12 == 1){
-          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
+          _list.add(ChartData(DateFormat(isJapanese ? "M月": "MMM").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
               _map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),
-                 DateFormat("yyyy年").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
+                 DateFormat(isJapanese ? "yyyy年": "yyyy").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
                 "${_map[DateTime(_listCache[0].year,_listCache[0].month + i)]}"
           ));
         }else{
-          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),"",
+          _list.add(ChartData(DateFormat(isJapanese ? "M月": "MMM").format(DateTime(_listCache[0].year,_listCache[0].month + i)),_map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),"",
               "${_map[DateTime(_listCache[0].year,_listCache[0].month + i)]}"
                    ));
         }
       }else{
         if((_listCache[0].month+i)%12 == 1){
-          _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0,
-              DateFormat("yyyy年").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
+          _list.add(ChartData(DateFormat(isJapanese ? "M月": "MMM").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0,
+              DateFormat(isJapanese ? "yyyy年": "yyyy").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
               "0"
           ));
         }
-        _list.add(ChartData(DateFormat("M月").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0,"","0"));
+        _list.add(ChartData(DateFormat("MMM").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0,"","0"));
       }
     }
     return _list;
