@@ -272,7 +272,7 @@ class _CalendarPageState extends State<CalendarPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Text("${AppLocalizations.of(context).monthlyTotal}：",style: TextStyle(fontSize: 12.5),),
+              Text("${AppLocalizations.of(context).annualTotal}：",style: TextStyle(fontSize: 12.5),),
               Text("${AppLocalizations.of(context).monthlyTotal}：",style: TextStyle(fontSize: 12.5),)
             ],
           ),
@@ -295,8 +295,8 @@ class _CalendarPageState extends State<CalendarPage> {
           children: <Widget>[
             Column(
               children: [
-                Text("${AppLocalizations.of(context).monthlyTotalPlus}　：",style: TextStyle(fontSize: 12.5),),
-                Text("${AppLocalizations.of(context).monthlyTotalMinus}：",style: TextStyle(fontSize: 12.5),),
+                Text("${AppLocalizations.of(context).monthlyTotalPlus}：",style: TextStyle(fontSize: 12.5)),
+                Text("${AppLocalizations.of(context).monthlyTotalMinus}：",style: TextStyle(fontSize: 12.5)),
               ],
             ),
             Column(

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
@@ -86,7 +87,15 @@ class _CategoryPageState extends State<CategoryPage> {
                         _update(categoryList[i].id,titleControllerList[i].text, widget.moneyValue);
                         this.categoryList = await databaseHelperCategory.getCategoryList( widget.moneyValue == MoneyValue.income);
                         setState(() {});
-                    },child: Center(child: Text(AppLocalizations.of(context).update)),
+                    },
+                    child: Center(
+                      child: AutoSizeText(
+                        AppLocalizations.of(context).update,
+                        minFontSize: 4,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 25),
+                      )
+                    ),
                   ),
                 )
             ),
