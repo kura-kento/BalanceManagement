@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
@@ -81,6 +82,13 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    _week = [AppLocalizations.of(context).sunday,
+             AppLocalizations.of(context).monday,
+             AppLocalizations.of(context).tuesday,
+             AppLocalizations.of(context).wednesday,
+             AppLocalizations.of(context).thursday,
+             AppLocalizations.of(context).friday,
+             AppLocalizations.of(context).saturday];
 
     return Container(
       color: Colors.grey[300],
@@ -163,7 +171,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     child:Align(
                       alignment: Alignment.center,
                       child: AutoSizeText(
-                            DateFormat.yMMM("ja_JP").format(selectOfMonth(selectMonthValue)),
+                            DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? "ja_JP": "en_JP").format(selectOfMonth(selectMonthValue)),
                             style: TextStyle(
                               fontSize: 30
                             ),
@@ -194,7 +202,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   controller: _infinityPageControllerList,
                   itemBuilder: (content, index) {
                     return Container(
-                      child: Text(DateFormat("yyyy年MM月dd日").format(selectDay),
+                      child: Text(DateFormat(Localizations.localeOf(context).languageCode == 'ja' ? "yyyy年MM月dd日": "MMM d, yyyy").format(selectDay),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30
@@ -242,8 +250,8 @@ class _CalendarPageState extends State<CalendarPage> {
   Map<String,Widget> appbarWidgetsMap(){
     Map<String,Widget> _widgets = {};
     List<String> _string =[
-      "月合計：${Utils.commaSeparated(monthMap["SUM"])}${SharedPrefs.getUnit()}",
-      "年合計：${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}",
+    "${AppLocalizations.of(context).monthlyTotal}：${Utils.commaSeparated(monthMap["SUM"])}${SharedPrefs.getUnit()}",
+    "${AppLocalizations.of(context).annualTotal}：${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}",
     ];
     for(int i=0;i<2;i++){
       _widgets[_title[i]]=(
@@ -263,8 +271,8 @@ class _CalendarPageState extends State<CalendarPage> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              Text("年合計：",style: TextStyle(fontSize: 12.5),),
-              Text("月合計：",style: TextStyle(fontSize: 12.5),)
+              Text("${AppLocalizations.of(context).monthlyTotal}：",style: TextStyle(fontSize: 12.5),),
+              Text("${AppLocalizations.of(context).monthlyTotal}：",style: TextStyle(fontSize: 12.5),)
             ],
           ),
           Column(
@@ -285,8 +293,8 @@ class _CalendarPageState extends State<CalendarPage> {
           children: <Widget>[
             Column(
               children: [
-                Text("月合計（プラス）　：",style: TextStyle(fontSize: 12.5),),
-                Text("月合計（マイナス）：",style: TextStyle(fontSize: 12.5),),
+                Text("${AppLocalizations.of(context).monthlyTotalPlus}　：",style: TextStyle(fontSize: 12.5),),
+                Text("${AppLocalizations.of(context).monthlyTotalMinus}：",style: TextStyle(fontSize: 12.5),),
               ],
             ),
             Column(

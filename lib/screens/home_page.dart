@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/screens/calendar_page.dart';
 import 'package:balancemanagement_app/screens/setting_page.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
@@ -54,11 +55,11 @@ class _HomePageState extends State<HomePage> {
           bottomNavigationBar: BottomNavigationBar(
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_today), title: Text('カレンダー')),
+                  icon: Icon(Icons.calendar_today), title: Text(AppLocalizations.of(context).calendar)),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.equalizer), title: Text('グラフ')),
+                  icon: Icon(Icons.equalizer), title: Text(AppLocalizations.of(context).graph)),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), title: Text('設定')),
+                  icon: Icon(Icons.settings), title: Text(AppLocalizations.of(context).setting)),
             ],
             iconSize: 20.0,
             selectedFontSize: 10.0,

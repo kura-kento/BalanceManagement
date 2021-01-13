@@ -1,3 +1,4 @@
+import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
@@ -58,17 +59,8 @@ class _EditFormState extends State<EditForm> {
     super.initState();
   }
 
-//  @override
-//  void dispose() {
-//    FocusScope.of(context).requestFocus(new FocusNode());
-//    super.dispose();
-//  }
-
   @override
   Widget build(BuildContext context) {
-    //ここに入れてもいいのか？
-    TextStyle textStyle = Theme.of(context).textTheme.title;
-
     return Container(
       color: Colors.grey[300],
       child: SafeArea(
@@ -98,8 +90,8 @@ class _EditFormState extends State<EditForm> {
                       child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Text(widget.inputMode == InputMode.edit
-                              ? "編集フォーム"
-                              : "新規追加フォーム")),
+                              ? AppLocalizations.of(context).editPage
+                              : AppLocalizations.of(context).newAdditionPage)),
                     ),
                     Expanded(
                       flex: 1,
@@ -164,7 +156,7 @@ class _EditFormState extends State<EditForm> {
                                                 children: <Widget>[
                                                   CupertinoButton(
                                                     child: Text(
-                                                      '編集',
+                                                      AppLocalizations.of(context).edit,
                                                       style: TextStyle(
                                                           color: Colors.cyan),
                                                     ),
@@ -190,7 +182,7 @@ class _EditFormState extends State<EditForm> {
                                                   ),
                                                   CupertinoButton(
                                                     child: Text(
-                                                      '決定',
+                                                      AppLocalizations.of(context).done,
                                                       style: TextStyle(
                                                           color: Colors.cyan),
                                                     ),
@@ -244,9 +236,9 @@ class _EditFormState extends State<EditForm> {
                                         EdgeInsets.only(top: 15, bottom: 15),
                                     child: TextField(
                                       controller: titleController,
-                                      style: textStyle,
+                                      // style: textStyle,
                                       decoration: InputDecoration(
-                                          labelText: 'タイトル',
+                                          labelText: AppLocalizations.of(context).title,
                                           border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5.0))),
@@ -269,10 +261,11 @@ class _EditFormState extends State<EditForm> {
                                             .digitsOnly
                                       ],
                                       decoration: InputDecoration(
-                                          labelText:
-                                              moneyValue == MoneyValue.income
-                                                  ? "収入"
-                                                  : "支出",
+                                          labelText: moneyValue == MoneyValue.income
+                                                        ?
+                                                    AppLocalizations.of(context).income
+                                                        :
+                                                    AppLocalizations.of(context).spending,
                                           border: OutlineInputBorder(
                                               borderRadius: BorderRadius.circular(5.0)
                                           )
@@ -288,7 +281,7 @@ class _EditFormState extends State<EditForm> {
                               color: Theme.of(context).primaryColorDark,
                               textColor: Theme.of(context).primaryColorLight,
                               child: Text(
-                                '保存',
+                                AppLocalizations.of(context).save,
                                 textScaleFactor: 1.5,
                               ),
                               onPressed: () {
@@ -303,7 +296,7 @@ class _EditFormState extends State<EditForm> {
                             minLines: 1,
                             maxLength: 1000,
                             decoration: InputDecoration(
-                              labelText: 'メモ',
+                              labelText: AppLocalizations.of(context).memo,
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5.0)),
                             ),
@@ -331,7 +324,7 @@ class _EditFormState extends State<EditForm> {
         Expanded(
           flex: 1,
           child: RaisedButton(
-            child: Text(index == 0 ? "プラス" : "マイナス"),
+            child: Text(index == 0 ? AppLocalizations.of(context).plus : AppLocalizations.of(context).minus),
             color: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
             textColor: moneyValue == element ? Colors.white : Colors.grey[400],
             onPressed: () {

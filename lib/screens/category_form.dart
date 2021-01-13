@@ -1,3 +1,4 @@
+import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
@@ -33,7 +34,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("カテゴリー編集"),
+        title: Text(AppLocalizations.of(context).categoryEditing),
       ),
       body:  Column(
         children: <Widget>[
@@ -85,7 +86,7 @@ class _CategoryPageState extends State<CategoryPage> {
                         _update(categoryList[i].id,titleControllerList[i].text, widget.moneyValue);
                         this.categoryList = await databaseHelperCategory.getCategoryList( widget.moneyValue == MoneyValue.income);
                         setState(() {});
-                    },child: Center(child: Text("更新")),
+                    },child: Center(child: Text(AppLocalizations.of(context).update)),
                   ),
                 )
             ),

@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'i18n/message.dart';
+
 //final myAppKey = GlobalKey<MyApp>();
 
 FirebaseAnalytics analytics = FirebaseAnalytics();
@@ -21,8 +23,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return MaterialApp(
-        supportedLocales: [Locale("ja","JP")],
-        localizationsDelegates: [GlobalMaterialLocalizations.delegate,GlobalWidgetsLocalizations.delegate,GlobalCupertinoLocalizations.delegate,DefaultCupertinoLocalizations.delegate],
+        supportedLocales: [Locale("ja","JP"),Locale("en")],
+        localizationsDelegates: [
+          const AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate],
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           appBarTheme: AppBarTheme(color: Colors.white70),
@@ -59,5 +66,5 @@ class MyApp extends StatelessWidget {
 
 //todo データ削除時　スナップショット
 //todo データ削除　月ごとに
-//todo　広告配置　変更
+//todo
 //todo

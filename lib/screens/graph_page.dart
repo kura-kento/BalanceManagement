@@ -1,3 +1,4 @@
+import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,7 +37,7 @@ class _GraphPageState extends State<GraphPage> {
               color: Colors.grey[300],
               child: Align(
                 alignment: Alignment.center,
-                child: Text("グラフ", style: TextStyle(fontSize: 20,color: Colors.black)),
+                child: Text(AppLocalizations.of(context).graph, style: TextStyle(fontSize: 20,color: Colors.black)),
               )
           ),
           Container(
@@ -54,7 +55,7 @@ class _GraphPageState extends State<GraphPage> {
                           ),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(8.0),
-                              child: ChartContainer(_debugChartList, "合計値：月")
+                              child: ChartContainer(_debugChartList, AppLocalizations.of(context).totalValue)
                           ),
                         ),
                       ]

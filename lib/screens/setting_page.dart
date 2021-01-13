@@ -1,3 +1,4 @@
+import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
@@ -46,7 +47,7 @@ class _SettingPageState extends State<SettingPage> {
                     color: Colors.grey[300],
                     child: Align(
                       alignment: Alignment.center,
-                      child: Text("設定", style: TextStyle(fontSize: 20,color: Colors.black)),
+                      child: Text(AppLocalizations.of(context).setting, style: TextStyle(fontSize: 20,color: Colors.black)),
                     )
                 ),
                 SingleChildScrollView(
@@ -56,7 +57,8 @@ class _SettingPageState extends State<SettingPage> {
                           child: Container(
                             padding: EdgeInsets.all(15.0),
                             child: Center(child: Text(
-                              "広告の位置"+"（" + (SharedPrefs.getAdPositionTop() ? "下":"上") + "に変更）",
+                              AppLocalizations.of(context).addPosition + "（" + (SharedPrefs.getAdPositionTop() ? AppLocalizations.of(context).bottom:AppLocalizations.of(context).top) + "${AppLocalizations.of(context).changeTo}）",
+                              textAlign: TextAlign.center,
                               textScaleFactor: 1.5,
                             )),
                           ) ,
@@ -71,7 +73,7 @@ class _SettingPageState extends State<SettingPage> {
                           child: Container(
                             padding: EdgeInsets.all(15.0),
                             child: Center(child: Text(
-                              "カテゴリー編集（プラス）",
+                              "${AppLocalizations.of(context).categoryEditing}（${AppLocalizations.of(context).plus}）",
                               textScaleFactor: 1.5,
                             )),
                           ) ,
@@ -91,7 +93,7 @@ class _SettingPageState extends State<SettingPage> {
                               padding: EdgeInsets.all(15.0),
                               width: MediaQuery.of(context).size.width,
                               child: Center(child: Text(
-                                "カテゴリー編集（マイナス）",
+                                "${AppLocalizations.of(context).categoryEditing}（${AppLocalizations.of(context).minus}）",
                                 textScaleFactor: 1.5,
                               ))
                           ),
@@ -110,12 +112,13 @@ class _SettingPageState extends State<SettingPage> {
                             padding: EdgeInsets.only(top:5,bottom:5),
                             child:Column(
                               children: <Widget>[
-                                Text("単位編集"),
+                                Text("${AppLocalizations.of(context).unit}${AppLocalizations.of(context).edit}"),
                                 Row(
                                   children: <Widget>[
                                     Expanded(
                                       flex: 1,
-                                      child: Text("  単位：",
+                                      child: Text("${AppLocalizations.of(context).unit}：",
+                                        textAlign: TextAlign.center,
                                         textScaleFactor: 1.5,
                                       ),
                                     ),
@@ -147,7 +150,7 @@ class _SettingPageState extends State<SettingPage> {
                                                 SharedPrefs.setUnit("${unitController.text}");
                                                 FocusScope.of(context).unfocus();
                                               });
-                                            },child: Center(child: Text("更新")),
+                                            },child: Center(child: Text(AppLocalizations.of(context).update)),
                                           ),
                                         )
                                     )
@@ -166,7 +169,7 @@ class _SettingPageState extends State<SettingPage> {
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child: Text(
-                                '収支データの全削除',
+                                AppLocalizations.of(context).deleteAllBalancedata,
                                 textScaleFactor: 1.5,
                                 style: TextStyle(color: Colors.red),
                               ),
