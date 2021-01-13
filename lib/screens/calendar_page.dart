@@ -542,7 +542,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       style: TextStyle(
                           color: i == 0 ? Colors.lightBlueAccent[200]:Colors.redAccent[200]
                       ),
-                      minFontSize: 4,
+                      minFontSize: 3,
                       maxLines: 1,
                     )
                 )
