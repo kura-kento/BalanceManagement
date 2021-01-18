@@ -196,7 +196,7 @@ class Messages
 
     top: 'top',
     bottom: 'bottom',
-    changeTo: 'change to',
+    changeTo: ' change to',
     deleteAllBalancedata: 'Delete all balance data',
 
     deleteAllDialog: 'Do you want to delete all balance data?',

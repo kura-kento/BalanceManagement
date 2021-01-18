@@ -66,8 +66,9 @@ class _CalendarPageState extends State<CalendarPage> {
     _infinityPageController = InfinityPageController(initialPage: 0);
     dataUpdate();
     SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
-    if(Platform.isIOS && SharedPrefs.getLoginCount() % 30 == 0){
+    if(SharedPrefs.getLoginCount() % 30 == 0){
         FlutterStoreListing().launchRequestReview(onlyNative: true);
+        FlutterStoreListing().launchStoreListing();
     }
     super.initState();
   }

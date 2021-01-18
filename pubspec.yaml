@@ -23,10 +23,8 @@ dependencies:
 #  charts_flutter: ^0.9.0
   flutter_slidable: "^0.5.4"
   infinity_page_view: ^1.0.0
-  flutter_google_ad_manager: 0.10.1
+  flutter_google_ad_manager: ^0.11.1
   flutter_store_listing: ^0.1.1+2
-  firebase_core: ^0.4.5
-  firebase_analytics: ^5.0.16
 
 dev_dependencies:
   flutter_test:
