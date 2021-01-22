@@ -34,7 +34,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   //表示月
   int selectMonthValue = 0;
- // String selectMonth = DateFormat('yyyy-MM').format(DateTime.now());
+  final DateTime _Today = DateTime.now();
   //選択している日
   DateTime selectDay = DateTime.now();
   InfinityPageController _infinityPageController;
@@ -58,7 +58,6 @@ class _CalendarPageState extends State<CalendarPage> {
     Colors.grey[300],
     Colors.blue[200]];
 
-
   @override
   void initState() {
     updateListViewCategory();
@@ -79,7 +78,6 @@ class _CalendarPageState extends State<CalendarPage> {
     _infinityPageController.dispose();
     super.dispose();
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -224,13 +222,13 @@ class _CalendarPageState extends State<CalendarPage> {
                   itemCount: 3,
                   itemBuilder: (content, index){
                     return Column(
-                          children: <Widget>[
-                            //曜日用に1行作る。
-                            Row(children: weekList(),),
-                            scrollPage(index),
-                            (_initialPage == index ) ? Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) : Container()
-                          ],
-                        );
+                        children: <Widget>[
+                          //曜日用に1行作る。
+                          Row(children: weekList(),),
+                          scrollPage(index),
+                          (_initialPage == index ) ? Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) : Container()
+                        ],
+                      );
                   },
                   onPageChanged: (index) {
                     dataUpdate();
@@ -385,7 +383,6 @@ class _CalendarPageState extends State<CalendarPage> {
         child: Stack(
           children: <Widget>[
             Container(
-//              height: 100.0,
               width: double.infinity,
               decoration: BoxDecoration(
                 border: Border.all(width: 1, color: Colors.white),
@@ -405,7 +402,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(DateTime.now()) ? Colors.red[300] : Colors.transparent ,
+                        color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(_Today) ? Colors.red[300] : Colors.transparent ,
                         child: AutoSizeText(
                           "${Utils.toInt(date.day)}",
                           textAlign: TextAlign.center,
@@ -413,7 +410,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           maxLines: 1,
                           style: TextStyle(
                             fontSize: 10.0,
-                            color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(DateTime.now()) ? Colors.white : Colors.black ,
+                            color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(_Today) ? Colors.white : Colors.black ,
                           ),
                         ),
                       ),
@@ -484,7 +481,6 @@ class _CalendarPageState extends State<CalendarPage> {
                               onTap: () {
                                 _delete(calendarList[i].id);
                                 dataUpdate();
-                                setState(() {});
                               }
                            )
                   ]
@@ -519,8 +515,7 @@ class _CalendarPageState extends State<CalendarPage> {
     setState(() {});
   }
   Future<void> dataUpdate() async{
-    final DateTime _date = DateTime.now();
-    var selectMonthDate = DateTime(_date.year, _date.month + selectMonthValue+_scrollIndex, 1);
+    var selectMonthDate = DateTime(_Today.year, _Today.month + selectMonthValue+_scrollIndex, 1);
     monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);
     yearSum = await databaseHelper.getCalendarYearInt(selectMonthDate);
     isLoading = false;
@@ -570,8 +565,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 //iとjから日程のデータを出す（Date型）
   DateTime calendarDay(i, j) {
-    final DateTime _date = DateTime.now();
-    var startDay = DateTime(_date.year, _date.month + selectMonthValue+_scrollIndex, 1);
+    var startDay = DateTime(_Today.year, _Today.month + selectMonthValue+_scrollIndex, 1);
     int weekNumber = startDay.weekday;
     DateTime calendarStartDay =
     startDay.add(Duration(days: -(weekNumber % 7) + (i + 7 * j)));
@@ -579,16 +573,14 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 //月末の日を取得（来月の１日を取得して１引く）
   int endOfMonth() {
-    final DateTime _date = DateTime.now();
-    var startDay = DateTime(_date.year, _date.month + 1 + selectMonthValue+_scrollIndex, 1);
+    var startDay = DateTime(_Today.year, _Today.month + 1 + selectMonthValue+_scrollIndex, 1);
     DateTime endOfMonth = startDay.add(Duration(days: -1));
     final int _endOfMonth = Utils.toInt(endOfMonth.day);
     return _endOfMonth;
   }
 //選択中の月をdate型で出す。
   DateTime selectOfMonth(value) {
-    final DateTime _date = DateTime.now();
-    var _selectOfMonth = DateTime(_date.year, _date.month + value, 1);
+    var _selectOfMonth = DateTime(_Today.year, _Today.month + value, 1);
     return  _selectOfMonth;
   }
 
