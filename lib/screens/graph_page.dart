@@ -127,7 +127,7 @@ class _GraphPageState extends State<GraphPage> {
     for(int i=0;i <= durationMonth;i++){
       if(_map.containsKey(DateTime(_listCache[0].year,_listCache[0].month + i))){
         //または１月がない時
-        if((_listCache[0].month+i)%12 == 1){
+        if((_listCache[0].month+i) % 12 == 1){
           _list.add(ChartData(DateFormat(isJapanese ? "M月": "MMM").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
               _map[DateTime(_listCache[0].year,_listCache[0].month + i)].toDouble(),
                  DateFormat(isJapanese ? "yyyy年": "yyyy").format(DateTime(_listCache[0].year,_listCache[0].month + i)),
@@ -145,7 +145,10 @@ class _GraphPageState extends State<GraphPage> {
               "0"
           ));
         }
-        _list.add(ChartData(DateFormat("MMM").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0,"","0"));
+        //今月の０円は除外する（被るため）
+        if(DateFormat("yyyy-M").format(DateTime.now()) != DateFormat("yyyy-M").format(DateTime(_listCache[0].year,_listCache[0].month + i))){
+          _list.add(ChartData(DateFormat(isJapanese ? "M月": "MMM").format(DateTime(_listCache[0].year,_listCache[0].month + i)),0.0,"","0"));
+        }
       }
     }
     return _list;
