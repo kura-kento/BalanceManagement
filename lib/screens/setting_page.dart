@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
@@ -6,7 +8,7 @@ import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
+
 import 'category_form.dart';
 
 class SettingPage extends StatefulWidget {
@@ -19,7 +21,7 @@ class _SettingPageState extends State<SettingPage> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
-  List<Category> categoryList = List<Category>();
+  List<Category> categoryList = <Category>[];
 
 
   TextEditingController unitController = TextEditingController();

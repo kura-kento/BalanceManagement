@@ -55,7 +55,7 @@ class Calendar {
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
 
-    Map<String, dynamic> map = {};
+    Map<String, dynamic> map = <String, dynamic>{};
 
     map['id'] = _id;
     map['money'] = _money;

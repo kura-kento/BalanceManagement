@@ -22,10 +22,7 @@ class DatabaseHelper {
   DatabaseHelper._createInstance(); // DatabaseHelperのインスタンスを作成するための名前付きコンストラクタ
 
   factory DatabaseHelper() {
-
-    if (_databaseHelper == null) {
-      _databaseHelper = DatabaseHelper._createInstance(); // これは1回だけ実行されます。
-    }
+    _databaseHelper ??= DatabaseHelper._createInstance();
     return _databaseHelper;
   }
 
@@ -35,11 +32,11 @@ class DatabaseHelper {
 
   static Future<Database> initializeDatabase() async {
     // データベースを保存するためのAndroidとiOSの両方のディレクトリパスを取得する
-    Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + '/calendar.db';
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String path = directory.path + '/calendar.db';
 
     // Open/指定されたパスにデータベースを作成する
-    var calendarsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
+    final calendarsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
     return calendarsDatabase;
   }
 
@@ -51,30 +48,30 @@ class DatabaseHelper {
 
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCalendarMonthMapList(month) async {
-    String _month = DateFormat('yyyy-MM').format(month);
+    final _month = DateFormat('yyyy-MM').format(month);
   //  var result = await this.database.query(tableName,where: '#colDate = ?', whereArgs: [_month+"%"], orderBy: '$colId ASC');
-    var result = await this.database.rawQuery("SELECT * FROM $tableName WHERE $colDate LIKE ?", [_month + "%"]);
+    final result = await this.database.rawQuery('SELECT * FROM $tableName WHERE $colDate LIKE ?', [_month + '%']);
     return result;
   }
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCalendarMapList() async {
-    var result = await this.database.query(tableName, orderBy: '$colId ASC');
+    final result = await this.database.query(tableName, orderBy: '$colId ASC');
     return result;
   }
   //選択月を全て持ってくる
   Future<Map<String,dynamic>> getCalendarMonthInt(date) async{
-    String _text = DateFormat('yyyy-MM').format(date);
-    var result = await this.database.rawQuery("SELECT COALESCE(SUM($colMoney),0) AS SUM,"
-        "COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,"
-        "COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS "
-        "FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
+    final _text = DateFormat('yyyy-MM').format(date);
+    final result = await this.database.rawQuery('SELECT COALESCE(SUM($colMoney),0) AS SUM,'
+        'COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,'
+        'COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS '
+        'FROM $tableName WHERE $colDate LIKE ?' ,[_text+'%']);
     return  result[0];
   }
 
   Future<int> getCalendarYearInt(date) async{
-    String _text = DateFormat('yyyy').format(date);
-    var result = await this.database.rawQuery("SELECT COALESCE(SUM($colMoney),0) AS MONEY FROM $tableName WHERE $colDate LIKE ?" ,[_text+"%"]);
-    return   result[0]["MONEY"] ;
+    var _text = DateFormat('yyyy').format(date);
+    final result = await this.database.rawQuery('SELECT COALESCE(SUM($colMoney),0) AS MONEY FROM $tableName WHERE $colDate LIKE ?' ,[_text+'%']);
+    return   result[0]['MONEY'] ;
   }
 
 //挿入　更新　削除
@@ -86,13 +83,13 @@ class DatabaseHelper {
 
   // Update Operation: Update a Note object and save it to database
   Future<int> updateCalendar(Calendar calendar) async {
-    var result = await this.database.update(tableName, calendar.toMap(), where: '$colId = ?', whereArgs: [calendar.id]);
+    final result = await this.database.update(tableName, calendar.toMap(), where: '$colId = ?', whereArgs: [calendar.id]);
     return result;
   }
 
   // Delete Operation: Delete a Note object from database
   Future<int> deleteCalendar(int id) async {
-    int result = await this.database.rawDelete('DELETE FROM $tableName WHERE $colId = $id');
+    final result = await this.database.rawDelete('DELETE FROM $tableName WHERE $colId = $id');
     return result;
   }
 
@@ -103,20 +100,20 @@ class DatabaseHelper {
   //データベース内のNoteオブジェクトの数を取得します
   Future<int> getCount() async {
     //rawQuery括弧ないにSQL文が使える。
-    List<Map<String, dynamic>> x = await this.database.rawQuery('SELECT COUNT (*) from $tableName');
+    final x = await this.database.rawQuery('SELECT COUNT (*) from $tableName');
     //firstIntValueはlist型からint型に変更している。
-    int result = Sqflite.firstIntValue(x);
+    final result = Sqflite.firstIntValue(x);
     return result;
   }
 
   // 'Map List' [List <Map>]を取得し、それを 'Calendar List' [List <Note>]に変換します
   Future<List<Calendar>> getCalendarMonthList(month) async {
     //全てのデータを取得
-    var calendarMapList = await getCalendarMonthMapList(month); // Get 'Map List' from database
-    int count = calendarMapList.length;         // Count the number of map entries in db table
+    final calendarMapList = await getCalendarMonthMapList(month); // Get 'Map List' from database
+    final count = calendarMapList.length;         // Count the number of map entries in db table
 
-    List<Calendar> calendarList = List<Calendar>();
-    for (int i = 0; i < count; i++) {
+    final calendarList = <Calendar>[];
+    for (var i = 0; i < count; i++) {
       calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
     }
     return calendarList;
@@ -125,11 +122,11 @@ class DatabaseHelper {
   // 'Map List' [List <Map>]を取得し、それを 'Calendar List' [List <Note>]に変換します
   Future<List<Calendar>> getCalendarList() async {
     //全てのデータを取得
-    var calendarMapList = await getCalendarMapList(); // Get 'Map List' from database
-    int count = calendarMapList.length;         // Count the number of map entries in db table
+    final calendarMapList = await getCalendarMapList(); // Get 'Map List' from database
+    final int count = calendarMapList.length;         // Count the number of map entries in db table
 
-    List<Calendar> calendarList = List<Calendar>();
-    for (int i = 0; i < count; i++) {
+    final List<Calendar> calendarList = List<Calendar>();
+    for (var i = 0; i < count; i++) {
       calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
     }
     return calendarList;

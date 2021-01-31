@@ -311,7 +311,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return _widgets;
   }
 
-  Widget scrollPage(index){
+  Widget scrollPage(int index){
     if( (index - _initialPage).abs() == 1) {
       _scrollIndex = (index - _initialPage);
     }else if((index - _initialPage).abs() == 2) {
@@ -323,7 +323,7 @@ class _CalendarPageState extends State<CalendarPage> {
     //print(scrollIndex);
 
   }
-  void scrollValue(index){
+  void scrollValue(int index){
     if( (index - _initialPage).abs() == 1) {
       selectMonthValue += (index - _initialPage);
     }else if((index - _initialPage).abs() == 2) {
@@ -501,7 +501,7 @@ class _CalendarPageState extends State<CalendarPage> {
     }
     return _list;
   }
-  Future<void> updateListView(month) async{
+  Future<void> updateListView(DateTime month) async{
 //全てのDBを取得
     calendarList = await databaseHelper.getCalendarMonthList(month);
     setState(() {});
@@ -522,7 +522,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   //１日のマスの中身
- List<Widget> squareValue(date){
+ List<Widget> squareValue(DateTime date){
     final _list = <Widget>[Expanded(flex: 1, child: Container())];
     for(var i =0; i<2; i++){
       _list.add(
@@ -547,7 +547,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return _list;
 }
 //カレンダー表示している日の合計
-  String moneyOfDay(value,date) {
+  String moneyOfDay(int value,DateTime date) {
     var _plusMoney = 0;
     var _minusMoney = 0;
     for (var index = 0; index < calendarList.length; index++) {
@@ -562,7 +562,7 @@ class _CalendarPageState extends State<CalendarPage> {
       return   '${Utils.commaSeparated(value == 0 ? _plusMoney : _minusMoney*(-1) )}${SharedPrefs.getUnit()}';
   }
 //iとjから日程のデータを出す（Date型）
-  DateTime calendarDay(i, j) {
+  DateTime calendarDay(int i,int j) {
     final startDay = DateTime(_today.year, _today.month + selectMonthValue+_scrollIndex, 1);
     final weekNumber = startDay.weekday;
     final calendarStartDay =
@@ -577,12 +577,12 @@ class _CalendarPageState extends State<CalendarPage> {
     return _endOfMonth;
   }
 //選択中の月をdate型で出す。
-  DateTime selectOfMonth(value) {
+  DateTime selectOfMonth(int value) {
     final _selectOfMonth = DateTime(_today.year, _today.month + value, 1);
     return  _selectOfMonth;
   }
 
-  String categoryTitle(id){
+  String categoryTitle(int id){
     String _title;
     if(id == 0){
       _title = '';

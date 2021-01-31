@@ -1,16 +1,16 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
-
-  static final unit = 'unit';
-  static final tapIndex = 'tapTitle';
-  static final loginCount = 'loginCount';
-  static final adPositionTop = 'adPositionTop';
+  static const unit = 'unit';
+  static const tapIndex = 'tapTitle';
+  static const loginCount = 'loginCount';
+  static const adPositionTop = 'adPositionTop';
 
   static SharedPreferences _sharedPreferences;
 
   static Future<void> setInstance() async {
-    if (null != _sharedPreferences) return;
+    if (null != _sharedPreferences)
+      return;
     _sharedPreferences = await SharedPreferences.getInstance();
   }
 
@@ -26,10 +26,4 @@ class SharedPrefs {
 
   static Future<bool> setAdPositionTop(bool value) => _sharedPreferences.setBool(adPositionTop, value);
   static bool getAdPositionTop() => _sharedPreferences.getBool(adPositionTop) ?? true;
-  //admob用コード
-//  static final clickTime = 'clickTime';
-//
-//  static Future<bool> setClickTime(String value) => _sharedPreferences.setString(clickTime, value);
-//  static String getClickTime() => _sharedPreferences.getString(clickTime) ?? "2020-04-10 00:00:00";
-
 }

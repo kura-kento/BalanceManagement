@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'graph_page.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  const HomePage({Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -20,14 +20,14 @@ class _HomePageState extends State<HomePage> {
   //以下BottomNavigationBar設定
   int _currentIndex = 0;
   final _pageWidgets = [
-    CalendarPage(),
+    const CalendarPage(),
     GraphPage(),
     SettingPage(),
   ];
 
   @override
   void initState() {
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    Timer.periodic(const Duration(seconds: 5), (timer) {
       setState(() {});
     });
     super.initState();
@@ -55,11 +55,11 @@ class _HomePageState extends State<HomePage> {
           bottomNavigationBar: BottomNavigationBar(
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_today), label: AppLocalizations.of(context).calendar),
+                  icon: const Icon(Icons.calendar_today), label: AppLocalizations.of(context).calendar),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.equalizer), label: AppLocalizations.of(context).graph),
+                  icon: const Icon(Icons.equalizer), label: AppLocalizations.of(context).graph),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: AppLocalizations.of(context).setting),
+                  icon: const Icon(Icons.settings), label: AppLocalizations.of(context).setting),
             ],
             iconSize: 20.0,
             selectedFontSize: 10.0,
