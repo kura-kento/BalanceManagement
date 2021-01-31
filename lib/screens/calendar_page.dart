@@ -47,7 +47,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   bool isLoading = true;
 
-  final _week = ['日', '月', '火', '水', '木', '金', '土'];
+  List<String> _week = ['日', '月', '火', '水', '木', '金', '土'];
   final _weekColor = [Colors.red[200],
     Colors.grey[300],
     Colors.grey[300],
@@ -79,13 +79,13 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _week = [AppLocalizations.of(context).sunday,
-                   AppLocalizations.of(context).monday,
-                   AppLocalizations.of(context).tuesday,
-                   AppLocalizations.of(context).wednesday,
-                   AppLocalizations.of(context).thursday,
-                   AppLocalizations.of(context).friday,
-                   AppLocalizations.of(context).saturday];
+     _week = [AppLocalizations.of(context).sunday,
+             AppLocalizations.of(context).monday,
+             AppLocalizations.of(context).tuesday,
+             AppLocalizations.of(context).wednesday,
+             AppLocalizations.of(context).thursday,
+             AppLocalizations.of(context).friday,
+             AppLocalizations.of(context).saturday];
 
     return Container(
       color: Colors.grey[300],

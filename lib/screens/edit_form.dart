@@ -257,8 +257,8 @@ class _EditFormState extends State<EditForm> {
                                       controller: numberController,
                                       keyboardType: TextInputType.number,
                                       inputFormatters: <TextInputFormatter>[
-                                        WhitelistingTextInputFormatter
-                                            .digitsOnly
+                                        FilteringTextInputFormatter.digitsOnly
+                                        // FilteringTextInputFormatter.allow(RegExp(r'[0–9]+'))
                                       ],
                                       decoration: InputDecoration(
                                           labelText: moneyValue == MoneyValue.income

@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
-import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';

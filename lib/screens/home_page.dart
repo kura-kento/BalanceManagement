@@ -55,11 +55,11 @@ class _HomePageState extends State<HomePage> {
           bottomNavigationBar: BottomNavigationBar(
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_today), title: Text(AppLocalizations.of(context).calendar)),
+                  icon: Icon(Icons.calendar_today), label: AppLocalizations.of(context).calendar),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.equalizer), title: Text(AppLocalizations.of(context).graph)),
+                  icon: Icon(Icons.equalizer), label: AppLocalizations.of(context).graph),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), title: Text(AppLocalizations.of(context).setting)),
+                  icon: Icon(Icons.settings), label: AppLocalizations.of(context).setting),
             ],
             iconSize: 20.0,
             selectedFontSize: 10.0,
