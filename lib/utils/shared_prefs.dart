@@ -22,7 +22,7 @@ class SharedPrefs {
   static int getLoginCount() => _sharedPreferences.getInt(loginCount) ?? 0;
 
   static Future<bool> setTapIndex(String value) => _sharedPreferences.setString(tapIndex, value);
-  static String getTapIndex() => _sharedPreferences.getString(tapIndex) ?? "both";
+  static String getTapIndex() => _sharedPreferences.getString(tapIndex) ?? 'both';
 
   static Future<bool> setAdPositionTop(bool value) => _sharedPreferences.setBool(adPositionTop, value);
   static bool getAdPositionTop() => _sharedPreferences.getBool(adPositionTop) ?? true;

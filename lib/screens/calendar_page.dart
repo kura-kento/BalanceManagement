@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
@@ -19,7 +17,7 @@ import 'package:intl/intl.dart';
 import 'edit_form.dart';
 
 class CalendarPage extends StatefulWidget {
-  CalendarPage({Key key}) : super(key: key);
+  const CalendarPage({Key key}) : super(key: key);
   @override
   _CalendarPageState createState() => _CalendarPageState();
 }
@@ -27,10 +25,10 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Calendar> calendarList = List<Calendar>();
+  List<Calendar> calendarList = <Calendar>[];
 
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
-  List<Category> categoryList = List<Category>();
+  List<Category> categoryList = <Category>[];
 
   //表示月
   int selectMonthValue = 0;

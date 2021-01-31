@@ -19,7 +19,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return MaterialApp(
-        supportedLocales: [Locale("ja","JP"),Locale("en")],
+        supportedLocales: [
+          const Locale('ja','JP'),
+          const Locale('en')
+        ],
         localizationsDelegates: [
           const AppLocalizationsDelegate(),
           GlobalMaterialLocalizations.delegate,
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
           DefaultCupertinoLocalizations.delegate],
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          appBarTheme: AppBarTheme(color: Colors.white70),
+          appBarTheme: const AppBarTheme(color: Colors.white70),
           primarySwatch: Colors.grey,
         ),
         home: FutureBuilder(
@@ -37,7 +40,7 @@ class MyApp extends StatelessWidget {
             if(snapshot.hasData){
               return snapshot.data;
             }else{
-              return Scaffold(
+              return const Scaffold(
                 body: Center(
                   child: CircularProgressIndicator(),
                 ),
