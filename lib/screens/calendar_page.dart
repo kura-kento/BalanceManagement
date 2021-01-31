@@ -348,7 +348,7 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
       );
     }
-    return calendarClose.isEven ? _list : null;
+    return calendarClose.isEven ? _list : <Widget>[];
   }
 //カレンダーの日付部分（2行目以降）
   List<Widget> dayList() {
@@ -370,7 +370,7 @@ class _CalendarPageState extends State<CalendarPage> {
         break;
       }
     }
-    return calendarClose.isEven ? _list : null;
+    return calendarClose.isEven ? _list : <Widget>[];
   }
 //カレンダー１日のマス（その月以外は空白にする）
   Widget calendarSquare(DateTime date){
