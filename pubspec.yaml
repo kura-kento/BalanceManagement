@@ -16,7 +16,7 @@ dependencies:
   path:
   cupertino_icons: ^0.1.2
   shared_preferences: ^0.4.1
-  intl: ^0.16.0
+#  intl: ^0.16.0
   auto_size_text: ^2.1.0
   path_provider: ^1.6.7
 #  path_provider_macos: ^0.0.1
@@ -25,6 +25,9 @@ dependencies:
   infinity_page_view: ^1.0.0
   flutter_google_ad_manager: ^0.11.1
   flutter_store_listing: ^0.1.1+2
+
+dependency_overrides:
+  intl: ^0.17.0-nullsafety.2
 
 dev_dependencies:
   flutter_test:

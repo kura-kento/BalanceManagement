@@ -111,7 +111,7 @@ class DatabaseHelperCategory {
     final categoryMapList = await getCategoryMapList(); // Get 'Map List' from database
     final int count = categoryMapList.length;         // Count the number of map entries in db table
 
-    final List<Category> categoryList = List<Category>();
+    final List<Category> categoryList = [];
 
     for (var i = 0; i < count; i++) {
       if(categoryMapList[i]['plus'] == value.toString()){

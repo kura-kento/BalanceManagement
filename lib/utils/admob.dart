@@ -47,7 +47,7 @@ class MyTestDevices extends TestDevices {
   MyTestDevices._internal();
 
   @override
-  List<String> get values => List()..add("75552646040bbf3d8fb887e5b108f30a")//iphoneSE2
+  List<String> get values => []..add("75552646040bbf3d8fb887e5b108f30a")//iphoneSE2
                                    ..add("180c3203193a164f65d8315c594bc62c")//iphone6s+
                                    ..add("F6E54DB22F15DE9080D5A43D74CE5DA2");
 }

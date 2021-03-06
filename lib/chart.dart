@@ -44,7 +44,7 @@ class ChartContainer extends StatelessWidget {
 
   // チャートのデータを生成し返す（グラフに共通地に変換）
   List<ChartData> _getChartDataList() {
-    List<double> list = List<double>();
+    List<double> list = [];
 
     var yMin = 0.0;
     var yMax = 0.0;
@@ -70,7 +70,7 @@ class ChartContainer extends StatelessWidget {
       coarseDigit++;
     }
 
-    _scaleNumbers = List<String>();
+    _scaleNumbers = [];
     double scaleYMax = 0;
     double scaleYMin = 0;
 
@@ -120,7 +120,7 @@ class ChartContainer extends StatelessWidget {
     // 一座標の数値を算出
     double _unitPoint = 100.0 / (scaleYMax - scaleYMin);
 
-    List<ChartData> _chartList = List<ChartData>();
+    List<ChartData> _chartList = [];
     for (var chatData in _charDataList) {
       double _newY= (100.0 - (((chatData.y * math.pow(10, (coarseDigit - 1))) - scaleYMin) * _unitPoint)) / 100.0;
       _chartList.add(new ChartData(chatData.x, _newY,chatData.z,chatData.textMoney));
@@ -168,7 +168,7 @@ class ChartContainer extends StatelessWidget {
   // 日付のレイアウトを生成し返す
   Widget _getDateLayout(List<ChartData> list) {
     // レイアウト配列
-    List<Widget> _dateLayoutList = List<Widget>();
+    List<Widget> _dateLayoutList = [];
 
     for (var chartData in list) {
       Widget widget = (Expanded(child: Container(
@@ -193,7 +193,7 @@ class ChartContainer extends StatelessWidget {
   // 数値のレイアウトを生成し返す
   Widget _getChartNumberLayout() {
     // レイアウト配列
-    List<Widget> barLayoutList = List<Widget>();
+    List<Widget> barLayoutList = [];
     var _horizontalBarNum = _scaleNumbers.length;
 
     // グラフ目盛り数値のマージン計算
@@ -293,7 +293,7 @@ class ChartPainter extends CustomPainter {
   var _horizontalBarNum;
   var _horizontalAdjustHeight = 10.0;
   var _verticalAdjustWidth = 20.0;
-  List<ChartData> _chartList = List<ChartData>();
+  List<ChartData> _chartList = [];
 
   ChartPainter(this._horizontalBarNum, this._horizontalAdjustHeight, this._chartList, this._verticalAdjustWidth): super();
 

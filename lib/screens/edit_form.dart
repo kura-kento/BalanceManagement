@@ -31,10 +31,10 @@ class EditForm extends StatefulWidget {
 class _EditFormState extends State<EditForm> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Calendar> calendarList = List<Calendar>();
+  List<Calendar> calendarList = [];
 
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
-  List<Category> categoryList = List<Category>();
+  List<Category> categoryList = [];
 
   MoneyValue moneyValue = MoneyValue.income;
 
@@ -410,7 +410,7 @@ class _EditFormState extends State<EditForm> {
 //編集フォームでドロップダウンの位置決め
   Future<void> defaultButton() async{
       List<Category> _categoryList = await databaseHelperCategory.getCategoryList(moneyValue == MoneyValue.income ? true:false);
-      List<int> _category = List<int>();
+      List<int> _category = [];
       _categoryList.forEach((Category category){
         _category.add(category.id);
       });

@@ -20,9 +20,9 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
 
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
-  List<Category> categoryList = List<Category>();
+  List<Category> categoryList = [];
 
-  List<TextEditingController> titleControllerList = List<TextEditingController>();
+  List<TextEditingController> titleControllerList = [];
 
   @override
   void initState() {
@@ -111,7 +111,7 @@ class _CategoryPageState extends State<CategoryPage> {
   Future<void> updateListViewCategory(value) async{
 //収支どちらか全てのDBを取得
       this.categoryList = await databaseHelperCategory.getCategoryList(value);
-      List<TextEditingController> _controllerList = List<TextEditingController>();
+      List<TextEditingController> _controllerList = [];
       for(int i=0;i < categoryList.length;i++){
         if(categoryList[i].plus == value){
           _controllerList.add(TextEditingController());

@@ -14,7 +14,7 @@ class GraphPage extends StatefulWidget {
 class _GraphPageState extends State<GraphPage> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Calendar> calendarList = List<Calendar>();
+  List<Calendar> calendarList = [];
   bool isJapanese = true;
   List<ChartData> _debugChartList = [
     ChartData("", 1000.0,"","0"),
@@ -106,8 +106,8 @@ class _GraphPageState extends State<GraphPage> {
     return map;
   }
   List<ChartData> mapToList(){
-    List<ChartData> _list = List<ChartData>();
-    List<DateTime> _listCache = List<DateTime>();
+    List<ChartData> _list = [];
+    List<DateTime> _listCache = [];
     Map<DateTime,int> _map = graphMonth();
 
     _map.forEach((DateTime key,int value){

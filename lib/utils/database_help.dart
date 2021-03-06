@@ -125,7 +125,7 @@ class DatabaseHelper {
     final calendarMapList = await getCalendarMapList(); // Get 'Map List' from database
     final int count = calendarMapList.length;         // Count the number of map entries in db table
 
-    final List<Calendar> calendarList = List<Calendar>();
+    final List<Calendar> calendarList = [];
     for (var i = 0; i < count; i++) {
       calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
     }

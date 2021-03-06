@@ -259,7 +259,7 @@ class _SettingPageState extends State<SettingPage> {
 
 //カテゴリーの名前を取得。
   List<Category> categories(value){
-    List<Category> _categories = List<Category>();
+    List<Category> _categories = [];
     if(value){
       for(var i = 0; i < categoryList.length; i++){
         if(categoryList[i].plus == value){
