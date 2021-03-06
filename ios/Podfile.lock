@@ -33,8 +33,6 @@ PODS:
   - flutter_google_ad_manager (0.0.1):
     - Flutter
     - Google-Mobile-Ads-SDK
-  - flutter_store_listing (0.0.1):
-    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -74,29 +72,22 @@ PODS:
     - nanopb/encode (= 1.30905.0)
   - nanopb/decode (1.30905.0)
   - nanopb/encode (1.30905.0)
-  - package_info (0.0.1):
-    - Flutter
   - path_provider (0.0.1):
     - Flutter
   - PromisesObjC (1.2.9)
   - shared_preferences (0.0.1):
     - Flutter
-  - sqflite (0.0.1):
+  - sqflite (0.0.2):
     - Flutter
-    - FMDB (~> 2.7.2)
-  - url_launcher (0.0.1):
-    - Flutter
+    - FMDB (>= 2.7.5)
 
 DEPENDENCIES:
   - Firebase/Analytics
   - Flutter (from `Flutter`)
   - flutter_google_ad_manager (from `.symlinks/plugins/flutter_google_ad_manager/ios`)
-  - flutter_store_listing (from `.symlinks/plugins/flutter_store_listing/ios`)
-  - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 SPEC REPOS:
   trunk:
@@ -119,18 +110,12 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_google_ad_manager:
     :path: ".symlinks/plugins/flutter_google_ad_manager/ios"
-  flutter_store_listing:
-    :path: ".symlinks/plugins/flutter_store_listing/ios"
-  package_info:
-    :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
   Firebase: fc4cbf6f1592636431821ef9a3c557e4dfd9f268
@@ -138,9 +123,8 @@ SPEC CHECKSUMS:
   FirebaseCore: feda061cb1ee6d8ad4824f4a4a8ffbcfe284f595
   FirebaseCoreDiagnostics: 4505e4d4009b1d93f605088ee7d7764d5f0d1c84
   FirebaseInstallations: 293f567159b6d66d1c990f13bb868066096c94ec
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_google_ad_manager: 6500e04ad927e5c4b8f5286a87aa138aac13feb4
-  flutter_store_listing: 8a8514f63b41943433de5d684204ebf1edcbbfe4
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   Google-Mobile-Ads-SDK: 4c3b24b04293b4bb370b2cb392cdd3ee97c87752
   GoogleAppMeasurement: 2fd5c5a56c069db635c8e7b92d4809a9591d0a69
@@ -148,12 +132,10 @@ SPEC CHECKSUMS:
   GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
   GoogleUtilities: 39530bc0ad980530298e9c4af8549e991fd033b1
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
-  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
-  sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
-  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
 
 PODFILE CHECKSUM: 24f54fb10093657fd6fe58265ffc08d1dbb4bf37
 

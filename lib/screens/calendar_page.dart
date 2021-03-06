@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_review/app_review.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
@@ -11,7 +12,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_store_listing/flutter_store_listing.dart';
 import 'package:infinity_page_view/infinity_page_view.dart';
 import 'package:intl/intl.dart';
 import 'edit_form.dart';
@@ -64,8 +64,9 @@ class _CalendarPageState extends State<CalendarPage> {
     dataUpdate();
     SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
     if(SharedPrefs.getLoginCount() % 30 == 0){
-        FlutterStoreListing().launchRequestReview(onlyNative: true);
-        FlutterStoreListing().launchStoreListing();
+      AppReview.requestReview.then((onValue) {
+        print(onValue);
+      });
     }
     super.initState();
   }
