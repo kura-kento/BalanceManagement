@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:app_review/app_review.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
@@ -63,10 +64,12 @@ class _CalendarPageState extends State<CalendarPage> {
     _infinityPageController = InfinityPageController(initialPage: 0);
     dataUpdate();
     SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
-    if(SharedPrefs.getLoginCount() % 30 == 0){
-      AppReview.requestReview.then((onValue) {
-        print(onValue);
-      });
+    if(SharedPrefs.getLoginCount() % 30 == 0) {
+      if (Platform.isIOS) {
+        AppReview.requestReview.then((onValue) {
+          print(onValue);
+        });
+      }
     }
     super.initState();
   }
