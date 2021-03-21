@@ -49,5 +49,7 @@
     <string>ca-app-pub-7136658286637435~8780944043</string>
     <key>NSUserTrackingUsageDescription</key>
     <string>This identifier will be used to deliver personalized ads to you.</string>
+    <key>SKAdNetworkIdentifier</key>
+    <string>cstr6suwn9.skadnetwork</string>
 </dict>
 </plist>
