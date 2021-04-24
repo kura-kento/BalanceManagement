@@ -1,7 +1,7 @@
 name: balancemanagement_app
 description: A new Flutter application.
 
-version: 1.2.11+2
+version: 1.2.12+2
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -23,7 +23,7 @@ dependencies:
   charts_flutter: ^0.9.0
   flutter_slidable: "^0.5.4"
   infinity_page_view: ^1.0.0
-  flutter_google_ad_manager: ^0.11.1
+  admob_flutter: ^1.0.1
   app_review: ^1.1.2
 
 dependency_overrides:

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/screens/calendar_page.dart';
 import 'package:balancemanagement_app/screens/setting_page.dart';
-import 'package:balancemanagement_app/utils/admob.dart';
+import 'package:balancemanagement_app/utils/admob_service.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> list() {
     return <Widget>[
-      AdMob.banner(),
+      AdMobService().admobBanner(),
       Expanded(child: _pageWidgets.elementAt(_currentIndex)),
     ];
   }

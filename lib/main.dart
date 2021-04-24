@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:balancemanagement_app/screens/home_page.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
@@ -56,6 +57,8 @@ class MyApp extends StatelessWidget {
     await SharedPrefs.setInstance();
     DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
     DatabaseHelperCategory.db = await DatabaseHelperCategory.initializeDatabase();
+    WidgetsFlutterBinding.ensureInitialized();
+    Admob.initialize();
     return HomePage();
   }
 }

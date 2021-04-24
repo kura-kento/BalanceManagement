@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:app_review/app_review.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
@@ -59,18 +60,11 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void initState() {
+    tracking();
     updateListViewCategory();
     _infinityPageControllerList = InfinityPageController(initialPage: 0);
     _infinityPageController = InfinityPageController(initialPage: 0);
     dataUpdate();
-    SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
-    if(SharedPrefs.getLoginCount() % 30 == 0) {
-      if (Platform.isIOS) {
-        AppReview.requestReview.then((onValue) {
-          print(onValue);
-        });
-      }
-    }
     super.initState();
   }
 
@@ -79,6 +73,10 @@ class _CalendarPageState extends State<CalendarPage> {
     _infinityPageControllerList.dispose();
     _infinityPageController.dispose();
     super.dispose();
+  }
+
+  Future<void> tracking() async {
+    await Admob.requestTrackingAuthorization();
   }
 
   @override
@@ -141,6 +139,14 @@ class _CalendarPageState extends State<CalendarPage> {
                           );
                           updateListViewCategory();
                           dataUpdate();
+                          SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
+                          if(SharedPrefs.getLoginCount() % 10 == 0) {
+                            if (Platform.isIOS) {
+                              AppReview.requestReview.then((onValue) {
+                                print(onValue);
+                              });
+                            }
+                          }
                         },
                         icon: const Icon(Icons.add),
                       ),
