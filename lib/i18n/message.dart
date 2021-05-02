@@ -145,7 +145,6 @@ class Messages
 
     addPosition: '広告の位置',
     unit: '単位',
-
     top: '上',
     bottom: '下',
     changeTo: 'に変更',
@@ -193,7 +192,6 @@ class Messages
 
     addPosition: 'Advertisement position',
     unit: 'unit',
-
     top: 'top',
     bottom: 'bottom',
     changeTo: ' change to',

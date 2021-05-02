@@ -401,34 +401,29 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(_today) ? Colors.red[300] : Colors.transparent ,
-                        child: AutoSizeText(
+              padding: const EdgeInsets.all(2.0),
+              child: Row(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      height: 46/3,
+                      color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(_today) ? Colors.red[300] : Colors.transparent ,
+                      child: Center(
+                        child: Text(
                           '${Utils.toInt(date.day)}',
-                          textAlign: TextAlign.center,
-                          minFontSize: 4,
-                          maxLines: 1,
+                          textAlign: TextAlign.left,
                           style: TextStyle(
-                            fontSize: 10.0,
-                            color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(_today) ? Colors.white : Colors.black ,
+                            fontSize: Utils.parseSize(context, 10.0),
+                            color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(_today) ? Colors.white : Colors.black87 ,
                           ),
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Container(),
-                      flex: 2,
-                    )
-                  ],
-                ),
+                  ),
+                  Spacer(flex: 3,)
+                ],
               ),
             ),
             //クリック時選択表示する。
