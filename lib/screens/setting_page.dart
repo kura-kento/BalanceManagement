@@ -18,12 +18,9 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-
   DatabaseHelper databaseHelper = DatabaseHelper();
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = <Category>[];
-
-
   TextEditingController unitController = TextEditingController();
 
   @override

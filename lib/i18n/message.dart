@@ -122,8 +122,8 @@ class Messages
 
     annualTotal: '年合計',
     monthlyTotal: '月合計',
-    monthlyTotalPlus: '月合計（＋）',
-    monthlyTotalMinus: '月合計（ー）',
+    monthlyTotalPlus: '月合計',
+    monthlyTotalMinus: '月合計',
   //編集ページ
     plus: 'プラス',
     minus: 'マイナス',

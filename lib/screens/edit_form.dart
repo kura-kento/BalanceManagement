@@ -95,7 +95,7 @@ class _EditFormState extends State<EditForm> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Container(),
+                      child: dustButton(),
                     ),
                   ],
                 ),
@@ -416,4 +416,5 @@ class _EditFormState extends State<EditForm> {
       });
     _selectCategory = _category.indexOf(widget.selectCalendarList.categoryId)+1;
   }
+
 }

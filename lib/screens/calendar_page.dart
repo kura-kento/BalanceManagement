@@ -42,6 +42,7 @@ class _CalendarPageState extends State<CalendarPage> {
   int _scrollIndex = 0;
   Map<String,dynamic> monthMap;
   int yearSum;
+  Map<String,dynamic> yearMap;
 
   InfinityPageController _infinityPageControllerList;
   int calendarClose = 0;
@@ -165,6 +166,8 @@ class _CalendarPageState extends State<CalendarPage> {
                         setState(() {
                           selectMonthValue--;
                           selectDay = selectOfMonth(selectMonthValue);
+                          print(selectMonthValue);
+                          print(selectDay);
                           dataUpdate();
                         });
                       },
@@ -193,6 +196,8 @@ class _CalendarPageState extends State<CalendarPage> {
                         setState(() {
                           selectMonthValue++;
                           selectDay = selectOfMonth(selectMonthValue);
+                          print(selectMonthValue);
+                          print(selectDay);
                           dataUpdate();
                         });
                       },
@@ -252,7 +257,7 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  final List<String> _title =['month','year','both','monthDouble'];
+  final List<String> _title =['month','year','both','monthDouble', 'yearDouble'];
 
   Map<String,Widget> appbarWidgetsMap(){
     final _widgets = <String,Widget>{};
@@ -309,9 +314,32 @@ class _CalendarPageState extends State<CalendarPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                Text("${Utils.commaSeparated(monthMap["PLUS"])}${SharedPrefs.getUnit()}",
+                Text("+${Utils.commaSeparated(monthMap["PLUS"])}${SharedPrefs.getUnit()}",
                   style: TextStyle(fontSize: 12.5, color: Colors.lightBlueAccent[200]),),
-                Text("${Utils.commaSeparated(monthMap["MINUS"])}${SharedPrefs.getUnit()}",
+                Text("-${Utils.commaSeparated(monthMap["MINUS"])}${SharedPrefs.getUnit()}",
+                    style: TextStyle(fontSize: 12.5, color:Colors.redAccent[200])),
+              ],
+            ),
+          ],
+        )
+    );
+
+    _widgets['yearDouble']=(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Column(
+              children: [
+                Text('${AppLocalizations.of(context).annualTotal}：',style: const TextStyle(fontSize: 12.5)),
+                Text('${AppLocalizations.of(context).annualTotal}：',style: const TextStyle(fontSize: 12.5)),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Text("+${Utils.commaSeparated(yearMap["PLUS"])}${SharedPrefs.getUnit()}",
+                  style: TextStyle(fontSize: 12.5, color: Colors.lightBlueAccent[200]),),
+                Text("-${Utils.commaSeparated(yearMap["MINUS"])}${SharedPrefs.getUnit()}",
                     style: TextStyle(fontSize: 12.5, color:Colors.redAccent[200])),
               ],
             ),
@@ -506,7 +534,7 @@ class _CalendarPageState extends State<CalendarPage> {
     }
     return _list;
   }
-  Future<void> updateListView(DateTime month) async{
+  Future<void> updateListView(DateTime month) async {
 //全てのDBを取得
     calendarList = await databaseHelper.getCalendarMonthList(month);
     setState(() {});
@@ -521,8 +549,11 @@ class _CalendarPageState extends State<CalendarPage> {
     final selectMonthDate = DateTime(_today.year, _today.month + selectMonthValue+_scrollIndex, 1);
     monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);
     yearSum = await databaseHelper.getCalendarYearInt(selectMonthDate);
+    yearMap = await databaseHelper.getCalendarYearMap(selectMonthDate);
     isLoading = false;
     updateListView(selectOfMonth(selectMonthValue));
+    print(selectMonthDate);
+    print(monthMap);
     setState(() {});
   }
 
