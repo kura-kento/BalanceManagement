@@ -314,9 +314,9 @@ class _CalendarPageState extends State<CalendarPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                Text("+${Utils.commaSeparated(monthMap["PLUS"])}${SharedPrefs.getUnit()}",
+                Text("${Utils.commaSeparated(monthMap["PLUS"])}${SharedPrefs.getUnit()}",
                   style: TextStyle(fontSize: 12.5, color: Colors.lightBlueAccent[200]),),
-                Text("-${Utils.commaSeparated(monthMap["MINUS"])}${SharedPrefs.getUnit()}",
+                Text("${Utils.commaSeparated(monthMap["MINUS"])}${SharedPrefs.getUnit()}",
                     style: TextStyle(fontSize: 12.5, color:Colors.redAccent[200])),
               ],
             ),
@@ -337,9 +337,9 @@ class _CalendarPageState extends State<CalendarPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                Text("+${Utils.commaSeparated(yearMap["PLUS"])}${SharedPrefs.getUnit()}",
+                Text("${Utils.commaSeparated(yearMap["PLUS"])}${SharedPrefs.getUnit()}",
                   style: TextStyle(fontSize: 12.5, color: Colors.lightBlueAccent[200]),),
-                Text("-${Utils.commaSeparated(yearMap["MINUS"])}${SharedPrefs.getUnit()}",
+                Text("${Utils.commaSeparated(yearMap["MINUS"])}${SharedPrefs.getUnit()}",
                     style: TextStyle(fontSize: 12.5, color:Colors.redAccent[200])),
               ],
             ),
