@@ -457,9 +457,29 @@ class _CalendarPageState extends State<CalendarPage> {
             //クリック時選択表示する。
             FlatButton(
               child: Container(),
-              onPressed: () {
-                selectDay = date;
-                setState((){});
+              onPressed: () async{
+                if(selectDay == date) {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return EditForm(selectDay: selectDay,inputMode: InputMode.create);
+                      },
+                    ),
+                  );
+                  updateListViewCategory();
+                  dataUpdate();
+                  SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
+                  if(SharedPrefs.getLoginCount() % 10 == 0) {
+                    if (Platform.isIOS) {
+                      AppReview.requestReview.then((onValue) {
+                        print(onValue);
+                      });
+                    }
+                  }
+                }else{
+                  selectDay = date;
+                  setState((){});
+                }
               },
             ),
           ],
