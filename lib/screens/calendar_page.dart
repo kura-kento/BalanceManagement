@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:app_review/app_review.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
@@ -61,7 +60,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void initState() {
-    tracking();
+    // tracking();
     updateListViewCategory();
     _infinityPageControllerList = InfinityPageController(initialPage: 0);
     _infinityPageController = InfinityPageController(initialPage: 0);
@@ -76,9 +75,9 @@ class _CalendarPageState extends State<CalendarPage> {
     super.dispose();
   }
 
-  Future<void> tracking() async {
-    await Admob.requestTrackingAuthorization();
-  }
+  // Future<void> tracking() async {
+  //   await Admob.requestTrackingAuthorization();
+  // }
 
   @override
   Widget build(BuildContext context) {
