@@ -1,4 +1,5 @@
 import 'package:balancemanagement_app/screens/home_page.dart';
+import 'package:balancemanagement_app/screens/password_screen.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -61,7 +62,11 @@ class MyApp extends StatelessWidget {
     DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
     DatabaseHelperCategory.db = await DatabaseHelperCategory.initializeDatabase();
     WidgetsFlutterBinding.ensureInitialized();
-    return HomePage();
+    if(SharedPrefs.getIsPassword()){
+      return PassLock();
+    }else{
+      return HomePage();
+    }
   }
 }
 

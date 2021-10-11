@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/screens/calendar_page.dart';
+import 'package:balancemanagement_app/screens/password_screen.dart';
 import 'package:balancemanagement_app/screens/setting_page.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
+import 'package:balancemanagement_app/utils/page_animation.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +19,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final BannerAd myBanner = AdMob.admobBanner();
   //以下BottomNavigationBar設定
   int _currentIndex = 0;
@@ -33,6 +35,29 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
     });
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      // onResume処理
+      if(SharedPrefs.getIsPassword()){
+        Navigator.push(
+          context,
+          SlidePageRoute(
+            page:PassLock(),
+            settings: RouteSettings(name: '',),
+          ),
+        );
+
+      }
+    }
   }
 
   List<Widget> list() {

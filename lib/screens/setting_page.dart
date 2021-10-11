@@ -8,6 +8,7 @@ import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'category_form.dart';
 
@@ -22,6 +23,7 @@ class _SettingPageState extends State<SettingPage> {
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = <Category>[];
   TextEditingController unitController = TextEditingController();
+  TextEditingController passwordController = TextEditingController(text: SharedPrefs.getPassword());
 
   @override
   void initState(){
@@ -49,6 +51,38 @@ class _SettingPageState extends State<SettingPage> {
                   child: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
+                          ListTile(
+                              title: Text('パスワードの有無'),
+                              trailing: CupertinoSwitch(
+                                value: SharedPrefs.getIsPassword(),
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    SharedPrefs.setIsPassword(value);
+                                  });
+                                },
+                              )
+                          ),
+                          ListTile(
+                            title: Container(
+                              child: TextField(
+                                controller: passwordController,
+                                maxLength: 8,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly
+                                  // FilteringTextInputFormatter.allow(RegExp(r'[0–9]+'))
+                                ],
+                                decoration: InputDecoration(
+                                  labelText: "パスワード",
+                                  border: OutlineInputBorder(),
+                                ),
+                                onChanged: (String value){
+                                  SharedPrefs.setPassword(value);
+                                },
+                              ),
+                            )
+                          ),
+                          Divider(color: Colors.grey,height:0),
                           InkWell(
                             child: Container(
                               padding: EdgeInsets.all(15.0),
