@@ -20,7 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  final BannerAd myBanner = AdMob.admobBanner();
+  // BannerAd myBanner = AdMob.admobBanner();
   //以下BottomNavigationBar設定
   int _currentIndex = 0;
   final _pageWidgets = [
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<Widget> list() {
     return <Widget>[
-      AdMob.adContainer(myBanner),
+      // AdMob.adContainer(myBanner),
       Expanded(child: _pageWidgets.elementAt(_currentIndex)),
     ];
   }
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 //メインのページ
   @override
   Widget build(BuildContext context) {
-    myBanner.load();
+    // myBanner.load();
 
     return Container(
       color: Colors.grey[300],
@@ -78,9 +78,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Column(
-              children: SharedPrefs.getAdPositionTop()
-                  ? list()
-                  : list().reversed.toList()),
+            children: list(),),
+              // children: SharedPrefs.getAdPositionTop()
+                  // ? list()
+                  // : list().reversed.toList()),
           bottomNavigationBar: BottomNavigationBar(
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(

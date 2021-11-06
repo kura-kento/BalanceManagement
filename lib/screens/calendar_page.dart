@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
+import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:infinity_page_view/infinity_page_view.dart';
 import 'package:intl/intl.dart';
 import 'edit_form.dart';
@@ -24,6 +26,8 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  final BannerAd myBanner = AdMob.admobBanner();
+  final BannerAd myBanner2 = AdMob.admobBanner2();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = <Calendar>[];
@@ -81,6 +85,9 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+     myBanner.load();
+     myBanner2.load();
+
      _week = [AppLocalizations.of(context).sunday,
              AppLocalizations.of(context).monday,
              AppLocalizations.of(context).tuesday,
@@ -89,170 +96,185 @@ class _CalendarPageState extends State<CalendarPage> {
              AppLocalizations.of(context).friday,
              AppLocalizations.of(context).saturday];
 
-    return Container(
-      color: Colors.grey[300],
-      child: SafeArea(
-        child: Scaffold(
-          body: Column(
-            //上から合計額、カレンダー、メモ
-            children: <Widget>[
-              Container(
-                height: 40,
-                color: Colors.grey[300],
-                child: Row(
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: SharedPrefs.getAdPositionTop()
+              ? AdMob.adContainer(myBanner)
+              : Container(),
+        ),
+        Expanded(
+          child: Container(
+            color: Colors.grey[300],
+            child: SafeArea(
+              child: Scaffold(
+                body: Column(
+                  //上から合計額、カレンダー、メモ
                   children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
-                        onPressed: () {
-                          calendarClose++;
+                    Container(
+                      height: 40,
+                      color: Colors.grey[300],
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: IconButton(
+                              icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
+                              onPressed: () {
+                                calendarClose++;
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            flex: 5,
+                            child: Stack(
+                              children: <Widget>[
+                                if(!isLoading) appbarWidgetsMap()[SharedPrefs.getTapIndex()],
+                                InkWell(
+                                  onTap: ()async{
+                                    final nextIndex = (_title.indexOf(SharedPrefs.getTapIndex()) +1)%_title.length;
+                                    await SharedPrefs.setTapIndex(_title[nextIndex]);
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: IconButton(
+                              onPressed: ()async {
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return EditForm(selectDay: selectDay,inputMode: InputMode.create);
+                                    },
+                                  ),
+                                );
+                                updateListViewCategory();
+                                dataUpdate();
+                                SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
+                                if(SharedPrefs.getLoginCount() % 10 == 0) {
+                                  if (Platform.isIOS) {
+                                    AppReview.requestReview.then((onValue) {
+                                      print(onValue);
+                                    });
+                                  }
+                                }
+                              },
+                              icon: const Icon(Icons.add),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    calendarClose.isEven
+                    ? Container(
+                      height:40,
+                      child: Row(children: <Widget>[
+                        Expanded(
+                          flex:1,
+                          child: IconButton(
+                            onPressed: (){
+                              setState(() {
+                                selectMonthValue--;
+                                selectDay = selectOfMonth(selectMonthValue);
+                                print(selectMonthValue);
+                                print(selectDay);
+                                dataUpdate();
+                              });
+                            },
+                            iconSize:30,
+                            icon: const Icon(Icons.arrow_left),
+                          ),
+                        ),
+                        Expanded(
+                          flex:5,
+                          //アイコン
+                          child:Align(
+                            alignment: Alignment.center,
+                            child: AutoSizeText(
+                                  DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(selectMonthValue)),
+                                  style: const TextStyle(
+                                    fontSize: 30
+                                  ),
+                              ),
+                          ),
+                        ),
+                        Expanded(
+                          flex:1,
+                          //アイコン
+                          child: IconButton(
+                            onPressed: (){
+                              setState(() {
+                                selectMonthValue++;
+                                selectDay = selectOfMonth(selectMonthValue);
+                                print(selectMonthValue);
+                                print(selectDay);
+                                dataUpdate();
+                              });
+                            },
+                            iconSize:30,
+                            icon: const Icon(Icons.arrow_right),
+                          ),
+                        ),
+                      ]),
+                    )
+                    :Container(
+                      height: 40,
+                      child: InfinityPageView(
+                        itemCount: 3,
+                        controller: _infinityPageControllerList,
+                        itemBuilder: (content, index) {
+                          return Container(
+                            child: Text(DateFormat(Localizations.localeOf(context).languageCode == 'ja' ? 'yyyy年MM月dd日': 'MMM d, yyyy').format(selectDay),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 30
+                              ),
+                            ),
+                          );
+                        },
+                        onPageChanged: (index) {
+                          selectDay = selectDay.add(Duration(days: _infinityPageControllerList.realIndex - _realIndex));
+                          _realIndex = _infinityPageControllerList.realIndex;
                           setState(() {});
                         },
                       ),
                     ),
                     Expanded(
-                      flex: 5,
-                      child: Stack(
-                        children: <Widget>[
-                          if(!isLoading) appbarWidgetsMap()[SharedPrefs.getTapIndex()],
-                          InkWell(
-                            onTap: ()async{
-                              final nextIndex = (_title.indexOf(SharedPrefs.getTapIndex()) +1)%_title.length;
-                              await SharedPrefs.setTapIndex(_title[nextIndex]);
-                              setState(() {});
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        onPressed: ()async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return EditForm(selectDay: selectDay,inputMode: InputMode.create);
-                              },
-                            ),
-                          );
-                          updateListViewCategory();
-                          dataUpdate();
-                          SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
-                          if(SharedPrefs.getLoginCount() % 10 == 0) {
-                            if (Platform.isIOS) {
-                              AppReview.requestReview.then((onValue) {
-                                print(onValue);
-                              });
-                            }
-                          }
+                      child: InfinityPageView(
+                        controller: _infinityPageController,
+                        itemCount: 3,
+                        itemBuilder: (content, index){
+                          return Column(
+                              children: <Widget>[
+                                //曜日用に1行作る。
+                                Row(children: weekList(),),
+                                scrollPage(index),
+                                if (_initialPage == index) Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) else Container()
+                              ],
+                            );
                         },
-                        icon: const Icon(Icons.add),
+                        onPageChanged: (index) {
+                          dataUpdate();
+                          _scrollIndex = 0;
+                          scrollValue(index);
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-              calendarClose.isEven
-              ? Container(
-                height:40,
-                child: Row(children: <Widget>[
-                  Expanded(
-                    flex:1,
-                    child: IconButton(
-                      onPressed: (){
-                        setState(() {
-                          selectMonthValue--;
-                          selectDay = selectOfMonth(selectMonthValue);
-                          print(selectMonthValue);
-                          print(selectDay);
-                          dataUpdate();
-                        });
-                      },
-                      iconSize:30,
-                      icon: const Icon(Icons.arrow_left),
-                    ),
-                  ),
-                  Expanded(
-                    flex:5,
-                    //アイコン
-                    child:Align(
-                      alignment: Alignment.center,
-                      child: AutoSizeText(
-                            DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(selectMonthValue)),
-                            style: const TextStyle(
-                              fontSize: 30
-                            ),
-                        ),
-                    ),
-                  ),
-                  Expanded(
-                    flex:1,
-                    //アイコン
-                    child: IconButton(
-                      onPressed: (){
-                        setState(() {
-                          selectMonthValue++;
-                          selectDay = selectOfMonth(selectMonthValue);
-                          print(selectMonthValue);
-                          print(selectDay);
-                          dataUpdate();
-                        });
-                      },
-                      iconSize:30,
-                      icon: const Icon(Icons.arrow_right),
-                    ),
-                  ),
-                ]),
-              )
-              :Container(
-                height: 40,
-                child: InfinityPageView(
-                  itemCount: 3,
-                  controller: _infinityPageControllerList,
-                  itemBuilder: (content, index) {
-                    return Container(
-                      child: Text(DateFormat(Localizations.localeOf(context).languageCode == 'ja' ? 'yyyy年MM月dd日': 'MMM d, yyyy').format(selectDay),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 30
-                        ),
-                      ),
-                    );
-                  },
-                  onPageChanged: (index) {
-                    selectDay = selectDay.add(Duration(days: _infinityPageControllerList.realIndex - _realIndex));
-                    _realIndex = _infinityPageControllerList.realIndex;
-                    setState(() {});
-                  },
-                ),
-              ),
-              Expanded(
-                child: InfinityPageView(
-                  controller: _infinityPageController,
-                  itemCount: 3,
-                  itemBuilder: (content, index){
-                    return Column(
-                        children: <Widget>[
-                          //曜日用に1行作る。
-                          Row(children: weekList(),),
-                          scrollPage(index),
-                          if (_initialPage == index) Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) else Container()
-                        ],
-                      );
-                  },
-                  onPageChanged: (index) {
-                    dataUpdate();
-                    _scrollIndex = 0;
-                    scrollValue(index);
-                  },
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        SharedPrefs.getAdPositionTop()
+            ? Container()
+            : AdMob.adContainer(myBanner2),
+      ],
     );
   }
 

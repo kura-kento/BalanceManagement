@@ -1,8 +1,11 @@
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
+import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
+import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import '../chart.dart';
 
@@ -12,6 +15,8 @@ class GraphPage extends StatefulWidget {
 }
 
 class _GraphPageState extends State<GraphPage> {
+  final BannerAd myBanner = AdMob.admobBanner();
+  final BannerAd myBanner2 = AdMob.admobBanner2();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = [];
@@ -28,44 +33,61 @@ class _GraphPageState extends State<GraphPage> {
 
   @override
   Widget build(BuildContext context) {
+    myBanner.load();
+    myBanner2.load();
     isJapanese = Localizations.localeOf(context).languageCode == 'ja';
-    return Scaffold(
-      body: Column(
-        children: [
-          Container(
-              height: 40,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.grey[300],
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(AppLocalizations.of(context).graph, style: TextStyle(fontSize: 20,color: Colors.black)),
-              )
-          ),
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          height: 320,
-                          margin: EdgeInsets.only(top: 10.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: ChartContainer(_debugChartList, AppLocalizations.of(context).totalValue)
-                          ),
-                        ),
-                      ]
-                  )
-              )
-          ),
-        ],
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: SharedPrefs.getAdPositionTop()
+              ? AdMob.adContainer(myBanner)
+              : Container(),
+        ),
+        Expanded(
+          child: Scaffold(
+            body: Column(
+              children: [
+                Container(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.grey[300],
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(AppLocalizations.of(context).graph, style: TextStyle(fontSize: 20,color: Colors.black)),
+                    )
+                ),
+                Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: SingleChildScrollView(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                height: 320,
+                                margin: EdgeInsets.only(top: 10.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: ChartContainer(_debugChartList, AppLocalizations.of(context).totalValue)
+                                ),
+                              ),
+                            ]
+                        )
+                    )
+                ),
+              ],
 
-      ),
+            ),
+          ),
+        ),
+        SharedPrefs.getAdPositionTop()
+            ? Container()
+            : AdMob.adContainer(myBanner2),
+      ],
     );
   }
 

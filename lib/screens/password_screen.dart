@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +15,7 @@ class PassLock extends StatefulWidget {
   _PassLockState createState() => _PassLockState();
 }
 
-class _PassLockState extends State<PassLock> {
+class _PassLockState extends State<PassLock>{
   bool isFingerprint = false;
 
   Future<Null> biometrics() async {
@@ -38,6 +40,9 @@ class _PassLockState extends State<PassLock> {
   }
   // @override
   // void initState() {
+  //   Timer.periodic(const Duration(seconds: 1), (timer) {
+  //     biometrics();
+  //   });
   //   super.initState();
   // }
   @override

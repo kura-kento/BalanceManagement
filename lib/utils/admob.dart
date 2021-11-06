@@ -39,8 +39,31 @@ class AdMob{
     );
   }
 
+  static BannerAd admobBanner2() {
+    // return Container();
+    return BannerAd(
+      adUnitId: getBannerAdUnitId(),
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        // 広告が正常にロードされたときに呼ばれます。
+        onAdLoaded: (Ad ad) => print('バナー広告がロードされました。'),
+        // 広告のロードが失敗した際に呼ばれます。
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          print('バナー広告のロードに失敗しました。: $error');
+        },
+        // 広告が開かれたときに呼ばれます。
+        onAdOpened: (Ad ad) => print('バナー広告が開かれました。'),
+        // 広告が閉じられたときに呼ばれます。
+        onAdClosed: (Ad ad) => print('バナー広告が閉じられました。'),
+        // ユーザーがアプリを閉じるときに呼ばれます。
+        onAdWillDismissScreen: (Ad ad) => print('ユーザーがアプリを離れました。'),
+      ),
+    );
+  }
+
   static Widget adContainer(myBanner){
-    final AdWidget adWidget = AdWidget(ad: myBanner);
+    AdWidget adWidget = AdWidget(ad: myBanner);
     return Container(
       alignment: Alignment.center,
       child: adWidget,
