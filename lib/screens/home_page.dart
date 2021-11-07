@@ -10,6 +10,7 @@ import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'graph_bar_page.dart';
 import 'graph_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   int _currentIndex = 0;
   final _pageWidgets = [
     const CalendarPage(),
-    GraphPage(),
+    GraphBarPage(),
     SettingPage(),
   ];
 

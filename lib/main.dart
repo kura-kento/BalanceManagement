@@ -72,5 +72,5 @@ class MyApp extends StatelessWidget {
 
 //todo データ削除時　スナップショット
 //todo データ削除　月ごとに
-//todo
+//todo　お問い合わせ(画像、募金)
 //todo

@@ -141,4 +141,10 @@ class DatabaseHelper {
     }
     return calendarList;
   }
+
+  Future<List> getWeekList() async {
+    final sql = "select sum($colMoney) as sum, strftime('%Y-%m', $colDate) as month from $tableName group by month order by month desc;";
+    final calendarList = await this.database.rawQuery(sql);
+    return calendarList;
+  }
 }
