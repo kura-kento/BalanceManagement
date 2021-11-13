@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:intl/intl.dart';
 
+enum RadioValue { ALL, Twice }
+
 class GraphBarPage extends StatefulWidget {
   @override
   _GraphBarPageState createState() => _GraphBarPageState();
@@ -12,17 +14,10 @@ class GraphBarPage extends StatefulWidget {
 
 class _GraphBarPageState extends State<GraphBarPage> {
   DatabaseHelper databaseHelper = DatabaseHelper();
-
-  List<OrdinalSales> data = [
-    // new OrdinalSales('2014', 5),
-    // new OrdinalSales('2015', 25),
-    // new OrdinalSales('2016', 100),
-    // new OrdinalSales('2017', 150),
-    // new OrdinalSales('2018', 300),
-    // new OrdinalSales('2019', 600),
-    // new OrdinalSales('2020', 1000),
-    // new OrdinalSales('2021', 2500),
-  ];
+  RadioValue _radioValue = RadioValue.ALL;
+  List<OrdinalSales> data = [];
+  List<OrdinalSales>  ListPlus = [];
+  List<OrdinalSales>  ListMinus = [];
 
   @override
   void initState(){
@@ -31,9 +26,15 @@ class _GraphBarPageState extends State<GraphBarPage> {
   }
 
   Future<void> updateListView() async{
-    List _calendarList = await databaseHelper.getWeekList();
+    List _calendarList = await databaseHelper.getMonthList();
     print(_calendarList);
     data = await dataSet(_calendarList).reversed.toList();
+
+    List _ListPlus = await databaseHelper.getMonthListPlus();
+    List _ListMinus = await databaseHelper.getMonthListMinus();
+    ListPlus = await dataSet(_ListPlus).reversed.toList();
+    ListMinus = await dataSet(_ListMinus).reversed.toList();
+
     setState(() {});
   }
 
@@ -54,15 +55,25 @@ class _GraphBarPageState extends State<GraphBarPage> {
     });
   }
 
-   List<charts.Series<OrdinalSales, String>> _createSampleData(data) {
+  //引数が２つの場合、支出を追加する。
+   List<charts.Series<OrdinalSales, String>> _createSampleData(data, {payout}) {
     return [
       new charts.Series<OrdinalSales, String>(
-        id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        id: 'income',
+        colorFn: (OrdinalSales sales,i) => sales.sales >= 0 ? charts.MaterialPalette.blue.shadeDefault:charts.MaterialPalette.red.shadeDefault,
         domainFn: (OrdinalSales sales, _) => sales.year,
         measureFn: (OrdinalSales sales, _) => sales.sales,
         data: data,
-      )
+      ),
+
+      if(payout != null)
+        charts.Series<OrdinalSales, String>(
+          id: 'payout',
+          colorFn: (_, i) => charts.MaterialPalette.red.shadeDefault,
+          domainFn: (OrdinalSales sales, _) => sales.year,
+          measureFn: (OrdinalSales sales, _) => sales.sales,
+          data: payout,
+        )
     ];
   }
 
@@ -70,12 +81,44 @@ class _GraphBarPageState extends State<GraphBarPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 10.0,),
+            Text('合計'),
+            Radio(
+              // title: Text('合計'),
+              value: RadioValue.ALL,
+              groupValue: _radioValue,
+              onChanged: (value) {
+                setState(() {
+                  _radioValue = value;
+                });
+              },
+            ),
+            Text('収支・支出'),
+            Radio(
+              // title: Text('収支・支出'),
+              value: RadioValue.Twice,
+              groupValue: _radioValue,
+              onChanged: (value){
+                setState(() {
+                  _radioValue = value;
+                });
+              },
+            ),
+          ],
+        ),
         Expanded(
           flex: 1,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: SimpleBarChart(
-              _createSampleData(data),
+              _radioValue == RadioValue.ALL
+                  ?
+              _createSampleData(data)
+                  :
+              _createSampleData(ListPlus,payout: ListMinus),
             ),
           ),
         ),

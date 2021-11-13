@@ -142,8 +142,20 @@ class DatabaseHelper {
     return calendarList;
   }
 
-  Future<List> getWeekList() async {
+  Future<List> getMonthList() async {
     final sql = "select sum($colMoney) as sum, strftime('%Y-%m', $colDate) as month from $tableName group by month order by month desc;";
+    final calendarList = await this.database.rawQuery(sql);
+    return calendarList;
+  }
+  //プラス収支を月集計
+  Future<List> getMonthListPlus() async {
+    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $tableName where $colMoney >=  0 group by month order by month desc;";
+    final calendarList = await this.database.rawQuery(sql);
+    return calendarList;
+  }
+ //マイナス収支を月集計
+  Future<List> getMonthListMinus() async {
+    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $tableName where $colMoney <  0 group by month order by month desc;";
     final calendarList = await this.database.rawQuery(sql);
     return calendarList;
   }
