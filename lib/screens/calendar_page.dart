@@ -6,6 +6,7 @@ import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
+import 'package:balancemanagement_app/utils/app.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -336,9 +337,9 @@ class _CalendarPageState extends State<CalendarPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Text("${Utils.commaSeparated(monthMap["PLUS"])}${SharedPrefs.getUnit()}",
-                  style: TextStyle(fontSize: 12.5, color: Colors.lightBlueAccent[200]),),
+                  style: TextStyle(fontSize: 12.5, color: App.plusColor),),
                 Text("${Utils.commaSeparated(monthMap["MINUS"])}${SharedPrefs.getUnit()}",
-                    style: TextStyle(fontSize: 12.5, color:Colors.redAccent[200])),
+                    style: TextStyle(fontSize: 12.5, color: App.minusColor)),
               ],
             ),
           ],
@@ -359,9 +360,9 @@ class _CalendarPageState extends State<CalendarPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Text("${Utils.commaSeparated(yearMap["PLUS"])}${SharedPrefs.getUnit()}",
-                  style: TextStyle(fontSize: 12.5, color: Colors.lightBlueAccent[200]),),
+                  style: TextStyle(fontSize: 12.5, color: App.plusColor),),
                 Text("${Utils.commaSeparated(yearMap["MINUS"])}${SharedPrefs.getUnit()}",
-                    style: TextStyle(fontSize: 12.5, color:Colors.redAccent[200])),
+                    style: TextStyle(fontSize: 12.5, color:App.minusColor)),
               ],
             ),
           ],
@@ -539,7 +540,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               child: Text(
                                   '${Utils.commaSeparated(calendarList[i].money)}${SharedPrefs.getUnit()}　',
                                   style: TextStyle(
-                                      color: calendarList[i].money >= 0 ? Colors.lightBlueAccent[200] : Colors.redAccent[200]
+                                      color: calendarList[i].money >= 0 ? App.plusColor : App.minusColor
                                   )
                               ),
                             ),
@@ -611,7 +612,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     child:AutoSizeText(
                       moneyOfDay(i,date),
                       style: TextStyle(
-                          color: i == 0 ? Colors.lightBlueAccent[200]:Colors.redAccent[200]
+                          color: i == 0 ? App.plusColor:App.minusColor
                       ),
                       minFontSize: 3,
                       maxLines: 1,

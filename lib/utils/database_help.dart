@@ -142,20 +142,20 @@ class DatabaseHelper {
     return calendarList;
   }
 
-  Future<List> getMonthList() async {
-    final sql = "select sum($colMoney) as sum, strftime('%Y-%m', $colDate) as month from $tableName group by month order by month desc;";
+  Future<List> getMonthList(last_month) async {
+    final sql = "select sum($colMoney) as sum, strftime('%Y-%m', $colDate) as month from $tableName WHERE strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
     final calendarList = await this.database.rawQuery(sql);
     return calendarList;
   }
   //プラス収支を月集計
-  Future<List> getMonthListPlus() async {
-    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $tableName where $colMoney >=  0 group by month order by month desc;";
+  Future<List> getMonthListPlus(last_month) async {
+    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $tableName where $colMoney >= 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
     final calendarList = await this.database.rawQuery(sql);
     return calendarList;
   }
  //マイナス収支を月集計
-  Future<List> getMonthListMinus() async {
-    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $tableName where $colMoney <  0 group by month order by month desc;";
+  Future<List> getMonthListMinus(last_month) async {
+    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $tableName where $colMoney < 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
     final calendarList = await this.database.rawQuery(sql);
     return calendarList;
   }

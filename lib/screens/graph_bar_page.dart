@@ -1,8 +1,12 @@
+import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/app.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/graph_bar.dart';
+import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/widget/select_month_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 
 enum RadioValue { ALL, Twice }
@@ -13,8 +17,11 @@ class GraphBarPage extends StatefulWidget {
 }
 
 class _GraphBarPageState extends State<GraphBarPage> {
+  final BannerAd myBanner = AdMob.admobBanner();
   DatabaseHelper databaseHelper = DatabaseHelper();
   RadioValue _radioValue = RadioValue.ALL;
+  int selectMonthValue = 0;
+  final toMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
   List<OrdinalSales> data = [];
   List<OrdinalSales>  ListPlus = [];
   List<OrdinalSales>  ListMinus = [];
@@ -26,30 +33,32 @@ class _GraphBarPageState extends State<GraphBarPage> {
   }
 
   Future<void> updateListView() async{
-    List _calendarList = await databaseHelper.getMonthList();
+    final String _month = DateFormat("yyyy-MM").format(DateTime(DateTime.now().year, DateTime.now().month + selectMonthValue, 1));
+    print(_month);
+    List _calendarList = await databaseHelper.getMonthList(_month);
     print(_calendarList);
     data = await dataSet(_calendarList).reversed.toList();
 
-    List _ListPlus = await databaseHelper.getMonthListPlus();
-    List _ListMinus = await databaseHelper.getMonthListMinus();
+    List _ListPlus = await databaseHelper.getMonthListPlus(_month);
+    List _ListMinus = await databaseHelper.getMonthListMinus(_month);
     ListPlus = await dataSet(_ListPlus).reversed.toList();
     ListMinus = await dataSet(_ListMinus).reversed.toList();
 
     setState(() {});
   }
 
-  List<OrdinalSales> dataSet(list){
+  List<OrdinalSales> dataSet(month_db){
     var listIndex = 0;
-    var date = DateTime.now();
+    
     return List.generate(App.graphLength, (index){
-      var _month       = DateFormat("yyyy-MM").format(DateTime(date.year, date.month - index, 1));
-      var month_format = DateFormat("M月").format(DateTime(date.year, date.month - index, 1));
+      var _month       = DateFormat("yyyy-MM").format(DateTime(toMonth.year, toMonth.month - index + selectMonthValue, 1));
+      var month_format = DateFormat("M月").format(DateTime(toMonth.year, toMonth.month - index + selectMonthValue, 1));
 
       //配列の中を全て当てはまったら他は０にする。
-      if(listIndex == list.length) return OrdinalSales(month_format ,0);
-      if(_month == list[listIndex]['month']){
+      if(listIndex == month_db.length) return OrdinalSales(month_format ,0);
+      if(_month == month_db[listIndex]['month']){
         listIndex++;
-        return OrdinalSales(month_format ,list[listIndex - 1]['sum']);
+        return OrdinalSales(month_format ,month_db[listIndex - 1]['sum']);
       }
       return OrdinalSales(month_format ,0);
     });
@@ -77,10 +86,21 @@ class _GraphBarPageState extends State<GraphBarPage> {
     ];
   }
 
+  //選択中の月をdate型で出す。
+  DateTime selectOfMonth(int value) {
+    final _selectOfMonth = DateTime(toMonth.year, toMonth.month + value, 1);
+    return  _selectOfMonth;
+  }
+
   @override
   Widget build(BuildContext context) {
+    myBanner.load();
+
     return Column(
       children: [
+        SharedPrefs.getAdPositionTop()
+            ? AdMob.adContainer(myBanner)
+            : Container(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -91,9 +111,8 @@ class _GraphBarPageState extends State<GraphBarPage> {
               value: RadioValue.ALL,
               groupValue: _radioValue,
               onChanged: (value) {
-                setState(() {
                   _radioValue = value;
-                });
+                  setState(() {});
               },
             ),
             Text('収支・支出'),
@@ -102,12 +121,26 @@ class _GraphBarPageState extends State<GraphBarPage> {
               value: RadioValue.Twice,
               groupValue: _radioValue,
               onChanged: (value){
-                setState(() {
                   _radioValue = value;
-                });
+                  setState(() {});
               },
             ),
           ],
+        ),
+        SelectMonthWidget(
+            tapLeft:(){
+                selectMonthValue--;
+                // dataUpdate();
+                updateListView();
+                setState(() {  });
+            },
+            tapRight: (){
+                selectMonthValue++;
+                // dataUpdate();
+                updateListView();
+                setState(() { });
+            },
+            text: DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(selectMonthValue))
         ),
         Expanded(
           flex: 1,
@@ -126,6 +159,9 @@ class _GraphBarPageState extends State<GraphBarPage> {
           flex: 1,
           child: Container(),
         ),
+        SharedPrefs.getAdPositionTop()
+            ? Container()
+            : AdMob.adContainer(myBanner),
       ],
     );
   }

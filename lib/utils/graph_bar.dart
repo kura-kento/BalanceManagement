@@ -5,63 +5,55 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 
-class SimpleBarChart extends StatelessWidget {
+class SimpleBarChart extends StatefulWidget {
+  SimpleBarChart(this.seriesList, {this.animate});
   final List<charts.Series> seriesList;
   final bool animate;
 
-  SimpleBarChart(this.seriesList, {this.animate});
+  @override
+  _SimpleBarChartState createState() => _SimpleBarChartState();
+}
 
-  /// Creates a [BarChart] with sample data and no transition.
-  // factory SimpleBarChart.withSampleData() {
-  //   return new SimpleBarChart(
-  //     _createSampleData(),
-  //     // Disable animations for image tests.
-  //     animate: false,
-  //   );
-  // }
-
+class _SimpleBarChartState extends State<SimpleBarChart> {
+  String sum = '';
 
   @override
   Widget build(BuildContext context) {
-    return new charts.BarChart(
-      seriesList,
-      animate: animate,
-      primaryMeasureAxis: charts.NumericAxisSpec(
-        tickFormatterSpec: charts.BasicNumericTickFormatterSpec(
-          (num value) {
-            return Utils.commaSeparated(value.floor()).toString() + SharedPrefs.getUnit();
-          }
+    return Column(
+      children: [
+        Expanded(
+          child: new charts.BarChart(
+            widget.seriesList,
+            animate: widget.animate,
+            primaryMeasureAxis: charts.NumericAxisSpec(
+              tickFormatterSpec: charts.BasicNumericTickFormatterSpec(
+                      (num value) {
+                    return Utils.commaSeparated(value.floor()).toString() + SharedPrefs.getUnit();
+                  }
+              ),
+            ),
+            selectionModels: [
+              new charts.SelectionModelConfig(
+                  changedListener: (SelectionModel model) {
+                    print( model.selectedSeries[0].measureFn(model.selectedDatum[0].index));
+                    sum = model.selectedSeries[0].measureFn(model.selectedDatum[0].index).toString();
+                    setState(() {
+
+                    });
+                  }
+              ),
+            ],
+          ),
         ),
-      ),
-      selectionModels: [
-        new charts.SelectionModelConfig(
-            changedListener: (SelectionModel model) {
-              print( model.selectedSeries[0].measureFn(model.selectedDatum[0].index));
-            }
+
+        Container(
+            height: 40,
+            child: Text(sum)
         ),
+
       ],
     );
   }
-
-  /// Create one series with sample hard coded data.
-  // static List<charts.Series<OrdinalSales, String>> _createSampleData() {
-  //   final data = [
-  //     new OrdinalSales('2014', 5),
-  //     new OrdinalSales('2015', 25),
-  //     new OrdinalSales('2016', 100),
-  //     new OrdinalSales('2017', 75),
-  //   ];
-  //
-  //   return [
-  //     new charts.Series<OrdinalSales, String>(
-  //       id: 'Sales',
-  //       colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-  //       domainFn: (OrdinalSales sales, _) => sales.year,
-  //       measureFn: (OrdinalSales sales, _) => sales.sales,
-  //       data: data,
-  //     )
-  //   ];
-  // }
 }
 
 /// Sample ordinal data type.
