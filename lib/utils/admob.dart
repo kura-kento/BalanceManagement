@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'shared_prefs.dart';
+
 class AdMob{
+
   static String getBannerAdUnitId() {
     // iOSとAndroidで広告ユニットIDを分岐させる
     if (Platform.isAndroid) {
@@ -63,6 +66,11 @@ class AdMob{
   }
 
   static Widget adContainer(myBanner){
+    DateTime charge_Time = DateTime.parse(SharedPrefs.getRewardTime());
+    //分の差を出す。（マイナスなら現在時間からプラスする。）
+    int diff_time = charge_Time.difference(DateTime.now()).inMinutes;
+
+    if(diff_time > 0) return Container();
     AdWidget adWidget = AdWidget(ad: myBanner);
     return Container(
       alignment: Alignment.center,

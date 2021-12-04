@@ -7,6 +7,7 @@ import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/widget/reward_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,64 +36,8 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState(){
     updateListViewCategory();
-    _createRewardedAd();
     super.initState();
   }
-
-  void _createRewardedAd() {
-    RewardedAd.load(
-        adUnitId: RewardedAd.testAdUnitId,
-        request: AdRequest(),
-        rewardedAdLoadCallback: RewardedAdLoadCallback(
-          onAdLoaded: (RewardedAd ad) {
-            print('$ad loaded.');
-            _rewardedAd = ad;
-            _numRewardedLoadAttempts = 0;
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            print('RewardedAd failed to load: $error');
-            _rewardedAd = null;
-            _numRewardedLoadAttempts += 1;
-            // if (_numRewardedLoadAttempts <= maxFailedLoadAttempts) {
-            //   _createRewardedAd();
-            // }
-          },
-        ));
-  }
-
-  void _showRewardedAd() {
-    if (_rewardedAd == null) {
-      print('Warning: attempt to show rewarded before loaded.');
-      return;
-    }
-    _rewardedAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (RewardedAd ad) =>
-          print('ad onAdShowedFullScreenContent.'),
-      onAdDismissedFullScreenContent: (RewardedAd ad) {
-        print('$ad onAdDismissedFullScreenContent.');
-        ad.dispose();
-        _createRewardedAd();
-      },
-      onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-        print('$ad onAdFailedToShowFullScreenContent: $error');
-        ad.dispose();
-        _createRewardedAd();
-      },
-    );
-
-    _rewardedAd.setImmersiveMode(true);
-    _rewardedAd.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
-      print('$ad with reward $RewardItem(${reward.amount}, ${reward.type}');
-    });
-    _rewardedAd = null;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _rewardedAd?.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -126,19 +71,8 @@ class _SettingPageState extends State<SettingPage> {
                         child: SingleChildScrollView(
                             child: Column(
                               children: <Widget>[
-                                InkWell(
-                                  child: Container(
-                                      padding: EdgeInsets.all(15.0),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Center(child: Text(
-                                        "広告非表示を貯める",
-                                        textScaleFactor: 1.5,
-                                      ))
-                                  ),
-                                  onTap: (){
-                                    _showRewardedAd();
-                                  },
-                                ),
+                                RewardWidget(),
+                                Divider(color: Colors.grey,height:0),
                                 ListTile(
                                     title: Text('パスワードの有無'),
                                     trailing: CupertinoSwitch(
