@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import 'shared_prefs.dart';
 
 class AdMob{
@@ -70,7 +68,7 @@ class AdMob{
     //分の差を出す。（マイナスなら現在時間からプラスする。）
     int diff_time = charge_Time.difference(DateTime.now()).inMinutes;
 
-    if(diff_time > 0) return Container();
+    if(isNoAds()) return Container();
     AdWidget adWidget = AdWidget(ad: myBanner);
     return Container(
       alignment: Alignment.center,
@@ -78,5 +76,13 @@ class AdMob{
       width: myBanner.size.width.toDouble(),
       height: myBanner.size.height.toDouble(),
     );
+  }
+
+  //広告非表示がチャージを行っていたらtrueを返す。
+  static bool isNoAds(){
+    DateTime charge_Time = DateTime.parse(SharedPrefs.getRewardTime());
+    //分の差を出す。（マイナスなら現在時間からプラスする。）
+    int diff_time = charge_Time.difference(DateTime.now()).inMinutes;
+    return diff_time > 0;
   }
 }

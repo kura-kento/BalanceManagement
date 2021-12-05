@@ -94,7 +94,10 @@ class _GraphBarPageState extends State<GraphBarPage> {
 
   @override
   Widget build(BuildContext context) {
-    myBanner.load();
+    if(AdMob.isNoAds() == false){
+      myBanner.load();
+      // myBanner2.load();
+    }
 
     return Column(
       children: [

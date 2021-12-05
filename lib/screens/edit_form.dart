@@ -64,7 +64,9 @@ class _EditFormState extends State<EditForm> {
 
   @override
   Widget build(BuildContext context) {
-    myBanner.load();
+    if(AdMob.isNoAds() == false){
+      myBanner.load();
+    }
 
     return Container(
       color: Colors.grey[300],

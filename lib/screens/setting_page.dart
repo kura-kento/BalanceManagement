@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
+import 'package:balancemanagement_app/utils/app.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -41,8 +42,10 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    myBanner.load();
-    myBanner2.load();
+    if(AdMob.isNoAds() == false){
+      myBanner.load();
+      myBanner2.load();
+    }
 
     return Column(
       children: [
@@ -192,25 +195,27 @@ class _SettingPageState extends State<SettingPage> {
                                             Expanded(
                                                 flex: 1,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child: FlatButton(
-                                                    color: Colors.grey[400],
-                                                    onPressed: (){
-                                                      setState(() {
-                                                        SharedPrefs.setUnit("${unitController.text}");
-                                                        FocusScope.of(context).unfocus();
-                                                      });
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child:
+                                                  ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      primary: App.NoAdsButtonColor, //ボタンの背景色
+                                                    ),
+                                                    onPressed: () {
+                                                        setState(() {
+                                                          SharedPrefs.setUnit("${unitController.text}");
+                                                          FocusScope.of(context).unfocus();
+                                                        });
                                                     },
-                                                    child: Center(
-                                                      child: AutoSizeText(
-                                                        AppLocalizations.of(context).update,
-                                                        minFontSize: 4,
-                                                        maxLines: 1,
-                                                        style: TextStyle(fontSize: 25),
-                                                      )
+                                                    child: AutoSizeText(
+                                                      AppLocalizations.of(context).update,
+                                                      minFontSize: 4,
+                                                      maxLines: 1,
+                                                      textScaleFactor: 1.5,
+                                                      style: TextStyle(fontSize: App.BTNfontsize),
                                                     ),
                                                   ),
-                                                )
+                                                ),
                                             )
                                           ],
                                         ),

@@ -86,8 +86,12 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-     myBanner.load();
-     myBanner2.load();
+    print('isNoAds:' + AdMob.isNoAds().toString());
+    if(AdMob.isNoAds() == false){
+      myBanner.load();
+      myBanner2.load();
+    }
+
 
      _week = [AppLocalizations.of(context).sunday,
              AppLocalizations.of(context).monday,

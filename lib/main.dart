@@ -73,4 +73,5 @@ class MyApp extends StatelessWidget {
 //todo データ削除時　スナップショット
 //todo データ削除　月ごとに
 //todo　お問い合わせ(画像、募金)
-//todo
+//todo　カラーテーマ
+//todo　広告の位置ボタン選択レイアウト

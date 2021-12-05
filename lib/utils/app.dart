@@ -10,5 +10,8 @@ class App {
 
    static int addHours = 40;
 
+   static double BTNfontsize = 10;
+
+
 
 }

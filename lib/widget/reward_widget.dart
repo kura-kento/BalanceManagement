@@ -107,8 +107,8 @@ class _RewardWidgetState extends State<RewardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime charge_Time = DateTime.parse(SharedPrefs.getRewardTime());
-    int diff_time = charge_Time.difference(DateTime.now()).inHours;
+    DateTime charge_time = DateTime.parse(SharedPrefs.getRewardTime());
+    int diff_time = charge_time.difference(DateTime.now()).inHours;
     print('広告非表示期限：'+ SharedPrefs.getRewardTime());
     print(diff_time);
 
@@ -147,7 +147,7 @@ class _RewardWidgetState extends State<RewardWidget> {
                 child: Text(
                   "広告非表示期間を貯める(40h)",
                   textScaleFactor: 1.5,
-                  style: TextStyle(fontSize: 10),
+                  style: TextStyle(fontSize: App.BTNfontsize),
                 ),
               ),
             ),
