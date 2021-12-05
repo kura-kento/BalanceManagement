@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 /// Bar chart example
@@ -15,7 +16,9 @@ class SimpleBarChart extends StatefulWidget {
 }
 
 class _SimpleBarChartState extends State<SimpleBarChart> {
-  String sum = '';
+  int sum;
+  String month = '';
+  bool isPlus = true;
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +38,13 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
             selectionModels: [
               new charts.SelectionModelConfig(
                   changedListener: (SelectionModel model) {
-                    print( model.selectedSeries[0].measureFn(model.selectedDatum[0].index));
-                    sum = model.selectedSeries[0].measureFn(model.selectedDatum[0].index).toString();
-                    setState(() {
-
-                    });
+                    // print(model.selectedSeries[0].domainFn(model.selectedDatum[0].index));
+                    // print(model.selectedSeries[0].measureFn(model.selectedDatum[0].index));
+                    print(model.selectedSeries[0].colorFn(model.selectedDatum[0].index));
+                    isPlus = model.selectedSeries[0].colorFn(model.selectedDatum[0].index).toString() == '#1976d2ff';
+                    sum = model.selectedSeries[0].measureFn(model.selectedDatum[0].index);
+                    month = model.selectedSeries[0].domainFn(model.selectedDatum[0].index);
+                    setState(() {});
                   }
               ),
             ],
@@ -48,7 +53,13 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
 
         Container(
             height: 40,
-            child: Text(sum)
+            child: Center(
+                child: AutoSizeText(
+                  month + '：'+ '${(isPlus ? '' : '-')}'+ Utils.commaSeparated(sum ??= 0) + "${SharedPrefs.getUnit()}",
+                  minFontSize: 4,
+                  maxLines: 1,
+                ),
+            ),
         ),
 
       ],

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 class Utils{
   //カンマ区切り
-  static String commaSeparated(number){
+  static String commaSeparated(int number){
     final formatter = NumberFormat('#,###');
     return formatter.format(number);
   }
