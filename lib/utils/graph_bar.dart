@@ -18,7 +18,7 @@ class SimpleBarChart extends StatefulWidget {
 class _SimpleBarChartState extends State<SimpleBarChart> {
   int sum;
   String month = '';
-  bool isPlus = true;
+  bool isMinus = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +40,10 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
                   changedListener: (SelectionModel model) {
                     // print(model.selectedSeries[0].domainFn(model.selectedDatum[0].index));
                     // print(model.selectedSeries[0].measureFn(model.selectedDatum[0].index));
+                    print(model.selectedSeries[0].id);
                     print(model.selectedSeries[0].colorFn(model.selectedDatum[0].index));
-                    isPlus = model.selectedSeries[0].colorFn(model.selectedDatum[0].index).toString() == '#1976d2ff';
+
+                    isMinus = (model.selectedSeries[0].colorFn(model.selectedDatum[0].index).toString() != '#1976d2ff' && model.selectedSeries[0].id == 'payout');
                     sum = model.selectedSeries[0].measureFn(model.selectedDatum[0].index);
                     month = model.selectedSeries[0].domainFn(model.selectedDatum[0].index);
                     setState(() {});
@@ -55,7 +57,7 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
             height: 40,
             child: Center(
                 child: AutoSizeText(
-                  month + '：'+ '${(isPlus ? '' : '-')}'+ Utils.commaSeparated(sum ??= 0) + "${SharedPrefs.getUnit()}",
+                  month + (month == '' ?'': '：') + '${(isMinus ? '-' : '')}'+ Utils.commaSeparated(sum ??= 0) + "${SharedPrefs.getUnit()}",
                   minFontSize: 4,
                   maxLines: 1,
                 ),
