@@ -17,7 +17,7 @@ class GraphBarPage extends StatefulWidget {
 }
 
 class _GraphBarPageState extends State<GraphBarPage> {
-  final BannerAd myBanner = AdMob.admobBanner();
+  // final BannerAd myBanner = AdMob.admobBanner();
   DatabaseHelper databaseHelper = DatabaseHelper();
   RadioValue _radioValue = RadioValue.ALL;
   int selectMonthValue = 0;
@@ -94,16 +94,16 @@ class _GraphBarPageState extends State<GraphBarPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(AdMob.isNoAds() == false){
-      myBanner.load();
-      // myBanner2.load();
-    }
+    // if(AdMob.isNoAds() == false){
+    //   myBanner.load();
+    //   // myBanner2.load();
+    // }
 
     return Column(
       children: [
-        SharedPrefs.getAdPositionTop()
-            ? AdMob.adContainer(myBanner)
-            : Container(),
+        // SharedPrefs.getAdPositionTop()
+        //     ? AdMob.adContainer(myBanner)
+        //     : Container(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -162,9 +162,9 @@ class _GraphBarPageState extends State<GraphBarPage> {
           flex: 1,
           child: Container(),
         ),
-        SharedPrefs.getAdPositionTop()
-            ? Container()
-            : AdMob.adContainer(myBanner),
+        // SharedPrefs.getAdPositionTop()
+        //     ? Container()
+        //     : AdMob.adContainer(myBanner),
       ],
     );
   }

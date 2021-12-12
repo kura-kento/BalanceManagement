@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/screens/calendar_page.dart';
 import 'package:balancemanagement_app/screens/password_screen.dart';
@@ -21,6 +22,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   // BannerAd myBanner = AdMob.admobBanner();
+  final BannerAd myBanner = AdMob.admobBanner();
+  final BannerAd myBanner2 = AdMob.admobBanner2();
   //以下BottomNavigationBar設定
   int _currentIndex = 0;
   final _pageWidgets = [
@@ -36,7 +39,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     });
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    tracking();
   }
+
+  Future<void> tracking() async {
+    await AppTrackingTransparency.requestTrackingAuthorization();
+  }
+
+
   @override
   void dispose() {
     super.dispose();
@@ -63,6 +73,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<Widget> list() {
     return <Widget>[
       // AdMob.adContainer(myBanner),
+      SharedPrefs.getAdPositionTop()
+          ?
+      AdMob.adContainer(myBanner)
+          :
+      AdMob.adContainer(myBanner2)
+      ,
       Expanded(child: _pageWidgets.elementAt(_currentIndex)),
     ];
   }
@@ -70,7 +86,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 //メインのページ
   @override
   Widget build(BuildContext context) {
-    // myBanner.load();
+    print('isNoAds:' + AdMob.isNoAds().toString());
+    if(AdMob.isNoAds() == false){
+      myBanner.load();
+      myBanner2.load();
+    }
 
     return Container(
       color: Colors.grey[300],
@@ -78,10 +98,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Column(
-            children: list(),),
-              // children: SharedPrefs.getAdPositionTop()
-                  // ? list()
-                  // : list().reversed.toList()),
+            // children: list(),),
+              children: SharedPrefs.getAdPositionTop()
+                  ? list()
+                  : list().reversed.toList()),
           bottomNavigationBar: BottomNavigationBar(
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(

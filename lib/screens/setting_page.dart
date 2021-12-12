@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
+import 'package:balancemanagement_app/main.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/app.dart';
@@ -23,8 +24,8 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  final BannerAd myBanner = AdMob.admobBanner();
-  final BannerAd myBanner2 = AdMob.admobBanner2();
+  // final BannerAd myBanner = AdMob.admobBanner();
+  // final BannerAd myBanner2 = AdMob.admobBanner2();
   DatabaseHelper databaseHelper = DatabaseHelper();
   DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = <Category>[];
@@ -42,19 +43,19 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(AdMob.isNoAds() == false){
-      myBanner.load();
-      myBanner2.load();
-    }
+    // if(AdMob.isNoAds() == false){
+    //   myBanner.load();
+    //   myBanner2.load();
+    // }
 
     return Column(
       children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: SharedPrefs.getAdPositionTop()
-              ? AdMob.adContainer(myBanner)
-              : Container(),
-        ),
+        // Align(
+        //   alignment: Alignment.topCenter,
+        //   child: SharedPrefs.getAdPositionTop()
+        //       ? AdMob.adContainer(myBanner)
+        //       : Container(),
+        // ),
         Expanded(
           child: Scaffold(
               body: GestureDetector(
@@ -120,6 +121,7 @@ class _SettingPageState extends State<SettingPage> {
                                   onTap: (){
                                     setState(() {
                                       SharedPrefs.setAdPositionTop(!SharedPrefs.getAdPositionTop());
+                                      RestartWidget.restartApp(context);
                                     });
                                   },
                                 ),
@@ -278,9 +280,9 @@ class _SettingPageState extends State<SettingPage> {
                 ),
           ),
         ),
-        SharedPrefs.getAdPositionTop()
-            ? Container()
-            : AdMob.adContainer(myBanner2),
+        // SharedPrefs.getAdPositionTop()
+        //     ? Container()
+        //     : AdMob.adContainer(myBanner2),
       ],
     );
   }

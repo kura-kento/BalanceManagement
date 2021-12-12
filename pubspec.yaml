@@ -1,7 +1,7 @@
 name: balancemanagement_app
 description: A new Flutter application.
 
-version: 1.4.1+1
+version: 1.4.1+8
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -26,10 +26,11 @@ dependencies:
 #  admob_flutter: ^1.0.1
   app_review: ^1.1.2
   google_mobile_ads: ^0.13.5
-
+  app_tracking_transparency: ^1.1.0+1
   flutter_lock_screen: ^2.0.1
   local_auth: ^1.1.5
   syncfusion_flutter_gauges: ^19.3.56
+  flutter_riverpod: ^0.14.0+3
 
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2

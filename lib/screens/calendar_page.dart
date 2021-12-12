@@ -27,8 +27,6 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  final BannerAd myBanner = AdMob.admobBanner();
-  final BannerAd myBanner2 = AdMob.admobBanner2();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = <Calendar>[];
@@ -86,13 +84,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('isNoAds:' + AdMob.isNoAds().toString());
-    if(AdMob.isNoAds() == false){
-      myBanner.load();
-      myBanner2.load();
-    }
-
-
      _week = [AppLocalizations.of(context).sunday,
              AppLocalizations.of(context).monday,
              AppLocalizations.of(context).tuesday,
@@ -103,12 +94,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
     return Column(
       children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: SharedPrefs.getAdPositionTop()
-              ? AdMob.adContainer(myBanner)
-              : Container(),
-        ),
         Expanded(
           child: Container(
             color: Colors.grey[300],
@@ -276,9 +261,9 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ),
         ),
-        SharedPrefs.getAdPositionTop()
-            ? Container()
-            : AdMob.adContainer(myBanner2),
+        // SharedPrefs.getAdPositionTop()
+        //     ? Container()
+        //     : AdMob.adContainer(myBanner2),
       ],
     );
   }
