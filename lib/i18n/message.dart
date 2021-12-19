@@ -143,7 +143,7 @@ class Messages
     update: '更新',
     categoryEditing: 'カテゴリー編集',
 
-    addPosition: '広告の位置',
+    addPosition: '広告の位置を変更',
     unit: '単位',
     top: '上',
     bottom: '下',

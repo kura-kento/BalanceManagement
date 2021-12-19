@@ -35,7 +35,7 @@ class SharedPrefs {
   //共通
   static Future<bool> setPassword(String value) => _sharedPreferences.setString(password, value);
   static String getPassword() => _sharedPreferences.getString(password) ?? '0000';
-
+  //【共通】リワード広告
   static Future<bool> setRewardTime(String value) => _sharedPreferences.setString(rewardTime, value);
   static String getRewardTime() => _sharedPreferences.getString(rewardTime) ?? '2021-01-01 00:00:00';
 }

@@ -9,6 +9,7 @@ import 'package:balancemanagement_app/utils/app.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/widget/daialog_select.dart';
 import 'package:balancemanagement_app/widget/reward_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -109,22 +110,7 @@ class _SettingPageState extends State<SettingPage> {
                                   )
                                 ),
                                 Divider(color: Colors.grey,height:0),
-                                InkWell(
-                                  child: Container(
-                                    padding: EdgeInsets.all(15.0),
-                                    child: Center(child: Text(
-                                      AppLocalizations.of(context).addPosition + "（" + (SharedPrefs.getAdPositionTop() ? AppLocalizations.of(context).bottom:AppLocalizations.of(context).top) + "${AppLocalizations.of(context).changeTo}）",
-                                      textAlign: TextAlign.center,
-                                      textScaleFactor: 1.5,
-                                    )),
-                                  ) ,
-                                  onTap: (){
-                                    setState(() {
-                                      SharedPrefs.setAdPositionTop(!SharedPrefs.getAdPositionTop());
-                                      RestartWidget.restartApp(context);
-                                    });
-                                  },
-                                ),
+                                SelectDialog(),
                                 Divider(color: Colors.grey,height:0),
                                 InkWell(
                                   child: Container(
