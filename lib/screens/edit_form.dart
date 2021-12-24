@@ -63,6 +63,13 @@ class _EditFormState extends State<EditForm> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    // FocusScope.of(context).requestFocus(new FocusNode());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if(AdMob.isNoAds() == false){
       myBanner.load();

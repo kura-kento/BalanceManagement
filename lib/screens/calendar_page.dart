@@ -80,6 +80,46 @@ class _CalendarPageState extends State<CalendarPage> {
   //   await Admob.requestTrackingAuthorization();
   // }
 
+  void reviewCount() {
+    print(SharedPrefs.getLoginCount());
+    SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
+
+    if (Platform.isIOS && SharedPrefs.getLoginCount() % 10 == 0) {
+      AppReview.requestReview.then((onValue) {
+        print(onValue);
+      });
+    }else if (Platform.isAndroid && SharedPrefs.getLoginCount() % 20 == 0){
+      AppReview.requestReview.then((onValue) {
+        print(onValue);
+        // showDialog(
+        //   context: context,
+        //   builder: (_) {
+        //     return AlertDialog(
+        //       title: Text("このアプリは満足していますか？"),
+        //       // content: Text("このアプリは満足していますか？"),
+        //       actions: <Widget>[
+        //         // ボタン領域
+        //         FlatButton(
+        //           child: Text("いいえ"),
+        //           onPressed: () {
+        //             Navigator.pop(context);
+        //           },
+        //         ),
+        //         FlatButton(
+        //           child: Text("はい"),
+        //           onPressed: () {
+        //             Navigator.pop(context);
+        //             print(onValue);
+        //           },
+        //         ),
+        //       ],
+        //     );
+        //   },
+        // );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
      _week = [AppLocalizations.of(context).sunday,
@@ -143,14 +183,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                 );
                                 updateListViewCategory();
                                 dataUpdate();
-                                SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
-                                if(SharedPrefs.getLoginCount() % 10 == 0) {
-                                  if (Platform.isIOS) {
-                                    AppReview.requestReview.then((onValue) {
-                                      print(onValue);
-                                    });
-                                  }
-                                }
+                                reviewCount();
                               },
                               icon: const Icon(Icons.add),
                             ),
@@ -477,14 +510,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   );
                   updateListViewCategory();
                   dataUpdate();
-                  SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
-                  if(SharedPrefs.getLoginCount() % 10 == 0) {
-                    if (Platform.isIOS) {
-                      AppReview.requestReview.then((onValue) {
-                        print(onValue);
-                      });
-                    }
-                  }
+                  reviewCount();
                 }else{
                   selectDay = date;
                   setState((){});
