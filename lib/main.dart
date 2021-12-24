@@ -1,17 +1,29 @@
 import 'package:balancemanagement_app/screens/home_page.dart';
+import 'package:balancemanagement_app/screens/password_screen.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'i18n/message.dart';
 
 //final myAppKey = GlobalKey<MyApp>();
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
+
+  runApp(
+    ProviderScope(
+      child: RestartWidget(
+        child: MyApp(),
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -56,11 +68,47 @@ class MyApp extends StatelessWidget {
     await SharedPrefs.setInstance();
     DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
     DatabaseHelperCategory.db = await DatabaseHelperCategory.initializeDatabase();
-    return HomePage();
+    WidgetsFlutterBinding.ensureInitialized();
+    if(SharedPrefs.getIsPassword()){
+      return PassLock();
+    }else{
+      return HomePage();
+    }
+  }
+}
+
+class RestartWidget extends StatefulWidget {
+  RestartWidget({this.child});
+
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>().restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
+    );
   }
 }
 
 //todo データ削除時　スナップショット
 //todo データ削除　月ごとに
-//todo
-//todo
+//todo　お問い合わせ(画像、募金)
+//todo　カラーテーマ
+//todo　広告の位置ボタン選択レイアウト

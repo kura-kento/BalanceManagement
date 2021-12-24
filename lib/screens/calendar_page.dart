@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
+import 'package:balancemanagement_app/utils/app.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -41,6 +42,7 @@ class _CalendarPageState extends State<CalendarPage> {
   int _scrollIndex = 0;
   Map<String,dynamic> monthMap;
   int yearSum;
+  Map<String,dynamic> yearMap;
 
   InfinityPageController _infinityPageControllerList;
   int calendarClose = 0;
@@ -59,18 +61,11 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void initState() {
+    // tracking();
     updateListViewCategory();
     _infinityPageControllerList = InfinityPageController(initialPage: 0);
     _infinityPageController = InfinityPageController(initialPage: 0);
     dataUpdate();
-    SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
-    if(SharedPrefs.getLoginCount() % 30 == 0) {
-      if (Platform.isIOS) {
-        AppReview.requestReview.then((onValue) {
-          print(onValue);
-        });
-      }
-    }
     super.initState();
   }
 
@@ -79,6 +74,50 @@ class _CalendarPageState extends State<CalendarPage> {
     _infinityPageControllerList.dispose();
     _infinityPageController.dispose();
     super.dispose();
+  }
+
+  // Future<void> tracking() async {
+  //   await Admob.requestTrackingAuthorization();
+  // }
+
+  void reviewCount() {
+    print(SharedPrefs.getLoginCount());
+    SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
+
+    if (Platform.isIOS && SharedPrefs.getLoginCount() % 10 == 0) {
+      AppReview.requestReview.then((onValue) {
+        print(onValue);
+      });
+    }else if (Platform.isAndroid && SharedPrefs.getLoginCount() % 20 == 0){
+      AppReview.requestReview.then((onValue) {
+        print(onValue);
+        // showDialog(
+        //   context: context,
+        //   builder: (_) {
+        //     return AlertDialog(
+        //       title: Text("このアプリは満足していますか？"),
+        //       // content: Text("このアプリは満足していますか？"),
+        //       actions: <Widget>[
+        //         // ボタン領域
+        //         FlatButton(
+        //           child: Text("いいえ"),
+        //           onPressed: () {
+        //             Navigator.pop(context);
+        //           },
+        //         ),
+        //         FlatButton(
+        //           child: Text("はい"),
+        //           onPressed: () {
+        //             Navigator.pop(context);
+        //             print(onValue);
+        //           },
+        //         ),
+        //       ],
+        //     );
+        //   },
+        // );
+      });
+    }
   }
 
   @override
@@ -91,162 +130,176 @@ class _CalendarPageState extends State<CalendarPage> {
              AppLocalizations.of(context).friday,
              AppLocalizations.of(context).saturday];
 
-    return Container(
-      color: Colors.grey[300],
-      child: SafeArea(
-        child: Scaffold(
-          body: Column(
-            //上から合計額、カレンダー、メモ
-            children: <Widget>[
-              Container(
-                height: 40,
-                color: Colors.grey[300],
-                child: Row(
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            color: Colors.grey[300],
+            child: SafeArea(
+              child: Scaffold(
+                body: Column(
+                  //上から合計額、カレンダー、メモ
                   children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
-                        onPressed: () {
-                          calendarClose++;
+                    Container(
+                      height: 40,
+                      color: Colors.grey[300],
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: IconButton(
+                              icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
+                              onPressed: () {
+                                calendarClose++;
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            flex: 5,
+                            child: Stack(
+                              children: <Widget>[
+                                if(!isLoading) appbarWidgetsMap()[SharedPrefs.getTapIndex()],
+                                InkWell(
+                                  onTap: ()async{
+                                    final nextIndex = (_title.indexOf(SharedPrefs.getTapIndex()) +1)%_title.length;
+                                    await SharedPrefs.setTapIndex(_title[nextIndex]);
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: IconButton(
+                              onPressed: ()async {
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return EditForm(selectDay: selectDay,inputMode: InputMode.create);
+                                    },
+                                  ),
+                                );
+                                updateListViewCategory();
+                                dataUpdate();
+                                reviewCount();
+                              },
+                              icon: const Icon(Icons.add),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    calendarClose.isEven
+                    ? Container(
+                      height:40,
+                      child: Row(children: <Widget>[
+                        Expanded(
+                          flex:1,
+                          child: IconButton(
+                            onPressed: (){
+                              setState(() {
+                                selectMonthValue--;
+                                selectDay = selectOfMonth(selectMonthValue);
+                                print(selectMonthValue);
+                                print(selectDay);
+                                dataUpdate();
+                              });
+                            },
+                            iconSize:30,
+                            icon: const Icon(Icons.arrow_left),
+                          ),
+                        ),
+                        Expanded(
+                          flex:5,
+                          //アイコン
+                          child:Align(
+                            alignment: Alignment.center,
+                            child: AutoSizeText(
+                                  DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(selectMonthValue)),
+                                  style: const TextStyle(
+                                    fontSize: 30
+                                  ),
+                              ),
+                          ),
+                        ),
+                        Expanded(
+                          flex:1,
+                          //アイコン
+                          child: IconButton(
+                            onPressed: (){
+                              setState(() {
+                                selectMonthValue++;
+                                selectDay = selectOfMonth(selectMonthValue);
+                                print(selectMonthValue);
+                                print(selectDay);
+                                dataUpdate();
+                              });
+                            },
+                            iconSize:30,
+                            icon: const Icon(Icons.arrow_right),
+                          ),
+                        ),
+                      ]),
+                    )
+                    :Container(
+                      height: 40,
+                      child: InfinityPageView(
+                        itemCount: 3,
+                        controller: _infinityPageControllerList,
+                        itemBuilder: (content, index) {
+                          return Container(
+                            child: Text(DateFormat(Localizations.localeOf(context).languageCode == 'ja' ? 'yyyy年MM月dd日': 'MMM d, yyyy').format(selectDay),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 30
+                              ),
+                            ),
+                          );
+                        },
+                        onPageChanged: (index) {
+                          selectDay = selectDay.add(Duration(days: _infinityPageControllerList.realIndex - _realIndex));
+                          _realIndex = _infinityPageControllerList.realIndex;
                           setState(() {});
                         },
                       ),
                     ),
                     Expanded(
-                      flex: 5,
-                      child: Stack(
-                        children: <Widget>[
-                          if(!isLoading) appbarWidgetsMap()[SharedPrefs.getTapIndex()],
-                          InkWell(
-                            onTap: ()async{
-                              final nextIndex = (_title.indexOf(SharedPrefs.getTapIndex()) +1)%_title.length;
-                              await SharedPrefs.setTapIndex(_title[nextIndex]);
-                              setState(() {});
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        onPressed: ()async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return EditForm(selectDay: selectDay,inputMode: InputMode.create);
-                              },
-                            ),
-                          );
-                          updateListViewCategory();
-                          dataUpdate();
+                      child: InfinityPageView(
+                        controller: _infinityPageController,
+                        itemCount: 3,
+                        itemBuilder: (content, index){
+                          return Column(
+                              children: <Widget>[
+                                //曜日用に1行作る。
+                                Row(children: weekList(),),
+                                scrollPage(index),
+                                if (_initialPage == index) Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) else Container()
+                              ],
+                            );
                         },
-                        icon: const Icon(Icons.add),
+                        onPageChanged: (index) {
+                          dataUpdate();
+                          _scrollIndex = 0;
+                          scrollValue(index);
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-              calendarClose.isEven
-              ? Container(
-                height:40,
-                child: Row(children: <Widget>[
-                  Expanded(
-                    flex:1,
-                    child: IconButton(
-                      onPressed: (){
-                        setState(() {
-                          selectMonthValue--;
-                          selectDay = selectOfMonth(selectMonthValue);
-                          dataUpdate();
-                        });
-                      },
-                      iconSize:30,
-                      icon: const Icon(Icons.arrow_left),
-                    ),
-                  ),
-                  Expanded(
-                    flex:5,
-                    //アイコン
-                    child:Align(
-                      alignment: Alignment.center,
-                      child: AutoSizeText(
-                            DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(selectMonthValue)),
-                            style: const TextStyle(
-                              fontSize: 30
-                            ),
-                        ),
-                    ),
-                  ),
-                  Expanded(
-                    flex:1,
-                    //アイコン
-                    child: IconButton(
-                      onPressed: (){
-                        setState(() {
-                          selectMonthValue++;
-                          selectDay = selectOfMonth(selectMonthValue);
-                          dataUpdate();
-                        });
-                      },
-                      iconSize:30,
-                      icon: const Icon(Icons.arrow_right),
-                    ),
-                  ),
-                ]),
-              )
-              :Container(
-                height: 40,
-                child: InfinityPageView(
-                  itemCount: 3,
-                  controller: _infinityPageControllerList,
-                  itemBuilder: (content, index) {
-                    return Container(
-                      child: Text(DateFormat(Localizations.localeOf(context).languageCode == 'ja' ? 'yyyy年MM月dd日': 'MMM d, yyyy').format(selectDay),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 30
-                        ),
-                      ),
-                    );
-                  },
-                  onPageChanged: (index) {
-                    selectDay = selectDay.add(Duration(days: _infinityPageControllerList.realIndex - _realIndex));
-                    _realIndex = _infinityPageControllerList.realIndex;
-                    setState(() {});
-                  },
-                ),
-              ),
-              Expanded(
-                child: InfinityPageView(
-                  controller: _infinityPageController,
-                  itemCount: 3,
-                  itemBuilder: (content, index){
-                    return Column(
-                        children: <Widget>[
-                          //曜日用に1行作る。
-                          Row(children: weekList(),),
-                          scrollPage(index),
-                          if (_initialPage == index) Expanded(child: SingleChildScrollView(child: Column( children: memoList() ))) else Container()
-                        ],
-                      );
-                  },
-                  onPageChanged: (index) {
-                    dataUpdate();
-                    _scrollIndex = 0;
-                    scrollValue(index);
-                  },
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        // SharedPrefs.getAdPositionTop()
+        //     ? Container()
+        //     : AdMob.adContainer(myBanner2),
+      ],
     );
   }
 
-  final List<String> _title =['month','year','both','monthDouble'];
+  final List<String> _title =['month','year','both','monthDouble', 'yearDouble'];
 
   Map<String,Widget> appbarWidgetsMap(){
     final _widgets = <String,Widget>{};
@@ -304,9 +357,32 @@ class _CalendarPageState extends State<CalendarPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Text("${Utils.commaSeparated(monthMap["PLUS"])}${SharedPrefs.getUnit()}",
-                  style: TextStyle(fontSize: 12.5, color: Colors.lightBlueAccent[200]),),
+                  style: TextStyle(fontSize: 12.5, color: App.plusColor),),
                 Text("${Utils.commaSeparated(monthMap["MINUS"])}${SharedPrefs.getUnit()}",
-                    style: TextStyle(fontSize: 12.5, color:Colors.redAccent[200])),
+                    style: TextStyle(fontSize: 12.5, color: App.minusColor)),
+              ],
+            ),
+          ],
+        )
+    );
+
+    _widgets['yearDouble']=(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Column(
+              children: [
+                Text('${AppLocalizations.of(context).annualTotal}：',style: const TextStyle(fontSize: 12.5)),
+                Text('${AppLocalizations.of(context).annualTotal}：',style: const TextStyle(fontSize: 12.5)),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Text("${Utils.commaSeparated(yearMap["PLUS"])}${SharedPrefs.getUnit()}",
+                  style: TextStyle(fontSize: 12.5, color: App.plusColor),),
+                Text("${Utils.commaSeparated(yearMap["MINUS"])}${SharedPrefs.getUnit()}",
+                    style: TextStyle(fontSize: 12.5, color:App.minusColor)),
               ],
             ),
           ],
@@ -395,42 +471,50 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(_today) ? Colors.red[300] : Colors.transparent ,
-                        child: AutoSizeText(
+              padding: const EdgeInsets.all(2.0),
+              child: Row(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      height: 46/3,
+                      color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(_today) ? Colors.red[300] : Colors.transparent ,
+                      child: Center(
+                        child: Text(
                           '${Utils.toInt(date.day)}',
-                          textAlign: TextAlign.center,
-                          minFontSize: 4,
-                          maxLines: 1,
+                          textAlign: TextAlign.left,
                           style: TextStyle(
-                            fontSize: 10.0,
-                            color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(_today) ? Colors.white : Colors.black ,
+                            fontSize: Utils.parseSize(context, 10.0),
+                            color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(_today) ? Colors.white : Colors.black87 ,
                           ),
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Container(),
-                      flex: 2,
-                    )
-                  ],
-                ),
+                  ),
+                  Spacer(flex: 3,)
+                ],
               ),
             ),
             //クリック時選択表示する。
             FlatButton(
               child: Container(),
-              onPressed: () {
-                selectDay = date;
-                setState((){});
+              onPressed: () async{
+                if(selectDay == date) {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return EditForm(selectDay: selectDay,inputMode: InputMode.create);
+                      },
+                    ),
+                  );
+                  updateListViewCategory();
+                  dataUpdate();
+                  reviewCount();
+                }else{
+                  selectDay = date;
+                  setState((){});
+                }
               },
             ),
           ],
@@ -469,7 +553,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               child: Text(
                                   '${Utils.commaSeparated(calendarList[i].money)}${SharedPrefs.getUnit()}　',
                                   style: TextStyle(
-                                      color: calendarList[i].money >= 0 ? Colors.lightBlueAccent[200] : Colors.redAccent[200]
+                                      color: calendarList[i].money >= 0 ? App.plusColor : App.minusColor
                                   )
                               ),
                             ),
@@ -505,7 +589,7 @@ class _CalendarPageState extends State<CalendarPage> {
     }
     return _list;
   }
-  Future<void> updateListView(DateTime month) async{
+  Future<void> updateListView(DateTime month) async {
 //全てのDBを取得
     calendarList = await databaseHelper.getCalendarMonthList(month);
     setState(() {});
@@ -520,8 +604,11 @@ class _CalendarPageState extends State<CalendarPage> {
     final selectMonthDate = DateTime(_today.year, _today.month + selectMonthValue+_scrollIndex, 1);
     monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);
     yearSum = await databaseHelper.getCalendarYearInt(selectMonthDate);
+    yearMap = await databaseHelper.getCalendarYearMap(selectMonthDate);
     isLoading = false;
     updateListView(selectOfMonth(selectMonthValue));
+    print(selectMonthDate);
+    print(monthMap);
     setState(() {});
   }
 
@@ -538,7 +625,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     child:AutoSizeText(
                       moneyOfDay(i,date),
                       style: TextStyle(
-                          color: i == 0 ? Colors.lightBlueAccent[200]:Colors.redAccent[200]
+                          color: i == 0 ? App.plusColor:App.minusColor
                       ),
                       minFontSize: 3,
                       maxLines: 1,

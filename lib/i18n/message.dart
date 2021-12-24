@@ -122,8 +122,8 @@ class Messages
 
     annualTotal: '年合計',
     monthlyTotal: '月合計',
-    monthlyTotalPlus: '月合計（＋）',
-    monthlyTotalMinus: '月合計（ー）',
+    monthlyTotalPlus: '月合計',
+    monthlyTotalMinus: '月合計',
   //編集ページ
     plus: 'プラス',
     minus: 'マイナス',
@@ -143,9 +143,8 @@ class Messages
     update: '更新',
     categoryEditing: 'カテゴリー編集',
 
-    addPosition: '広告の位置',
+    addPosition: '広告の位置を変更',
     unit: '単位',
-
     top: '上',
     bottom: '下',
     changeTo: 'に変更',
@@ -193,7 +192,6 @@ class Messages
 
     addPosition: 'Advertisement position',
     unit: 'unit',
-
     top: 'top',
     bottom: 'bottom',
     changeTo: ' change to',

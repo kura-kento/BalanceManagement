@@ -74,6 +74,16 @@ class DatabaseHelper {
     return   result[0]['MONEY'] ;
   }
 
+  //選択年を全て持ってくる
+  Future<Map<String,dynamic>> getCalendarYearMap(date) async{
+    final _text = DateFormat('yyyy').format(date);
+    final result = await this.database.rawQuery('SELECT COALESCE(SUM($colMoney),0) AS SUM,'
+        'COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,'
+        'COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS '
+        'FROM $tableName WHERE $colDate LIKE ?' ,[_text+'%']);
+    return  result[0];
+  }
+
 //挿入　更新　削除
   // Insert Operation: Insert a Note object to database
   Future<int> insertCalendar(Calendar calendar) async {
@@ -129,6 +139,24 @@ class DatabaseHelper {
     for (var i = 0; i < count; i++) {
       calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
     }
+    return calendarList;
+  }
+
+  Future<List> getMonthList(last_month) async {
+    final sql = "select sum($colMoney) as sum, strftime('%Y-%m', $colDate) as month from $tableName WHERE strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
+    final calendarList = await this.database.rawQuery(sql);
+    return calendarList;
+  }
+  //プラス収支を月集計
+  Future<List> getMonthListPlus(last_month) async {
+    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $tableName where $colMoney >= 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
+    final calendarList = await this.database.rawQuery(sql);
+    return calendarList;
+  }
+ //マイナス収支を月集計
+  Future<List> getMonthListMinus(last_month) async {
+    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $tableName where $colMoney < 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
+    final calendarList = await this.database.rawQuery(sql);
     return calendarList;
   }
 }

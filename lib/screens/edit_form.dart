@@ -2,6 +2,7 @@ import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
+import 'package:balancemanagement_app/utils/admob_service.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -9,6 +10,7 @@ import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'category_form.dart';
 
 enum InputMode{
@@ -29,6 +31,7 @@ class EditForm extends StatefulWidget {
 }
 
 class _EditFormState extends State<EditForm> {
+  final BannerAd myBanner = AdMob.admobBanner();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = [];
@@ -60,7 +63,18 @@ class _EditFormState extends State<EditForm> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    // FocusScope.of(context).requestFocus(new FocusNode());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if(AdMob.isNoAds() == false){
+      myBanner.load();
+    }
+
     return Container(
       color: Colors.grey[300],
       child: SafeArea(
@@ -71,7 +85,7 @@ class _EditFormState extends State<EditForm> {
               Align(
                 alignment: Alignment.topCenter,
                 child: SharedPrefs.getAdPositionTop()
-                    ? AdMob.banner()
+                    ? AdMob.adContainer(myBanner)
                     : Container(),
               ),
               Container(
@@ -95,7 +109,7 @@ class _EditFormState extends State<EditForm> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Container(),
+                      child: dustButton(),
                     ),
                   ],
                 ),
@@ -310,7 +324,7 @@ class _EditFormState extends State<EditForm> {
               ),
               SharedPrefs.getAdPositionTop()
                   ? Container()
-                  : AdMob.banner()
+                  : AdMob.adContainer(myBanner),
             ],
           ),
         ),
@@ -416,4 +430,5 @@ class _EditFormState extends State<EditForm> {
       });
     _selectCategory = _category.indexOf(widget.selectCalendarList.categoryId)+1;
   }
+
 }

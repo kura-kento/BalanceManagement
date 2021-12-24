@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/screens/calendar_page.dart';
+import 'package:balancemanagement_app/screens/password_screen.dart';
 import 'package:balancemanagement_app/screens/setting_page.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
+import 'package:balancemanagement_app/utils/page_animation.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'graph_page.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'graph_bar_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -16,12 +20,15 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  // BannerAd myBanner = AdMob.admobBanner();
+  final BannerAd myBanner = AdMob.admobBanner();
+  final BannerAd myBanner2 = AdMob.admobBanner2();
   //以下BottomNavigationBar設定
   int _currentIndex = 0;
   final _pageWidgets = [
     const CalendarPage(),
-    GraphPage(),
+    GraphBarPage(),
     SettingPage(),
   ];
 
@@ -31,11 +38,47 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
     });
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    tracking();
+  }
+
+  Future<void> tracking() async {
+    await AppTrackingTransparency.requestTrackingAuthorization();
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      // onResume処理
+      if(SharedPrefs.getIsPassword()){
+        Navigator.push(
+          context,
+          SlidePageRoute(
+            page:PassLock(),
+            settings: RouteSettings(name: '',),
+          ),
+        );
+
+      }
+    }
   }
 
   List<Widget> list() {
     return <Widget>[
-      AdMob.banner(),
+      // AdMob.adContainer(myBanner),
+      SharedPrefs.getAdPositionTop()
+          ?
+      AdMob.adContainer(myBanner)
+          :
+      AdMob.adContainer(myBanner2)
+      ,
       Expanded(child: _pageWidgets.elementAt(_currentIndex)),
     ];
   }
@@ -43,12 +86,19 @@ class _HomePageState extends State<HomePage> {
 //メインのページ
   @override
   Widget build(BuildContext context) {
+    print('isNoAds:' + AdMob.isNoAds().toString());
+    if(AdMob.isNoAds() == false){
+      myBanner.load();
+      myBanner2.load();
+    }
+
     return Container(
       color: Colors.grey[300],
       child: SafeArea(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Column(
+            // children: list(),),
               children: SharedPrefs.getAdPositionTop()
                   ? list()
                   : list().reversed.toList()),
@@ -64,6 +114,7 @@ class _HomePageState extends State<HomePage> {
             iconSize: 20.0,
             selectedFontSize: 10.0,
             unselectedFontSize: 8.0,
+            elevation: 1.0,
             currentIndex: _currentIndex,
             fixedColor: Colors.blueAccent,
             onTap: _onItemTapped,
