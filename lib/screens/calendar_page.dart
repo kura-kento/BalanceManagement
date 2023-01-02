@@ -497,7 +497,7 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
             ),
             //クリック時選択表示する。
-            FlatButton(
+            TextButton(
               child: Container(),
               onPressed: () async{
                 if(selectDay == date) {
@@ -542,8 +542,8 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                     ),
                     child: Slidable(
-                      actionPane: const SlidableDrawerActionPane(),
-                        actionExtentRatio: 0.15,
+                      //TODO: actionPane: const SlidableDrawerActionPane(),
+                      //TODO: actionExtentRatio: 0.15,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -559,17 +559,17 @@ class _CalendarPageState extends State<CalendarPage> {
                             ),
                           ],
                         ),
-                        secondaryActions: <Widget>[
-                          IconSlideAction(
-                              caption: '削除',
-                              color: Colors.red,
-                              icon: Icons.delete,
-                              onTap: () {
-                                _delete(calendarList[i].id);
-                                dataUpdate();
-                              }
-                           )
-                  ]
+                  // TODO:      secondaryActions: <Widget>[
+                  //         IconSlideAction(
+                  //             caption: '削除',
+                  //             color: Colors.red,
+                  //             icon: Icons.delete,
+                  //             onTap: () {
+                  //               _delete(calendarList[i].id);
+                  //               dataUpdate();
+                  //             }
+                  //          )
+                  // ]
                 ),
               ),
               onTap: () async{

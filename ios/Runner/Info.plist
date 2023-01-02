@@ -202,5 +202,7 @@
     <string>This identifier will be used to deliver personalized ads to you.</string>
     <key>SKAdNetworkIdentifier</key>
     <string>cstr6suwn9.skadnetwork</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>

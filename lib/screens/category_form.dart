@@ -79,9 +79,9 @@ class _CategoryPageState extends State<CategoryPage> {
                 flex: 2,
                 child: Padding(
                   padding: EdgeInsets.all(10.0),
-                  child: FlatButton(
-                    padding: EdgeInsets.all(20.0),
-                    color: Colors.grey[400],
+                  child: TextButton(
+                    // TODO: padding: EdgeInsets.all(20.0),
+                    // TODO: color: Colors.grey[400],
                     onPressed: () async{
                         _update(categoryList[i].id,titleControllerList[i].text, widget.moneyValue);
                         this.categoryList = await databaseHelperCategory.getCategoryList( widget.moneyValue == MoneyValue.income);

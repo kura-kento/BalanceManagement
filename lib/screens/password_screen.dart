@@ -25,9 +25,10 @@ class _PassLockState extends State<PassLock>{
     try {
       authenticated = await auth.authenticate(
           localizedReason: 'Scan your fingerprint to authenticate',
-          biometricOnly: true,
-          useErrorDialogs: true,
-          stickyAuth: false);
+          // biometricOnly: true,
+          // useErrorDialogs: true,
+          // stickyAuth: false
+      );
     } on PlatformException catch (e) {
       print(e);
     }

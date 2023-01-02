@@ -82,7 +82,7 @@ class _RewardWidgetState extends State<RewardWidget> {
     );
 
     _rewardedAd.setImmersiveMode(true);
-    _rewardedAd.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
+    _rewardedAd.show(onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
       print('$ad with reward $RewardItem(${reward.amount}, ${reward.type}');
       //ここに報酬を書く
       DateTime charge_Time = DateTime.parse(SharedPrefs.getRewardTime());

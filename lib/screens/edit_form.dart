@@ -2,7 +2,6 @@ import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
-import 'package:balancemanagement_app/utils/admob_service.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -128,7 +127,7 @@ class _EditFormState extends State<EditForm> {
                           children: <Widget>[
                             Expanded(
                               flex: 1,
-                              child: FlatButton(
+                              child: TextButton(
                                 child: Row(
                                   children: <Widget>[
                                     Expanded(
@@ -291,9 +290,9 @@ class _EditFormState extends State<EditForm> {
                         ),
                         Padding(
                             padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                            child: RaisedButton(
-                              color: Theme.of(context).primaryColorDark,
-                              textColor: Theme.of(context).primaryColorLight,
+                            child: ElevatedButton(
+                              //TODO: color: Theme.of(context).primaryColorDark,
+                              //TODO: textColor: Theme.of(context).primaryColorLight,
                               child: Text(
                                 AppLocalizations.of(context).save,
                                 textScaleFactor: 1.5,
@@ -337,10 +336,10 @@ class _EditFormState extends State<EditForm> {
       _list.add(
         Expanded(
           flex: 1,
-          child: RaisedButton(
+          child: ElevatedButton(
             child: Text(index == 0 ? AppLocalizations.of(context).plus : AppLocalizations.of(context).minus),
-            color: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
-            textColor: moneyValue == element ? Colors.white : Colors.grey[400],
+            //TODO: color: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
+            //TODO: textColor: moneyValue == element ? Colors.white : Colors.grey[400],
             onPressed: () {
               moneyValue = element;
               updateListViewCategory();
