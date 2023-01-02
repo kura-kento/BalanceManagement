@@ -80,20 +80,25 @@ class _CategoryPageState extends State<CategoryPage> {
                 child: Padding(
                   padding: EdgeInsets.all(10.0),
                   child: TextButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[400],
+                    ),
                     // TODO: padding: EdgeInsets.all(20.0),
-                    // TODO: color: Colors.grey[400],
                     onPressed: () async{
                         _update(categoryList[i].id,titleControllerList[i].text, widget.moneyValue);
                         this.categoryList = await databaseHelperCategory.getCategoryList( widget.moneyValue == MoneyValue.income);
                         setState(() {});
                     },
-                    child: Center(
-                      child: AutoSizeText(
-                        AppLocalizations.of(context).update,
-                        minFontSize: 4,
-                        maxLines: 1,
-                        style: TextStyle(fontSize: 25),
-                      )
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Center(
+                        child: AutoSizeText(
+                          AppLocalizations.of(context).update,
+                          minFontSize: 4,
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 25),
+                        )
+                      ),
                     ),
                   ),
                 )

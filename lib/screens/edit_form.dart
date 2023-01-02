@@ -291,8 +291,10 @@ class _EditFormState extends State<EditForm> {
                         Padding(
                             padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                             child: ElevatedButton(
-                              //TODO: color: Theme.of(context).primaryColorDark,
-                              //TODO: textColor: Theme.of(context).primaryColorLight,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColorDark,
+                                foregroundColor: Theme.of(context).primaryColorLight,
+                              ),
                               child: Text(
                                 AppLocalizations.of(context).save,
                                 textScaleFactor: 1.5,
@@ -338,8 +340,10 @@ class _EditFormState extends State<EditForm> {
           flex: 1,
           child: ElevatedButton(
             child: Text(index == 0 ? AppLocalizations.of(context).plus : AppLocalizations.of(context).minus),
-            //TODO: color: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
-            //TODO: textColor: moneyValue == element ? Colors.white : Colors.grey[400],
+            style: ElevatedButton.styleFrom(
+              backgroundColor: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
+              foregroundColor: moneyValue == element ? Colors.white : Colors.grey[400],
+            ),
             onPressed: () {
               moneyValue = element;
               updateListViewCategory();

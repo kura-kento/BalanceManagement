@@ -112,3 +112,5 @@ class _RestartWidgetState extends State<RestartWidget> {
 //todo　お問い合わせ(画像、募金)
 //todo　カラーテーマ
 //todo　広告の位置ボタン選択レイアウト
+// ・グラフページ「合計」タブ、マイナスの時もプラス表記の不具合修正
+// ・「編集ページ」整数が小数点表記となる不具合修正
