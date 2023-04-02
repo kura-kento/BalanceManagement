@@ -1,5 +1,6 @@
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
@@ -36,15 +37,23 @@ class DatabaseHelper {
     final String path = directory.path + '/calendar.db';
 
     // Open/指定されたパスにデータベースを作成する
-    final calendarsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
+    final calendarsDatabase = await openDatabase(path, version: 1, onCreate: _createDb,
+        onUpgrade:(Database db, int oldVersion, int newVersion) async {
+          await db.execute("ALTER TABLE memo ADD COLUMN create_at TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime'));");
+        }
+    );
     return calendarsDatabase;
   }
 
   static void _createDb(Database db, int newVersion) async {
-
     await db.execute('CREATE TABLE $tableName($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
-        '$colMoney INTEGER, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
+        '$colMoney REAL, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
   }
+
+  // static void _updateDb() async {
+  //   await db.execute('CREATE TABLE $tableName($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
+  //       '$colMoney INTEGER, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
+  // }
 
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCalendarMonthMapList(month) async {

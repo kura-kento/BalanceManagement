@@ -112,44 +112,7 @@ class _SettingPageState extends State<SettingPage> {
                                 Divider(color: Colors.grey,height:0),
                                 SelectDialog(),
                                 Divider(color: Colors.grey,height:0),
-                                InkWell(
-                                  child: Container(
-                                    padding: EdgeInsets.all(15.0),
-                                    child: Center(child: Text(
-                                      "${AppLocalizations.of(context).categoryEditing}（${AppLocalizations.of(context).plus}）",
-                                      textScaleFactor: 1.5,
-                                    )),
-                                  ) ,
-                                  onTap: (){
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return CategoryPage(moneyValue: MoneyValue.income);
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
-                                Divider(color: Colors.grey,height:0),
-                                InkWell(
-                                  child: Container(
-                                      padding: EdgeInsets.all(15.0),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Center(child: Text(
-                                        "${AppLocalizations.of(context).categoryEditing}（${AppLocalizations.of(context).minus}）",
-                                        textScaleFactor: 1.5,
-                                      ))
-                                  ),
-                                  onTap: (){
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return CategoryPage(moneyValue: MoneyValue.spending,);
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
+                                // InkWell()
                                 Divider(color: Colors.grey,height:0),
                                 Padding(
                                     padding: EdgeInsets.only(top:5,bottom:5),
@@ -261,7 +224,6 @@ class _SettingPageState extends State<SettingPage> {
                         ),
                       ),
                     ],
-
                   ),
                 ),
           ),

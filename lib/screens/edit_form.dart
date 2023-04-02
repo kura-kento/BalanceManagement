@@ -128,19 +128,31 @@ class _EditFormState extends State<EditForm> {
                             Expanded(
                               flex: 1,
                               child: TextButton(
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                          _categoryItems[_selectCategory]
-                                              .title),
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffffffff),
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: Color(0xff999999),
+                                        width: 0.0,
+                                      ),
                                     ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text("＞"),
-                                    )
-                                  ],
+                                  ),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        flex: 3,
+                                        child: Text(
+                                            _categoryItems[_selectCategory]
+                                                .title),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text("＞"),
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 onPressed: () {
                                   showCupertinoModalPopup(
@@ -149,49 +161,34 @@ class _EditFormState extends State<EditForm> {
                                       return StatefulBuilder(
                                           builder: (context, setState1) {
                                         return Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           children: <Widget>[
                                             Container(
                                               decoration: BoxDecoration(
-                                                color: Color(0xffffffff),
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Color(0xff999999),
-                                                    width: 0.0,
-                                                  ),
-                                                ),
+                                                color: Colors.red,
+                                                border: Border.all(color: Colors.black, width: 10),
+                                                borderRadius: BorderRadius.circular(20.0),
                                               ),
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: <Widget>[
                                                   CupertinoButton(
                                                     child: Text(
                                                       AppLocalizations.of(context).edit,
-                                                      style: TextStyle(
-                                                          color: Colors.cyan),
+                                                      style: TextStyle(color: Colors.cyan),
                                                     ),
                                                     onPressed: () async {
-                                                      await Navigator.of(
-                                                              context)
-                                                          .push(
-                                                              MaterialPageRoute(
-                                                        builder: (context) {
-                                                          return CategoryPage(
-                                                              moneyValue:
-                                                                  moneyValue);
-                                                        },
-                                                      ));
+                                                      await Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return CategoryPage(moneyValue: moneyValue);
+                                                          },
+                                                        ),
+                                                      );
                                                       updateListViewCategory();
                                                       setState1(() {});
                                                     },
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 16.0,
-                                                      vertical: 5.0,
-                                                    ),
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0,),
                                                   ),
                                                   CupertinoButton(
                                                     child: Text(
@@ -213,20 +210,12 @@ class _EditFormState extends State<EditForm> {
                                             ),
                                             Container(
                                               color: Color(0xffffffff),
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  3,
+                                              height: MediaQuery.of(context).size.height / 3,
                                               child: CupertinoPicker(
-                                                  scrollController:
-                                                      FixedExtentScrollController(
-                                                          initialItem:
-                                                              _selectCategory),
+                                                  scrollController: FixedExtentScrollController(initialItem: _selectCategory),
                                                   diameterRatio: 1.0,
                                                   itemExtent: 40.0,
-                                                  children: _categoryItems
-                                                      .map(_pickerItem)
-                                                      .toList(),
+                                                  children: _categoryItems.map(_pickerItem).toList(),
                                                   onSelectedItemChanged:
                                                       (int index) {
                                                     setState(() {
@@ -245,16 +234,13 @@ class _EditFormState extends State<EditForm> {
                             Expanded(
                                 flex: 2,
                                 child: Padding(
-                                    padding:
-                                        EdgeInsets.only(top: 15, bottom: 15),
+                                    padding: EdgeInsets.only(top: 15, bottom: 15),
                                     child: TextField(
                                       controller: titleController,
                                       // style: textStyle,
                                       decoration: InputDecoration(
                                           labelText: AppLocalizations.of(context).title,
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0))),
+                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
                                     )))
                           ],
                         ),
