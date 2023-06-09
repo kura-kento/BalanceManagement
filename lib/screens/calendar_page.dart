@@ -41,7 +41,7 @@ class _CalendarPageState extends State<CalendarPage> {
   int _initialPage = 0;
   int _scrollIndex = 0;
   Map<String,dynamic> monthMap;
-  int yearSum;
+  var yearSum;
   Map<String,dynamic> yearMap;
 
   InfinityPageController _infinityPageControllerList;
@@ -603,7 +603,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Future<void> dataUpdate() async{
     final selectMonthDate = DateTime(_today.year, _today.month + selectMonthValue+_scrollIndex, 1);
     monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);
-    yearSum = await databaseHelper.getCalendarYearInt(selectMonthDate);
+    yearSum = await databaseHelper.getCalendarYearDouble(selectMonthDate);
     yearMap = await databaseHelper.getCalendarYearMap(selectMonthDate);
     isLoading = false;
     updateListView(selectOfMonth(selectMonthValue));
@@ -638,9 +638,9 @@ class _CalendarPageState extends State<CalendarPage> {
     return _list;
 }
 //カレンダー表示している日の合計
-  String moneyOfDay(int value,DateTime date) {
-    var _plusMoney = 0;
-    var _minusMoney = 0;
+  String moneyOfDay(int _index, DateTime date) {
+    double _plusMoney = 0;
+    double _minusMoney = 0;
     for (var index = 0; index < calendarList.length; index++) {
       if (DateFormat.yMMMd().format(calendarList[index].date) == DateFormat.yMMMd().format(date)) {
         if (calendarList[index].money > 0) {
@@ -650,7 +650,7 @@ class _CalendarPageState extends State<CalendarPage> {
         }
       }
     }
-      return   '${Utils.commaSeparated(value == 0 ? _plusMoney : _minusMoney*(-1) )}${SharedPrefs.getUnit()}';
+      return   '${Utils.commaSeparated(_index == 0 ? _plusMoney : _minusMoney*(-1) )}${SharedPrefs.getUnit()}';
   }
 //iとjから日程のデータを出す（Date型）
   DateTime calendarDay(int i,int j) {

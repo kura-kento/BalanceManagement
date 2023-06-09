@@ -16,7 +16,7 @@ class SimpleBarChart extends StatefulWidget {
 }
 
 class _SimpleBarChartState extends State<SimpleBarChart> {
-  int sum;
+  double sum;
   String month = '';
   bool isMinus = false;
 
@@ -31,7 +31,7 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
             primaryMeasureAxis: charts.NumericAxisSpec(
               tickFormatterSpec: charts.BasicNumericTickFormatterSpec(
                       (num value) {
-                    return Utils.commaSeparated(value.floor()).toString() + SharedPrefs.getUnit();
+                    return Utils.commaSeparated(value).toString() + SharedPrefs.getUnit();
                   }
               ),
             ),

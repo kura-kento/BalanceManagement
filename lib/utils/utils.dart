@@ -2,17 +2,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
-class Utils{
+class Utils {
   //カンマ区切り
-  static String commaSeparated(int number){
+  static String commaSeparated(dynamic number) {
     final formatter = NumberFormat('#,###');
     return formatter.format(number);
   }
 
 //int型に変更
   static int toInt(value) {
+    if(value != '')
+      return int.parse(value.toString());
+    else
+      return 0;
+  }
+
+  static double toDouble(value) {
      if(value != '')
-       return int.parse(value.toString());
+       return double.parse(value.toString());
      else
        return 0;
   }

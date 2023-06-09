@@ -247,6 +247,9 @@ class _EditFormState extends State<EditForm> {
                         Row(
                           children: <Widget>[
                             expandedNull(1),
+                            /*
+                            * 金額　フォーム
+                            */
                             Expanded(
                               flex: 2,
                               child: Padding(
@@ -254,10 +257,9 @@ class _EditFormState extends State<EditForm> {
                                   child: TextFormField(
                                       //autofocus: true,
                                       controller: numberController,
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                       inputFormatters: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.digitsOnly
-                                        // FilteringTextInputFormatter.allow(RegExp(r'[0–9]+'))
+                                        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
                                       ],
                                       decoration: InputDecoration(
                                           labelText: moneyValue == MoneyValue.income
@@ -351,14 +353,14 @@ class _EditFormState extends State<EditForm> {
   Future <void> _save() async {
     if (widget.inputMode == InputMode.edit) {  // Case 1: Update operation
       await databaseHelper.updateCalendar(Calendar.withId(widget.selectCalendarList.id,
-                                                                  Utils.toInt(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
+                                                                  Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                                   '${titleController.text}',
                                                                   '${memoController.text}',
                                                                   widget.selectCalendarList.date,
                                                                   _categoryItems[_selectCategory].id)
       );
     } else { // Case 2: Insert Operation
-      await databaseHelper.insertCalendar(Calendar(Utils.toInt(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
+      await databaseHelper.insertCalendar(Calendar(Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
                                                             '${memoController.text}',
                                                             widget.selectDay,

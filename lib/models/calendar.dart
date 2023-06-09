@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 class Calendar {
 
   int _id;
-  int _money;
+  double _money;
   String _title;
   String _memo;
   DateTime _date;
@@ -15,7 +15,7 @@ class Calendar {
 
   int get id => _id;
 
-  int get money => _money;
+  double get money => _money;
 
   String get title => _title;
 
@@ -25,7 +25,7 @@ class Calendar {
 
   int get categoryId => _categoryId;
 
-  set money(int newMoney) {
+  set money(double newMoney) {
     print(newMoney);
     if ( newMoney.toString().length <=  6 ){
       this._money = newMoney;
@@ -49,14 +49,12 @@ class Calendar {
   }
 
   set categoryId(int newCategoryId) {
-      this._money = newCategoryId;
+      this._categoryId = newCategoryId;
   }
 
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
-
     Map<String, dynamic> map = <String, dynamic>{};
-
     map['id'] = _id;
     map['money'] = _money;
     map['title'] = _title;

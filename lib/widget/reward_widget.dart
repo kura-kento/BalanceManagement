@@ -28,7 +28,7 @@ class _RewardWidgetState extends State<RewardWidget> {
     String BannerUnitId = "";
     if(Platform.isAndroid) {
       // Android のとき
-      BannerUnitId = "ca-app-pub-7136658286637435/2517114489";
+      BannerUnitId = 'ca-app-pub-7136658286637435/7436653342';
 
       // Android のとき test
       // BannerUnitId =  "ca-app-pub-3940256099942544/5224354917";

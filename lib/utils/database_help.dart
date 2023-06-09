@@ -38,9 +38,9 @@ class DatabaseHelper {
 
     // Open/指定されたパスにデータベースを作成する
     final calendarsDatabase = await openDatabase(path, version: 1, onCreate: _createDb,
-        onUpgrade:(Database db, int oldVersion, int newVersion) async {
-          await db.execute("ALTER TABLE memo ADD COLUMN create_at TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime'));");
-        }
+        // onUpgrade:(Database db, int oldVersion, int newVersion) async {
+        //   await db.execute("ALTER TABLE memo ADD COLUMN create_at TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime'));");
+        // }
     );
     return calendarsDatabase;
   }
@@ -68,7 +68,7 @@ class DatabaseHelper {
     return result;
   }
   //選択月を全て持ってくる
-  Future<Map<String,dynamic>> getCalendarMonthInt(date) async{
+  Future<Map<String,dynamic>> getCalendarMonthInt(date) async {
     final _text = DateFormat('yyyy-MM').format(date);
     final result = await this.database.rawQuery('SELECT COALESCE(SUM($colMoney),0) AS SUM,'
         'COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,'
@@ -77,10 +77,10 @@ class DatabaseHelper {
     return  result[0];
   }
 
-  Future<int> getCalendarYearInt(date) async{
+  Future<dynamic> getCalendarYearDouble(date) async{
     var _text = DateFormat('yyyy').format(date);
     final result = await this.database.rawQuery('SELECT COALESCE(SUM($colMoney),0) AS MONEY FROM $tableName WHERE $colDate LIKE ?' ,[_text+'%']);
-    return   result[0]['MONEY'] ;
+    return result[0]['MONEY'];
   }
 
   //選択年を全て持ってくる

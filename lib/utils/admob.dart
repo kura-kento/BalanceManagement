@@ -8,7 +8,6 @@ class AdMob{
   static String getBannerAdUnitId() {
     // iOSとAndroidで広告ユニットIDを分岐させる
     if (Platform.isAndroid) {
-      // return 'ca-app-pub-3940256099942544/6300978111';
       // Androidの広告ユニットID
       return 'ca-app-pub-7136658286637435/7436653342';
     } else if (Platform.isIOS) {
