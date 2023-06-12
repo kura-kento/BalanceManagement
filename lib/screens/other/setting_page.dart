@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'category_form.dart';
+import '../calendar/category_form.dart';
 
 class SettingPage extends StatefulWidget {
 

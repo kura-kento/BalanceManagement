@@ -50,7 +50,7 @@ class _CategoryPageState extends State<CategoryPage> {
     );
   }
 
-  Widget categoryListWidget(){
+  Widget categoryListWidget() {
     List<Widget> _list = [];
     for (int i = 0; i < categoryList.length; i++) {
       _list.add(

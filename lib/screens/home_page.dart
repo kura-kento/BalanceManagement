@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
-import 'package:balancemanagement_app/screens/calendar_page.dart';
-import 'package:balancemanagement_app/screens/password_screen.dart';
-import 'package:balancemanagement_app/screens/setting_page.dart';
+import 'package:balancemanagement_app/screens/calendar/calendar_page.dart';
+import 'package:balancemanagement_app/screens/other/password_screen.dart';
+import 'package:balancemanagement_app/screens/other/setting_page.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/page_animation.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'graph_bar_page.dart';
+import 'graph/graph_bar_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);

@@ -1,5 +1,5 @@
 import 'package:balancemanagement_app/screens/home_page.dart';
-import 'package:balancemanagement_app/screens/password_screen.dart';
+import 'package:balancemanagement_app/screens/other/password_screen.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';

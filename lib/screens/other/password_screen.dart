@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_lock_screen/flutter_lock_screen.dart';
 import 'package:local_auth/local_auth.dart';
 
-import 'home_page.dart';
+import '../home_page.dart';
 
 class PassLock extends StatefulWidget {
   const PassLock({Key key}) : super(key: key);
