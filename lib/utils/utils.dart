@@ -36,5 +36,14 @@ class Utils {
   static double parseSize(context, value) {
     return value * MediaQuery.of(context).size.width / 375.0;
   }
+
+  // 小数点0の場合は切り上げする。
+  static String formatNumber(value) {
+    if (value == value.roundToDouble()) {
+      return value.round().toString();
+    } else {
+      return value.toString();
+    }
+  }
 }
 

@@ -9,7 +9,9 @@ import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'calendar_page.dart';
 import 'category_form.dart';
 
 enum InputMode{
@@ -17,19 +19,17 @@ enum InputMode{
   edit
 }
 
-class EditForm extends StatefulWidget {
+class EditForm extends ConsumerStatefulWidget {
+  EditForm({Key key, this.calendarId, this.inputMode}) : super(key: key);
 
-  EditForm({Key key, this.selectCalendarList, this.inputMode,this.selectDay}) : super(key: key);
-
-  final DateTime selectDay;
-  final Calendar selectCalendarList;
+  final int calendarId;
   final InputMode inputMode;
 
   @override
-  _EditFormState createState() => _EditFormState();
+  EditFormState createState() => EditFormState();
 }
 
-class _EditFormState extends State<EditForm> {
+class EditFormState extends ConsumerState<EditForm> {
   final BannerAd myBanner = AdMob.admobBanner();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
@@ -47,18 +47,25 @@ class _EditFormState extends State<EditForm> {
   TextEditingController numberController = TextEditingController();
   TextEditingController memoController = TextEditingController();
   FixedExtentScrollController scrollController = FixedExtentScrollController();
+  Calendar calendar;
+  DateTime selectDay;
 
   @override
   void initState() {
     if(widget.inputMode == InputMode.edit){
-      moneyValue = widget.selectCalendarList.money >= 0 ? MoneyValue.income:MoneyValue.spending;
-      numberController = TextEditingController(text: '${widget.selectCalendarList.money * (widget.selectCalendarList.money < 0 ? -1:1 )}');
-      titleController = TextEditingController(text: '${widget.selectCalendarList.title}');
-      memoController = TextEditingController(text: '${widget.selectCalendarList.memo}');
+      initData();
       defaultButton();
     }
     updateListViewCategory();
     super.initState();
+  }
+
+  Future<void> initData() async{
+    Calendar calendar = await DatabaseHelper().selectCalendar(widget.calendarId);
+    moneyValue = calendar.money >= 0 ? MoneyValue.income:MoneyValue.spending;
+    numberController = TextEditingController(text: '${calendar.money * (calendar.money < 0 ? -1:1 )}');
+    titleController = TextEditingController(text: '${calendar.title}');
+    memoController = TextEditingController(text: '${calendar.memo}');
   }
 
   @override
@@ -70,6 +77,7 @@ class _EditFormState extends State<EditForm> {
 
   @override
   Widget build(BuildContext context) {
+    selectDay = ref.watch(selectDayProvider);
     if(AdMob.isNoAds() == false){
       myBanner.load();
     }
@@ -352,18 +360,18 @@ class _EditFormState extends State<EditForm> {
 
   Future <void> _save() async {
     if (widget.inputMode == InputMode.edit) {  // Case 1: Update operation
-      await databaseHelper.updateCalendar(Calendar.withId(widget.selectCalendarList.id,
+      await databaseHelper.updateCalendar(Calendar.withId(widget.calendarId,
                                                                   Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                                   '${titleController.text}',
                                                                   '${memoController.text}',
-                                                                  widget.selectCalendarList.date,
+                                                                  calendar.date,
                                                                   _categoryItems[_selectCategory].id)
       );
     } else { // Case 2: Insert Operation
       await databaseHelper.insertCalendar(Calendar(Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
                                                             '${memoController.text}',
-                                                            widget.selectDay,
+                                                              selectDay,
                                                             _categoryItems[_selectCategory].id));
     }
   }
@@ -402,7 +410,7 @@ class _EditFormState extends State<EditForm> {
     if(widget.inputMode == InputMode.edit){
       return IconButton(
         onPressed: () {
-          _delete(widget.selectCalendarList.id);
+          _delete(widget.calendarId);
           moveToLastScreen();
           setState(() {});
         },
@@ -419,7 +427,7 @@ class _EditFormState extends State<EditForm> {
       _categoryList.forEach((Category category){
         _category.add(category.id);
       });
-    _selectCategory = _category.indexOf(widget.selectCalendarList.categoryId)+1;
+    _selectCategory = _category.indexOf(calendar.categoryId)+1;
   }
 
 }

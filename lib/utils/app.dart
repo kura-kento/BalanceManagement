@@ -12,6 +12,6 @@ class App {
 
    static double BTNfontsize = 10;
 
-
+   static int infinityPage = 10000;
 
 }

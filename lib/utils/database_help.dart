@@ -93,6 +93,47 @@ class DatabaseHelper {
     return  result[0];
   }
 
+  /*
+  * 【SELECT】 その日の合計値
+  * 使用済の料理の合計値 SUM PLUS MINUS
+   */
+  Future<List> sumPriceOfDay(DateTime _date) async {
+    String date = DateFormat('yyyy-MM-dd').format(_date);
+    final result = await database.rawQuery(
+        '''
+        SELECT sum($colMoney) AS SUM,
+        COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,
+        COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS 
+        FROM $tableName
+        WHERE $colDate LIKE '$date%'
+      '''
+    );
+    return result;
+  }
+
+  /*
+  * 【SELECT】 選択日のリストと金額一覧
+   */
+  Future<List> selectDayList(DateTime _date) async {
+    String date = DateFormat('yyyy-MM-dd').format(_date);
+    final result = await database.rawQuery(
+        '''
+        SELECT * FROM $tableName
+        WHERE $colDate LIKE '$date%'
+      '''
+    );
+    return result;
+  }
+
+  /*
+  * 【SELECT】 選択した収支
+   */
+  Future<Calendar> selectCalendar(int id) async {
+    final calendar = await this.database.query(tableName, where: 'id = ${id}');
+    final result = Calendar.fromMapObject(calendar[0]);
+    return result;
+  }
+
 //挿入　更新　削除
   // Insert Operation: Insert a Note object to database
   Future<int> insertCalendar(Calendar calendar) async {
@@ -123,19 +164,6 @@ class DatabaseHelper {
     //firstIntValueはlist型からint型に変更している。
     final result = Sqflite.firstIntValue(x);
     return result;
-  }
-
-  // 'Map List' [List <Map>]を取得し、それを 'Calendar List' [List <Note>]に変換します
-  Future<List<Calendar>> getCalendarMonthList(month) async {
-    //全てのデータを取得
-    final calendarMapList = await getCalendarMonthMapList(month); // Get 'Map List' from database
-    final count = calendarMapList.length;         // Count the number of map entries in db table
-
-    final calendarList = <Calendar>[];
-    for (var i = 0; i < count; i++) {
-      calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
-    }
-    return calendarList;
   }
 
   // 'Map List' [List <Map>]を取得し、それを 'Calendar List' [List <Note>]に変換します
