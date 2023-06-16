@@ -16,6 +16,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import '../../widget/app_bar.dart';
 import 'daySquare.dart';
 import 'edit_form.dart';
 
@@ -42,10 +43,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   //選択している日
   DateTime selectDay;
   int addMonth;
-
-  Map<String,dynamic> monthMap;
-  var yearSum;
-  Map<String,dynamic> yearMap;
 
   int calendarClose = 1;
   bool isLoading = true;
@@ -132,46 +129,35 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           Expanded(
                             flex: 1,
                             child: IconButton(
-                              icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
-                              onPressed: () {
-                                calendarClose++;
-                                setState(() {});
-                              },
+                                icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
+                                onPressed: () {
+                                  calendarClose++;
+                                  setState(() {});
+                                },
                             ),
                           ),
                           Expanded(
                             flex: 5,
-                            child: Stack(
-                              children: <Widget>[
-                                if(!isLoading) appbarWidgetsMap()[SharedPrefs.getTapIndex()],
-                                InkWell(
-                                  onTap: ()async{
-                                    final nextIndex = (_title.indexOf(SharedPrefs.getTapIndex()) +1)%_title.length;
-                                    await SharedPrefs.setTapIndex(_title[nextIndex]);
-                                    setState(() {});
-                                  },
-                                ),
-                              ],
-                            ),
+                            child: sumPriceWidget(),
                           ),
                           Expanded(
                             flex: 1,
                             child: IconButton(
-                              onPressed: ()async {
-                                await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return EditForm(calendarId: null,inputMode: InputMode.create);
-                                    },
-                                  ),
-                                );
-                                updateListViewCategory();
-                                dataUpdate();
-                                reviewCount();
-                              },
                               icon: const Icon(Icons.add),
+                              onPressed: ()async {
+                                  await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return EditForm(calendarId: null,inputMode: InputMode.create);
+                                      },
+                                    ),
+                                  );
+                                  updateListViewCategory();
+                                  dataUpdate();
+                                  reviewCount();
+                                },
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -181,7 +167,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                         Expanded(
                           flex:1,
                           child: IconButton(
-                            onPressed: (){
+                            onPressed: () {
                               setState(() {
                                 pageController.animateToPage(
                                   App.infinityPage + addMonth - 1, // 変更したいページのインデックス
@@ -253,108 +239,12 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     );
   }
 
-  final List<String> _title =['month','year','both','monthDouble', 'yearDouble'];
-
-  Map<String,Widget> appbarWidgetsMap(){
-    final _widgets = <String,Widget>{};
-    final _string = <String>[
-      "${AppLocalizations.of(context).monthlyTotal}：${Utils.commaSeparated(monthMap["SUM"])}${SharedPrefs.getUnit()}",
-      '${AppLocalizations.of(context).annualTotal}：${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}',
-    ];
-    for(var i=0;i<2;i++){
-      _widgets[_title[i]]=(
-        Center(
-          child: AutoSizeText(
-            _string[i],
-            minFontSize: 4,
-            maxLines: 1,
-            style: const TextStyle(fontSize: 25),
-          )
-        )
-      );
-    }
-    _widgets['both']=(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text('${AppLocalizations.of(context).annualTotal}：',style: const TextStyle(fontSize: 12.5),),
-              Text('${AppLocalizations.of(context).monthlyTotal}：',style: const TextStyle(fontSize: 12.5),)
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Text('${Utils.commaSeparated(yearSum)}${SharedPrefs.getUnit()}',
-                style: const TextStyle(fontSize: 12.5),),
-              Text("${Utils.commaSeparated(monthMap["SUM"])}${SharedPrefs.getUnit()}",
-                  style: const TextStyle(fontSize: 12.5)),
-            ],
-          ),
-        ],
-      )
-    );
-    _widgets['monthDouble']=(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Column(
-              children: [
-                Text('${AppLocalizations.of(context).monthlyTotalPlus}：',style: const TextStyle(fontSize: 12.5)),
-                Text('${AppLocalizations.of(context).monthlyTotalMinus}：',style: const TextStyle(fontSize: 12.5)),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Text("${Utils.commaSeparated(monthMap["PLUS"])}${SharedPrefs.getUnit()}",
-                  style: TextStyle(fontSize: 12.5, color: App.plusColor),),
-                Text("${Utils.commaSeparated(monthMap["MINUS"])}${SharedPrefs.getUnit()}",
-                    style: TextStyle(fontSize: 12.5, color: App.minusColor)),
-              ],
-            ),
-          ],
-        )
-    );
-
-    _widgets['yearDouble']=(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Column(
-              children: [
-                Text('${AppLocalizations.of(context).annualTotal}：',style: const TextStyle(fontSize: 12.5)),
-                Text('${AppLocalizations.of(context).annualTotal}：',style: const TextStyle(fontSize: 12.5)),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Text("${Utils.commaSeparated(yearMap["PLUS"])}${SharedPrefs.getUnit()}",
-                  style: TextStyle(fontSize: 12.5, color: App.plusColor),),
-                Text("${Utils.commaSeparated(yearMap["MINUS"])}${SharedPrefs.getUnit()}",
-                    style: TextStyle(fontSize: 12.5, color:App.minusColor)),
-              ],
-            ),
-          ],
-        )
-    );
-    return _widgets;
-  }
-
-  Future<void> updateListViewCategory() async{
+  Future<void> updateListViewCategory() async {
 //収支どちらか全てのDBを取得
     this.categoryList = await databaseHelperCategory.getCategoryListAll();
     setState(() {});
   }
   Future<void> dataUpdate() async {
-    final selectMonthDate = DateTime(_today.year, _today.month + selectMonthValue+addMonth, 1);
-    monthMap = await databaseHelper.getCalendarMonthInt(selectMonthDate);
-    yearSum = await databaseHelper.getCalendarYearDouble(selectMonthDate);
-    yearMap = await databaseHelper.getCalendarYearMap(selectMonthDate);
     isLoading = false;
     setState(() {});
   }
@@ -377,7 +267,8 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                         children: [
                           SlidableAction(
                             onPressed: (_) {
-                              // dishDelete(calendarData[index]['id']);
+                              _delete(calendarData[index]['id']);
+                              setState(() {});
                             },
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,
@@ -454,7 +345,63 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   }
 
   Future <void> _delete(int id) async{
-    await databaseHelper.deleteCalendar(id);
+    await DatabaseHelper().deleteCalendar(id);
   }
 
+  //
+  Widget sumPriceWidget() {
+    int tapCount = (SharedPrefs.getTapInt() % ['both','monthDouble', 'yearDouble'].length);
+    var list = [];
+    var title = [];
+    switch(tapCount) {
+      case 0:
+        title = [AppLocalizations.of(context).monthlyTotal,AppLocalizations.of(context).annualTotal];
+        list = ['MonthSUM','YearSUM'];
+        break;
+      case 1:
+        title = [AppLocalizations.of(context).monthlyTotal,AppLocalizations.of(context).monthlyTotal];
+        list = ['MonthPULS','MonthNINUS'];
+        break;
+      case 2:
+        title = [AppLocalizations.of(context).annualTotal,AppLocalizations.of(context).annualTotal];
+        list = ['YearPULS','YearNINUS'];
+        break;
+    }
+
+    return FutureBuilder(
+        future: DatabaseHelper().sumData(selectDay), // Future<T> 型を返す非同期処理
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            var  calendarData = snapshot.data;
+            return InkWell(
+              onTap: () {
+                SharedPrefs.setTapInt(SharedPrefs.getTapInt() + 1);
+                setState(() {});
+             },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Column(
+                    children: [
+                      Text('${title[0]}：',style: const TextStyle(fontSize: 12.5)),
+                      Text('${title[1]}：',style: const TextStyle(fontSize: 12.5)),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text("${Utils.commaSeparated(calendarData[list[0]])}${SharedPrefs.getUnit()}",
+                        style: TextStyle(fontSize: 12.5, color: tapCount == 0 ? Colors.black87 : App.plusColor),),
+                      Text("${Utils.commaSeparated(calendarData[list[1]])}${SharedPrefs.getUnit()}",
+                          style: TextStyle(fontSize: 12.5, color: tapCount == 0 ? Colors.black87 : App.minusColor)),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const CircularProgressIndicator();
+          }
+        });
+  }
 }

@@ -72,7 +72,7 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
 /// Sample ordinal data type.
 class OrdinalSales {
   final String year;
-  final int sales;
+  final double sales;
 
   OrdinalSales(this.year, this.sales);
 }

@@ -44,7 +44,7 @@ class _GraphBarPageState extends State<GraphBarPage> {
     setState(() {});
   }
 
-  List<OrdinalSales> dataSet(month_db){
+  List<OrdinalSales> dataSet(month_db) {
     var listIndex = 0;
     
     return List.generate(App.graphLength, (index){
@@ -55,7 +55,7 @@ class _GraphBarPageState extends State<GraphBarPage> {
       if(listIndex == month_db.length) return OrdinalSales(month_format ,0);
       if(_month == month_db[listIndex]['month']){
         listIndex++;
-        return OrdinalSales(month_format ,month_db[listIndex - 1]['sum']);
+        return OrdinalSales(month_format , month_db[listIndex - 1]['sum']);
       }
       return OrdinalSales(month_format ,0);
     });

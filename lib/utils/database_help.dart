@@ -94,6 +94,38 @@ class DatabaseHelper {
   }
 
   /*
+  * 【SELECT】 合計値
+  * 使用済の料理の合計値 SUM PLUS MINUS
+   */
+  Future<Map> sumData(DateTime _date) async {
+    String month = DateFormat('yyyy-MM').format(_date);
+    Map map = {};
+    final monthSum = await database.rawQuery(
+        '''
+          SELECT COALESCE(sum($colMoney), 0) AS MonthSUM,
+          COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS MonthPULS,
+          COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MonthNINUS 
+          FROM $tableName
+          WHERE $colDate LIKE '$month%'
+        '''
+    );
+    String year = DateFormat('yyyy').format(_date);
+    final yearSum = await database.rawQuery(
+        '''
+          SELECT COALESCE(sum($colMoney), 0) AS YearSUM,
+          COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS YearPULS,
+          COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS YearNINUS 
+          FROM $tableName
+          WHERE $colDate LIKE '$year%'
+        '''
+    );
+    map.addAll(monthSum[0]);
+    map.addAll(yearSum[0]);
+    // print(map);
+    return map;
+  }
+
+  /*
   * 【SELECT】 その日の合計値
   * 使用済の料理の合計値 SUM PLUS MINUS
    */

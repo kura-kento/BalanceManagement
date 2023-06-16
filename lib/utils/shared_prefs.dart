@@ -27,6 +27,10 @@ class SharedPrefs {
   static Future<bool> setTapIndex(String value) => _sharedPreferences.setString(tapIndex, value);
   static String getTapIndex() => _sharedPreferences.getString(tapIndex) ?? 'both';
 
+  static const tapInt = 'tapInt';
+  static Future<bool> setTapInt(int value) => _sharedPreferences.setInt(tapInt, value);
+  static int getTapInt() => _sharedPreferences.getInt(tapInt) ?? 0;
+
   static Future<bool> setAdPositionTop(bool value) => _sharedPreferences.setBool(adPositionTop, value);
   static bool getAdPositionTop() => _sharedPreferences.getBool(adPositionTop) ?? true;
 
