@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../utils/app.dart';
 import '../../utils/database_help.dart';
+import '../../utils/shared_prefs.dart';
 import '../../utils/utils.dart';
 import 'calendar_page.dart';
 import 'edit_form.dart';
@@ -73,68 +74,79 @@ class DaySquareState extends ConsumerState<DaySquare> {
   Widget squareValue(date) {
     return FutureBuilder(
         // SUM PLUS MINUS
-        future: DatabaseHelper().sumPriceOfDay(date), // Future<T> 型を返す非同期処理
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData) {
-            var  dish = snapshot.data;
-            return InkWell(
-              child: Column(children: [
+      future: DatabaseHelper().sumPriceOfDay(date), // Future<T> 型を返す非同期処理
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.hasData) {
+          var dayData = snapshot.data[0];
+          return InkWell(
+            child: Column(
+              children: [
                 const Spacer(flex: 1),
                 //　プラス金額
                 Expanded(
-                    flex: 1,
-                    child: Container(
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child:AutoSizeText(
-                              '${Utils.formatNumber(dish[0]['PLUS'])}円',
-                              style: TextStyle(
-                                  color: App.plusColor
-                              ),
-                              minFontSize: 3,
-                              maxLines: 1,
-                            )
-                        )
-                    )
+                  flex: 1,
+                  child:
+                  SharedPrefs.getIsZeroHidden() &&  dayData['PLUS'] == 0
+                      ?
+                  Container()
+                      :
+                  Container(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: AutoSizeText(
+                        '${Utils.formatNumber(dayData['PLUS'])}${SharedPrefs.getUnit()}',
+                        style: TextStyle(color: App.plusColor),
+                        minFontSize: 3,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ),
                 ),
                 //　マイナス金額
                 Expanded(
-                    flex: 1,
-                    child: Container(
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child:AutoSizeText(
-                              '${Utils.formatNumber(dish[0]['MINUS'])}円',
-                              style: TextStyle(
-                                  color: App.minusColor
-                              ),
-                              minFontSize: 3,
-                              maxLines: 1,
-                            )
-                        )
-                    )
-                ),
-              ],),
-              onTap: () async {
-                if(selectDay == date) {
-                  // TODO:
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return EditForm(calendarId: null, inputMode: InputMode.create,);
-                      },
+                  flex: 1,
+                  child:
+                  SharedPrefs.getIsZeroHidden() &&  dayData['MINUS'] == 0
+                      ?
+                  Container()
+                      :
+                  Container(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: AutoSizeText(
+                        '${Utils.formatNumber(dayData['MINUS'])}${SharedPrefs.getUnit()}',
+                        style: TextStyle(color: App.minusColor),
+                        minFontSize: 3,
+                        maxLines: 1,
+                      ),
                     ),
-                  );
-                  setState((){});
-                }else{
-                  ref.read(selectDayProvider.notifier).state = date;
-                }
-              },
-            );
-          } else {
-            return Container();
-          }
-        });
+                  ),
+                ),
+              ],
+            ),
+            onTap: () async {
+              if (selectDay == date) {
+                // TODO:
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return EditForm(
+                        calendarId: null,
+                        inputMode: InputMode.create,
+                      );
+                    },
+                  ),
+                );
+                setState(() {});
+              } else {
+                ref.read(selectDayProvider.notifier).state = date;
+              }
+            },
+          );
+        } else {
+          return Container();
+        }
+    });
   }
 
   Widget dayText(date) {

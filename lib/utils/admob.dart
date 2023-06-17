@@ -63,7 +63,7 @@ class AdMob{
     );
   }
 
-  static Widget adContainer(myBanner){
+  static Widget adContainer(myBanner) {
     DateTime charge_Time = DateTime.parse(SharedPrefs.getRewardTime());
     //分の差を出す。（マイナスなら現在時間からプラスする。）
     int diff_time = charge_Time.difference(DateTime.now()).inMinutes;

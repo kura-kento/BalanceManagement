@@ -16,7 +16,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import '../../widget/app_bar.dart';
+
 import 'daySquare.dart';
 import 'edit_form.dart';
 
@@ -145,7 +145,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                             flex: 1,
                             child: IconButton(
                               icon: const Icon(Icons.add),
-                              onPressed: ()async {
+                              onPressed: () async {
                                   await Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) {
@@ -163,7 +163,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                       ),
                     ),
                     Container(
-                      height:40,
+                      height: 40,
                       child: Row(children: <Widget>[
                         Expanded(
                           flex:1,
@@ -177,7 +177,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                                 );
                               });
                             },
-                            iconSize:30,
+                            iconSize: 30,
                             icon: const Icon(Icons.arrow_left),
                           ),
                         ),
@@ -198,7 +198,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           flex:1,
                           //アイコン
                           child: IconButton(
-                            onPressed: (){
+                            onPressed: () {
                               setState(() {
                                 pageController.animateToPage(
                                   App.infinityPage + addMonth + 1, // 変更したいページのインデックス
@@ -250,7 +250,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     setState(() {});
   }
 
-  // カレンダー下の料理リスト
+  // カレンダー下のリスト
   Widget dishesWidget()  {
     return FutureBuilder(
         future: DatabaseHelper().selectDayList(selectDay), // Future<T> 型を返す非同期処理
@@ -279,6 +279,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                       ),
                       child: InkWell(
                         child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
                           height: 40,
                           decoration: const BoxDecoration(
                             border: Border(bottom: BorderSide(width: 1, color: Colors.black26),),),
@@ -286,7 +287,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(calendarData[index]['title'] ?? ''),
-                              Text('${Utils.formatNumber(calendarData[index]['money'] ?? 0)}円'),
+                              Text('${Utils.formatNumber(calendarData[index]['money'] ?? 0)}${SharedPrefs.getUnit()}'),
                             ],
                           ),
                         ),
@@ -345,7 +346,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     return _title;
   }
 
-  Future <void> _delete(int id) async{
+  Future <void> _delete(int id) async {
     await DatabaseHelper().deleteCalendar(id);
   }
 
