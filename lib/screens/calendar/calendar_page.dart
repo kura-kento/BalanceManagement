@@ -126,16 +126,17 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                       color: Colors.grey[300],
                       child: Row(
                         children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: IconButton(
-                                icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
-                                onPressed: () {
-                                  calendarClose++;
-                                  setState(() {});
-                                },
-                            ),
-                          ),
+                          Spacer(flex: 1),
+                          // Expanded(
+                          //   flex: 1,
+                          //   child: IconButton(
+                          //       icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
+                          //       onPressed: () {
+                          //         calendarClose++;
+                          //         setState(() {});
+                          //       },
+                          //   ),
+                          // ),
                           Expanded(
                             flex: 5,
                             child: sumPriceWidget(),
@@ -400,7 +401,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
               ),
             );
           } else {
-            return const CircularProgressIndicator();
+            return Container();
           }
         });
   }

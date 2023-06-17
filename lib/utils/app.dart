@@ -14,6 +14,8 @@ class App {
 
    static int infinityPage = 10000;
 
+   static final EdgeInsets padding = const EdgeInsets.only(top: 15);
+
    static double appbar_height = 40.0;
    static Color primary_color = Color(0xffFFD865);
 

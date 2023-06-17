@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../../utils/app.dart';
 import 'calendar_page.dart';
 import 'category_form.dart';
 
@@ -123,11 +124,9 @@ class EditFormState extends ConsumerState<EditForm> {
               ),
               Expanded(
                 child: GestureDetector(
-                  onTap: () =>
-                      FocusScope.of(context).requestFocus(new FocusNode()),
+                  onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
                   child: Padding(
-                    padding:
-                        EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
+                    padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                     child: ListView(
                       children: <Widget>[
                         Row(children: btnPlusMinus()),
@@ -135,114 +134,41 @@ class EditFormState extends ConsumerState<EditForm> {
                           children: <Widget>[
                             Expanded(
                               flex: 1,
-                              child: TextButton(
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffffffff),
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: Color(0xff999999),
-                                        width: 0.0,
+                              child: Container(
+                                padding: App.padding,
+                                child: InkWell(
+                                    child: Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Color(0xff999999),
+                                          width: 1.0,
+                                        ),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Expanded(child: Text(_categoryItems[_selectCategory].title)),
+                                            Text("＞")
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        flex: 3,
-                                        child: Text(
-                                            _categoryItems[_selectCategory]
-                                                .title),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text("＞"),
-                                      )
-                                    ],
-                                  ),
+                                  // カテゴリボタンを押した時のプルダウンボタン
+                                  onTap: () {
+                                    pullDownVoid();
+                                  },
                                 ),
-                                onPressed: () {
-                                  showCupertinoModalPopup(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return StatefulBuilder(
-                                          builder: (context, setState1) {
-                                        return Column(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: <Widget>[
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                border: Border.all(color: Colors.black, width: 10),
-                                                borderRadius: BorderRadius.circular(20.0),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  CupertinoButton(
-                                                    child: Text(
-                                                      AppLocalizations.of(context).edit,
-                                                      style: TextStyle(color: Colors.cyan),
-                                                    ),
-                                                    onPressed: () async {
-                                                      await Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                          builder: (context) {
-                                                            return CategoryPage(moneyValue: moneyValue);
-                                                          },
-                                                        ),
-                                                      );
-                                                      updateListViewCategory();
-                                                      setState1(() {});
-                                                    },
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0,),
-                                                  ),
-                                                  CupertinoButton(
-                                                    child: Text(
-                                                      AppLocalizations.of(context).done,
-                                                      style: TextStyle(
-                                                          color: Colors.cyan),
-                                                    ),
-                                                    onPressed: () {
-                                                      moveToLastScreen();
-                                                    },
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 16.0,
-                                                      vertical: 5.0,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                              color: Color(0xffffffff),
-                                              height: MediaQuery.of(context).size.height / 3,
-                                              child: CupertinoPicker(
-                                                  scrollController: FixedExtentScrollController(initialItem: _selectCategory),
-                                                  diameterRatio: 1.0,
-                                                  itemExtent: 40.0,
-                                                  children: _categoryItems.map(_pickerItem).toList(),
-                                                  onSelectedItemChanged:
-                                                      (int index) {
-                                                    setState(() {
-                                                      _selectCategory = index;
-                                                    });
-                                                  }),
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                    },
-                                  );
-                                },
                               ),
                             ),
+                            const SizedBox(width: 8),
                             Expanded(
                                 flex: 2,
                                 child: Padding(
-                                    padding: EdgeInsets.only(top: 15, bottom: 15),
+                                    padding: App.padding,
                                     child: TextField(
                                       controller: titleController,
                                       // style: textStyle,
@@ -252,40 +178,32 @@ class EditFormState extends ConsumerState<EditForm> {
                                     )))
                           ],
                         ),
-                        Row(
-                          children: <Widget>[
-                            expandedNull(1),
-                            /*
-                            * 金額　フォーム
-                            */
-                            Expanded(
-                              flex: 2,
-                              child: Padding(
-                                  padding: EdgeInsets.only(top: 15, bottom: 15),
-                                  child: TextFormField(
-                                      //autofocus: true,
-                                      controller: numberController,
-                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                      inputFormatters: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
-                                      ],
-                                      decoration: InputDecoration(
-                                          labelText: moneyValue == MoneyValue.income
-                                                        ?
-                                                    AppLocalizations.of(context).income
-                                                        :
-                                                    AppLocalizations.of(context).spending,
-                                          border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(5.0)
-                                          )
-                                      )
-                                  )
-                              ),
+                        /*
+                        * 金額　フォーム
+                        */
+                        Padding(
+                            padding: App.padding,
+                            child: TextFormField(
+                              //autofocus: true,
+                                controller: numberController,
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
+                                ],
+                                decoration: InputDecoration(
+                                    labelText: moneyValue == MoneyValue.income
+                                        ?
+                                    AppLocalizations.of(context).income
+                                        :
+                                    AppLocalizations.of(context).spending,
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5.0)
+                                    )
+                                )
                             )
-                          ],
                         ),
                         Padding(
-                            padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                            padding: App.padding,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context).primaryColorDark,
@@ -300,9 +218,11 @@ class EditFormState extends ConsumerState<EditForm> {
                                 moveToLastScreen();
                                 setState(() {});
                               },
-                            )),
-                        Column(children: [
-                          TextField(
+                            ),
+                        ),
+                        Padding(
+                          padding: App.padding,
+                          child: TextField(
                             controller: memoController,
                             minLines: 1,
                             maxLength: 1000,
@@ -313,7 +233,7 @@ class EditFormState extends ConsumerState<EditForm> {
                             ),
                             maxLines: null,
                           ),
-                        ]),
+                        ),
                       ],
                     ),
                   ),
@@ -328,9 +248,14 @@ class EditFormState extends ConsumerState<EditForm> {
       ),
     );
   }
-  List<Widget> btnPlusMinus(){
+  List<Widget> btnPlusMinus() {
     List<Widget> _list = [];
     [MoneyValue.income,MoneyValue.spending].asMap().forEach((index,element) {
+      if(index == 1) {
+        _list.add(
+          SizedBox(width: 8)
+        );
+      }
       _list.add(
         Expanded(
           flex: 1,
@@ -398,14 +323,7 @@ class EditFormState extends ConsumerState<EditForm> {
     _categoryItems= _categoryItemsCache;
     setState(() {});
   }
-  Widget expandedNull(value){
-    return Expanded(
-        flex: value,
-        child:Container(
-          child:Text(""),
-        )
-    );
-  }
+
   Widget dustButton(){
     if(widget.inputMode == InputMode.edit){
       return IconButton(
@@ -430,4 +348,75 @@ class EditFormState extends ConsumerState<EditForm> {
     _selectCategory = _category.indexOf(calendar.categoryId)+1;
   }
 
+  void pullDownVoid() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (context, setState1) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xffffffff),
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Color(0xff999999),
+                          width: 0.0,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        CupertinoButton(
+                          child: Text(
+                            AppLocalizations.of(context).edit,
+                            style: TextStyle(color: Colors.cyan),
+                          ),
+                          onPressed: () async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return CategoryPage(moneyValue: moneyValue);
+                                },
+                              ),
+                            );
+                            updateListViewCategory();
+                            setState1(() {});
+                          },
+                        ),
+                        CupertinoButton(
+                          child: Text(
+                            AppLocalizations.of(context).done, style: TextStyle(color: Colors.cyan),
+                          ),
+                          onPressed: () {
+                            moveToLastScreen();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Color(0xffffffff),
+                    height: MediaQuery.of(context).size.height / 3,
+                    child: CupertinoPicker(
+                        scrollController: FixedExtentScrollController(initialItem: _selectCategory),
+                        diameterRatio: 1.0,
+                        itemExtent: 40.0,
+                        children: _categoryItems.map(_pickerItem).toList(),
+                        onSelectedItemChanged:
+                            (int index) {
+                          setState(() {
+                            _selectCategory = index;
+                          });
+                        }),
+                  ),
+                ],
+              );
+            });
+      },
+    );
+  }
 }
