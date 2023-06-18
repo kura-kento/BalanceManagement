@@ -9,7 +9,7 @@ class Day {
 
 class Week extends StatelessWidget {
   Week({Key key}) : super(key: key);
-  List<Day> week = [
+  final List<Day> week = [
     Day('日', Colors.red[200]),
     Day('月', Colors.grey[300]),
     Day('火', Colors.grey[300]),

@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
+import 'package:balancemanagement_app/screens/calendar/week.dart';
 import 'package:balancemanagement_app/utils/app.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
@@ -30,21 +31,10 @@ class CalendarPage extends ConsumerStatefulWidget {
 }
 
 class CalendarPageState extends ConsumerState<CalendarPage> {
-
-  DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Calendar> calendarList = <Calendar>[];
-
-  DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
-  List<Category> categoryList = <Category>[];
-
-  //表示月
-  int selectMonthValue = 0;
   final DateTime _today = DateTime.now();
   //選択している日
   DateTime selectDay;
   int addMonth;
-
-  int calendarClose = 1;
   bool isLoading = true;
 
   PageController pageController = PageController(initialPage: App.infinityPage);
@@ -52,8 +42,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   @override
   void initState() {
     // tracking();
-    updateListViewCategory();
-    dataUpdate();
+    // dataUpdate();
     super.initState();
   }
 
@@ -127,16 +116,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                       child: Row(
                         children: <Widget>[
                           Spacer(flex: 1),
-                          // Expanded(
-                          //   flex: 1,
-                          //   child: IconButton(
-                          //       icon:  Icon(calendarClose.isEven ? Icons.file_upload : Icons.file_download),
-                          //       onPressed: () {
-                          //         calendarClose++;
-                          //         setState(() {});
-                          //       },
-                          //   ),
-                          // ),
                           Expanded(
                             flex: 5,
                             child: sumPriceWidget(),
@@ -153,9 +132,9 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                                       },
                                     ),
                                   );
-                                  updateListViewCategory();
-                                  dataUpdate();
+                                  // dataUpdate();
                                   reviewCount();
+                                  setState(() {});
                                 },
                               ),
                             ),
@@ -187,7 +166,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           child:Align(
                             alignment: Alignment.center,
                             child: AutoSizeText(
-                                  DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(selectMonthValue)),
+                                  DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(addMonth)),
                                   style: const TextStyle(
                                     fontSize: 30
                                   ),
@@ -223,8 +202,9 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
+                              Week(),
                               DaySquare(),
-                              dishesWidget(),
+                              calendarBottomList(),
                             ],
                           ); // 日付ごとの四角の枠;
                         },
@@ -240,18 +220,13 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     );
   }
 
-  Future<void> updateListViewCategory() async {
-//収支どちらか全てのDBを取得
-    this.categoryList = await databaseHelperCategory.getCategoryListAll();
-    setState(() {});
-  }
-  Future<void> dataUpdate() async {
-    isLoading = false;
-    setState(() {});
-  }
+  // Future<void> dataUpdate() async {
+  //   isLoading = false;
+  //   setState(() {});
+  // }
 
   // カレンダー下のリスト
-  Widget dishesWidget()  {
+  Widget calendarBottomList()  {
     return FutureBuilder(
         future: DatabaseHelper().selectDayList(selectDay), // Future<T> 型を返す非同期処理
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -300,6 +275,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                               },
                             ),
                           );
+                          setState(() {});
                         },
                       ),
                     );
@@ -313,7 +289,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
 
 //iとjから日程のデータを出す（Date型）
   DateTime calendarDay(int i,int j) {
-    final startDay = DateTime(_today.year, _today.month + selectMonthValue+addMonth, 1);
+    final startDay = DateTime(_today.year, _today.month + addMonth, 1);
     final weekNumber = startDay.weekday;
     final calendarStartDay =
     startDay.add(Duration(days: -(weekNumber % 7) + (i + 7 * j)));
@@ -321,7 +297,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   }
 //月末の日を取得（来月の１日を取得して１引く）
   int endOfMonth() {
-    final startDay = DateTime(_today.year, _today.month + 1 + selectMonthValue+addMonth, 1);
+    final startDay = DateTime(_today.year, _today.month + 1 + addMonth, 1);
     final endOfMonth = startDay.add(const Duration(days: -1));
     final _endOfMonth = Utils.toInt(endOfMonth.day);
     return _endOfMonth;
@@ -330,20 +306,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   DateTime selectOfMonth(int value) {
     final _selectOfMonth = DateTime(_today.year, _today.month + value, 1);
     return  _selectOfMonth;
-  }
-
-  String categoryTitle(int id){
-    String _title;
-    if(id == 0){
-      _title = '';
-    }else{
-      for(var i=0;i < categoryList.length;i++){
-        if(categoryList[i].id == id){
-          _title = categoryList[i].title;
-        }
-      }
-    }
-    return _title;
   }
 
   Future <void> _delete(int id) async {
@@ -384,12 +346,14 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('${title[0]}：',style: const TextStyle(fontSize: 12.5)),
                       Text('${title[1]}：',style: const TextStyle(fontSize: 12.5)),
                     ],
                   ),
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Text("${Utils.commaSeparated(calendarData[list[0]])}${SharedPrefs.getUnit()}",
