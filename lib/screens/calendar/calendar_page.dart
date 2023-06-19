@@ -346,14 +346,14 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text('${title[0]}：',style: const TextStyle(fontSize: 12.5)),
                       Text('${title[1]}：',style: const TextStyle(fontSize: 12.5)),
                     ],
                   ),
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Text("${Utils.commaSeparated(calendarData[list[0]])}${SharedPrefs.getUnit()}",

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:balancemanagement_app/models/category.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -26,7 +27,7 @@ class DatabaseHelperCategory {
     return _databaseHelper;
   }
 
-  Database get database{
+  Database get database {
     return db;
   }
 
@@ -36,11 +37,13 @@ class DatabaseHelperCategory {
     String path = directory.path + '/category.db';
 
     // Open/指定されたパスにデータベースを作成する
-    var categoriesDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
+    var categoriesDatabase = await openDatabase(
+        path, version: 1, onCreate: _createDb,
+    );
     return categoriesDatabase;
   }
-  static void _createDb(Database db, int newVersion) async {
 
+  static void _createDb(Database db, int newVersion) async {
     await db.execute('CREATE TABLE $tableName($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
 
     await db.insert(tableName,Category("売上",true).toMap());
@@ -50,6 +53,7 @@ class DatabaseHelperCategory {
       await db.insert(tableName,Category("その他${i+1}",false).toMap());
     }
   }
+
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCategoryMapList() async {
 //		var result = await db.rawQuery('SELECT * FROM $noteTable order by $colPriority ASC');
@@ -94,17 +98,7 @@ class DatabaseHelperCategory {
     final result = Sqflite.firstIntValue(x);
     return result;
   }
-  Future<List<Category>> getCategoryListAll() async {
-    //全てのデータを取得
-    final categoryMapList = await getCategoryMapList(); // Get 'Map List' from database
-    final count = categoryMapList.length;         // Count the number of map entries in db table
 
-    final List<Category> categoryList = <Category>[];
-    for (int i = 0; i < count; i++) {
-        categoryList.add(Category.fromMapObject(categoryMapList[i]));
-    }
-    return categoryList;
-  }
   //カテゴリーリストで収支毎の値を取得する。
   Future<List<Category>> getCategoryList(value) async {
     //全てのデータを取得

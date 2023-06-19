@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
+import '../main.dart';
+
 class RewardWidget extends StatefulWidget {
   const RewardWidget({Key key}) : super(key: key);
 
@@ -14,12 +16,12 @@ class RewardWidget extends StatefulWidget {
 }
 
 class _RewardWidgetState extends State<RewardWidget> {
-
   RewardedAd _rewardedAd;
   int _numRewardedLoadAttempts = 0;
+  int maxFailedLoadAttempts = 3; //再度繰り返す回数
 
   @override
-  void initState(){
+  void initState() {
     _createRewardedAd();
     super.initState();
   }
@@ -28,7 +30,7 @@ class _RewardWidgetState extends State<RewardWidget> {
     String BannerUnitId = "";
     if(Platform.isAndroid) {
       // Android のとき
-      BannerUnitId = 'ca-app-pub-7136658286637435/7436653342';
+      BannerUnitId = 'ca-app-pub-7136658286637435/2517114489';
 
       // Android のとき test
       // BannerUnitId =  "ca-app-pub-3940256099942544/5224354917";
@@ -41,22 +43,23 @@ class _RewardWidgetState extends State<RewardWidget> {
 
   void _createRewardedAd() {
     RewardedAd.load(
-        // adUnitId: RewardedAd.testAdUnitId,
+      // adUnitId: RewardedAd.testAdUnitId,
         adUnitId: getRewardedUnitId(),
-        request: AdRequest(),
+        request: const AdRequest(),
         rewardedAdLoadCallback: RewardedAdLoadCallback(
           onAdLoaded: (RewardedAd ad) {
             print('$ad loaded.');
             _rewardedAd = ad;
             _numRewardedLoadAttempts = 0;
+            setState(() { }); //ボタンが活性
           },
           onAdFailedToLoad: (LoadAdError error) {
             print('RewardedAd failed to load: $error');
             _rewardedAd = null;
             _numRewardedLoadAttempts += 1;
-            // if (_numRewardedLoadAttempts <= maxFailedLoadAttempts) {
-            //   _createRewardedAd();
-            // }
+            if (_numRewardedLoadAttempts <= maxFailedLoadAttempts) {
+              _createRewardedAd();
+            }
           },
         ));
   }
@@ -66,13 +69,13 @@ class _RewardWidgetState extends State<RewardWidget> {
       print('Warning: attempt to show rewarded before loaded.');
       return;
     }
-    _rewardedAd.fullScreenContentCallback = FullScreenContentCallback(
+    _rewardedAd?.fullScreenContentCallback = FullScreenContentCallback(
       onAdShowedFullScreenContent: (RewardedAd ad) =>
           print('全画面広告を表示しています。'),
       onAdDismissedFullScreenContent: (RewardedAd ad) {
         print('$ad 全画面広告を閉じました');
         ad.dispose();
-        _createRewardedAd();
+        RestartWidget.restartApp(context);
       },
       onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
         print('$ad onAdFailedToShowFullScreenContent: $error');
@@ -81,20 +84,20 @@ class _RewardWidgetState extends State<RewardWidget> {
       },
     );
 
-    _rewardedAd.setImmersiveMode(true);
-    _rewardedAd.show(onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
+    _rewardedAd?.setImmersiveMode(true);
+    _rewardedAd?.show(onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
       print('$ad with reward $RewardItem(${reward.amount}, ${reward.type}');
       //ここに報酬を書く
-      DateTime charge_Time = DateTime.parse(SharedPrefs.getRewardTime());
+      DateTime chargeTime = DateTime.parse(SharedPrefs.getRewardTime());
       //分の差を出す。（マイナスなら現在時間からプラスする。）
-      int diff_time = charge_Time.difference(DateTime.now()).inMinutes;
+      int diffTime = chargeTime.difference(DateTime.now()).inMinutes;
 
-      DateTime addTime = (diff_time < 0
-                                ?
-                          DateTime.now()
-                                :
-                          charge_Time
-                          ).add(Duration(hours: App.addHours));
+      DateTime addTime = (diffTime < 0
+          ?
+      DateTime.now()
+          :
+      chargeTime
+      ).add(Duration(hours: App.addHours));
 
       SharedPrefs.setRewardTime(addTime.toString());
       setState(() {});
@@ -110,37 +113,37 @@ class _RewardWidgetState extends State<RewardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime charge_time = DateTime.parse(SharedPrefs.getRewardTime());
-    int diff_time = charge_time.difference(DateTime.now()).inHours;
+    DateTime chargeTime = DateTime.parse(SharedPrefs.getRewardTime());
+    int diffTime = chargeTime.difference(DateTime.now()).inHours;
     print('広告非表示期限：'+ SharedPrefs.getRewardTime());
-    print(diff_time);
+    print(diffTime);
 
     return Container(
-      padding: EdgeInsets.all(8.0),
+      color: Theme.of(context).backgroundColor,
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           SfLinearGauge(
             interval: 40,
             maximum: 360,
-            ranges: [
-            ],
+            ranges: const [],
             markerPointers: [
               LinearShapePointer(
-                value: diff_time * 1.0,
+                value: diffTime * 1.0,
               ),
             ],
             barPointers: [
               LinearBarPointer(
-                color:App.NoAdsButtonColor,
-                value: diff_time * 1.0,
+                color: App.NoAdsButtonColor,
+                value: diffTime * 1.0,
               )
             ],
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: App.NoAdsButtonColor, //ボタンの背景色
+              backgroundColor: App.NoAdsButtonColor, //ボタンの背景色
             ),
-            onPressed: () {
+            onPressed: _rewardedAd == null ? null : () {
               _showRewardedAd();
             },
             // battery_charge
@@ -150,7 +153,10 @@ class _RewardWidgetState extends State<RewardWidget> {
                 child: Text(
                   "リワード広告視聴で\n広告非表示期間を貯める(${App.addHours}時間)",
                   textScaleFactor: 1.5,
-                  style: TextStyle(fontSize: App.BTNfontsize),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: App.BTNfontsize
+                  ),
                 ),
               ),
             ),
@@ -160,6 +166,3 @@ class _RewardWidgetState extends State<RewardWidget> {
     );
   }
 }
-
-//sharedprefsに追加
-
