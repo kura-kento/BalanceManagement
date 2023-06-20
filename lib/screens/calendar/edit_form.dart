@@ -53,17 +53,19 @@ class EditFormState extends ConsumerState<EditForm> {
 
   @override
   void initState() {
-    if(widget.inputMode == InputMode.edit){
+    if(widget.inputMode == InputMode.edit) {
       initData();
       defaultButton();
+    } else {
+      moneyValue = SharedPrefs.getIsPlusButton() ? MoneyValue.income : MoneyValue.spending;
     }
     updateListViewCategory();
     super.initState();
   }
 
   Future<void> initData() async{
-    Calendar calendar = await DatabaseHelper().selectCalendar(widget.calendarId);
-    moneyValue = calendar.money >= 0 ? MoneyValue.income:MoneyValue.spending;
+    calendar = await DatabaseHelper().selectCalendar(widget.calendarId);
+    moneyValue = calendar.money >= 0 ? MoneyValue.income : MoneyValue.spending;
     numberController = TextEditingController(text: '${calendar.money * (calendar.money < 0 ? -1:1 )}');
     titleController = TextEditingController(text: '${calendar.title}');
     memoController = TextEditingController(text: '${calendar.memo}');
@@ -72,7 +74,7 @@ class EditFormState extends ConsumerState<EditForm> {
   @override
   void dispose() {
     // TODO: implement dispose
-    // FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus(new FocusNode());
     super.dispose();
   }
 
@@ -267,6 +269,7 @@ class EditFormState extends ConsumerState<EditForm> {
             ),
             onPressed: () {
               moneyValue = element;
+              SharedPrefs.setIsPlusButton(element == MoneyValue.income);
               updateListViewCategory();
               _selectCategory = 0;
               setState(() {});
@@ -277,7 +280,7 @@ class EditFormState extends ConsumerState<EditForm> {
     });
     return _list;
   }
-   moveToLastScreen() async{
+   moveToLastScreen() async {
     FocusScope.of(context).unfocus();
     await new Future.delayed(new Duration(microseconds: 3000));
     Navigator.pop(context);
@@ -285,6 +288,7 @@ class EditFormState extends ConsumerState<EditForm> {
 
   Future <void> _save() async {
     if (widget.inputMode == InputMode.edit) {  // Case 1: Update operation
+      print(calendar);
       await databaseHelper.updateCalendar(Calendar.withId(widget.calendarId,
                                                                   Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                                   '${titleController.text}',
@@ -300,7 +304,7 @@ class EditFormState extends ConsumerState<EditForm> {
                                                             _categoryItems[_selectCategory].id));
     }
   }
-  Future <void> _delete(int id) async{
+  Future <void> _delete(int id) async {
     await databaseHelper.deleteCalendar(id);
   }
   Widget _pickerItem(Category category) {
@@ -313,7 +317,7 @@ class EditFormState extends ConsumerState<EditForm> {
     );
   }
 
-  Future<void> updateListViewCategory() async{
+  Future<void> updateListViewCategory() async {
 //収支どちらか全てのDBを取得
     this.categoryList = await databaseHelperCategory.getCategoryList(moneyValue == MoneyValue.income);
     List<Category> _categoryItemsCache =[Category.withId(0, AppLocalizations.of(context).space, moneyValue == MoneyValue.income)];
@@ -324,7 +328,7 @@ class EditFormState extends ConsumerState<EditForm> {
     setState(() {});
   }
 
-  Widget dustButton(){
+  Widget dustButton() {
     if(widget.inputMode == InputMode.edit){
       return IconButton(
         onPressed: () {
@@ -338,8 +342,9 @@ class EditFormState extends ConsumerState<EditForm> {
       return SizedBox.shrink();
     }
   }
-//編集フォームでドロップダウンの位置決め
-  Future<void> defaultButton() async{
+
+  //編集フォームでドロップダウンの位置決め
+  Future<void> defaultButton() async {
       List<Category> _categoryList = await databaseHelperCategory.getCategoryList(moneyValue == MoneyValue.income ? true:false);
       List<int> _category = [];
       _categoryList.forEach((Category category){
@@ -348,6 +353,7 @@ class EditFormState extends ConsumerState<EditForm> {
     _selectCategory = _category.indexOf(calendar.categoryId)+1;
   }
 
+  // プルダウン
   void pullDownVoid() {
     showCupertinoModalPopup(
       context: context,
@@ -372,9 +378,7 @@ class EditFormState extends ConsumerState<EditForm> {
                       children: <Widget>[
                         CupertinoButton(
                           child: Text(
-                            AppLocalizations.of(context).edit,
-                            style: TextStyle(color: Colors.cyan),
-                          ),
+                            AppLocalizations.of(context).edit, style: TextStyle(color: Colors.cyan),),
                           onPressed: () async {
                             await Navigator.of(context).push(
                               MaterialPageRoute(

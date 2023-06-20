@@ -41,10 +41,15 @@ class SharedPrefs {
   static Future<bool> setIsPlus(bool value) => _sharedPreferences.setBool(isPlus, value);
   static bool getIsPlus() => _sharedPreferences.getBool(isPlus) ?? true;
 
+
+  static const isPlusButton = 'isPlusButton';
+  static Future<bool> setIsPlusButton(bool value) => _sharedPreferences.setBool(isPlusButton, value);
+  static bool getIsPlusButton() => _sharedPreferences.getBool(isPlusButton) ?? true;
+
   //0円を表示させない
   static const isZeroHidden = 'isZeroHidden';
   static Future<bool> setIsZeroHidden(bool value) => _sharedPreferences.setBool(isZeroHidden, value);
-  static bool getIsZeroHidden() => _sharedPreferences.getBool(isZeroHidden) ?? true;
+  static bool getIsZeroHidden() => _sharedPreferences.getBool(isZeroHidden) ?? false;
 
   //共通
   static Future<bool> setPassword(String value) => _sharedPreferences.setString(password, value);

@@ -73,7 +73,6 @@ class DaySquareState extends ConsumerState<DaySquare> {
   // その日の金額
   Widget squareValue(date) {
     return FutureBuilder(
-        // SUM PLUS MINUS
       future: DatabaseHelper().sumPriceOfDay(date), // Future<T> 型を返す非同期処理
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.hasData) {

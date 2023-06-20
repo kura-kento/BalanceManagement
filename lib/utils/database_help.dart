@@ -52,47 +52,49 @@ class DatabaseHelper {
   static void _createDb(Database db, int newVersion) async {
     await db.execute('CREATE TABLE $calendarTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
         '$colMoney REAL, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
-    
-    await db.execute('CREATE TABLE $categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
-    await db.insert(categoryTable,Category("売上",true).toMap());
-    await db.insert(categoryTable,Category("購入",false).toMap());
-    for(var i=0;i<6;i++){
-      await db.insert(categoryTable,Category("その他${i+1}",true).toMap());
-      await db.insert(categoryTable,Category("その他${i+1}",false).toMap());
+
+    if(newVersion == 3) {
+      await db.execute('CREATE TABLE $categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
+      await db.insert(categoryTable,Category("売上",true).toMap());
+      await db.insert(categoryTable,Category("購入",false).toMap());
+      for(var i=0;i<6;i++){
+        await db.insert(categoryTable,Category("その他${i+1}",true).toMap());
+        await db.insert(categoryTable,Category("その他${i+1}",false).toMap());
+      }
     }
   }
 
   static void _updateDb(Database db, int oldVersion, int newVersion) async {
 
-    if(Platform.isAndroid) {
-      // version2は小数点 カラム変更　
-      // 元のデータの名前を変更する
-      await db.execute('ALTER TABLE $calendarTable RENAME hoge');
+    if(newVersion == 3) {
+      // データの名前を変更する
+      await db.execute('ALTER TABLE $calendarTable RENAME TO hoge');
       // 新しいデータ型に変更したテーブルを作成
-      await db.execute('CREATE TABLE $calendarTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
-          '$colMoney REAL, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
+      await db.execute('CREATE TABLE $calendarTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colMoney REAL, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
       // データを移行する
       await db.execute('INSERT INTO $calendarTable SELECT * FROM hoge');
       // 名前の変更した元データを削除する
       await db.execute('DROP TABLE hoge');
+
     }
 
       // version3 カテゴリ移行
+      if(newVersion == 3) {
+        getApplicationDocumentsDirectory().then((directory) async {
+          await db.execute('ATTACH DATABASE "' + directory.path + "/category.db" + '" as sub').catchError((e) {
+            print(e);
+          }).whenComplete(() {
+            print("ATTACH　成功");
+          });
 
-      getApplicationDocumentsDirectory().then((directory) async {
-        // String absoluteEndPath = join(directory.path, "/category.db");
-        await db.execute('ATTACH DATABASE "' + directory.path + "/category.db" + '" as sub').catchError((e) {
-          print(e);
-        }).whenComplete(() {
-          print("ATTACH　成功");
+          await db.execute('CREATE TABLE main.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
+          // データを移行する
+          await db.execute('INSERT INTO main.$categoryTable SELECT * FROM sub.$categoryTable');
+          // アッタチを切る
+          await db.execute('DETACH sub');
         });
+      }
 
-        await db.execute('CREATE TABLE main.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
-        // データを移行する
-        await db.execute('INSERT INTO main.$categoryTable SELECT * FROM sub.$categoryTable');
-        // アッタチを切る
-        await db.execute('DETACH sub');
-      });
 
       // Directory directory = await getApplicationDocumentsDirectory();
       // 外部テーブルに接続する(アタッチ)

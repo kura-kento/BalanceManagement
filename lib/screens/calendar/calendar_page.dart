@@ -132,7 +132,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                                       },
                                     ),
                                   );
-                                  // dataUpdate();
                                   reviewCount();
                                   setState(() {});
                                 },
@@ -220,11 +219,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     );
   }
 
-  // Future<void> dataUpdate() async {
-  //   isLoading = false;
-  //   setState(() {});
-  // }
-
   // カレンダー下のリスト
   Widget calendarBottomList()  {
     return FutureBuilder(
@@ -267,11 +261,10 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           ),
                         ),
                         onTap: () async {
-                          //TODO:
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return EditForm(calendarId: calendarData[index]['id'],inputMode: InputMode.edit,);
+                                return EditForm(calendarId: calendarData[index]['id'], inputMode: InputMode.edit,);
                               },
                             ),
                           );

@@ -54,18 +54,6 @@ class _SettingPageState extends State<SettingPage> {
                           Divider(color: Colors.grey,height:0),
                           SelectDialog(),
                           Divider(color: Colors.grey,height:0),
-                          ListTile(
-                              title: Text('パスワードの有無'),
-                              trailing: CupertinoSwitch(
-                                value: SharedPrefs.getIsPassword(),
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    SharedPrefs.setIsPassword(value);
-                                  });
-                                },
-                              )
-                          ),
-                          Divider(color: Colors.grey,height:0),
                           InkWell(
                             child: Container(
                               padding: EdgeInsets.all(15.0),
@@ -87,6 +75,17 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                           Divider(color: Colors.grey,height:0),
                           ListTile(
+                              title: Text('パスワードの有無'),
+                              trailing: CupertinoSwitch(
+                                value: SharedPrefs.getIsPassword(),
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    SharedPrefs.setIsPassword(value);
+                                  });
+                                },
+                              )
+                          ),
+                          ListTile(
                             title: Container(
                               padding: EdgeInsets.only(top: 10),
                               child: TextField(
@@ -101,7 +100,7 @@ class _SettingPageState extends State<SettingPage> {
                                   labelText: "パスワード",
                                   border: OutlineInputBorder(),
                                 ),
-                                onChanged: (String value){
+                                onChanged: (String value) {
                                   SharedPrefs.setPassword(value);
                                 },
                               ),
@@ -121,32 +120,29 @@ class _SettingPageState extends State<SettingPage> {
                               ),
                             ),
                             onTap: () {
-                              setState(() {
-                                showCupertinoDialog(
-                                  context: context,
-                                  builder: (BuildContext context)
-                                  {
-                                    return CupertinoAlertDialog(
-                                      title: Text(AppLocalizations.of(context).deleteAllDialog),
-                                      //content: Text(""),
-                                      actions: <Widget>[
-                                        CupertinoDialogAction(
-                                          child: Text(AppLocalizations.of(context).delete),
-                                          onPressed: () =>
-                                              allDelete(),
-                                          isDestructiveAction: true,
-                                        ),
-                                        CupertinoDialogAction(
-                                          child: Text(AppLocalizations.of(context).cancel),
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          isDefaultAction: true,
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              });
+                                setState(() {
+                                  showCupertinoDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CupertinoAlertDialog(
+                                        title: Text(AppLocalizations.of(context).deleteAllDialog),
+                                        //content: Text(""),
+                                        actions: <Widget>[
+                                          CupertinoDialogAction(
+                                            child: Text(AppLocalizations.of(context).delete),
+                                            onPressed: () => allDelete(),
+                                            isDestructiveAction: true,
+                                          ),
+                                          CupertinoDialogAction(
+                                            child: Text(AppLocalizations.of(context).cancel),
+                                            onPressed: () => Navigator.of(context).pop(),
+                                            isDefaultAction: true,
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                });
                             },
                           ),
                           Divider(color: Colors.grey,height:0),

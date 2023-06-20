@@ -41,6 +41,7 @@ class _SettingDetailState extends State<SettingDetail> {
                         )
                     ),
                     squareText(),
+                    Container(height: 5.0,),
                     Divider(color: Colors.grey,height:0),
                     Padding(
                       padding: EdgeInsets.only(top:5,bottom:5),
@@ -78,7 +79,7 @@ class _SettingDetailState extends State<SettingDetail> {
                                   child:
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      primary: App.NoAdsButtonColor, //ボタンの背景色
+                                      backgroundColor: App.NoAdsButtonColor, //ボタンの背景色
                                     ),
                                     onPressed: () {
                                       setState(() {
