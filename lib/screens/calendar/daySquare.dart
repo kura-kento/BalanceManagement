@@ -11,7 +11,8 @@ import 'calendar_page.dart';
 import 'edit_form.dart';
 
 class DaySquare extends ConsumerStatefulWidget {
-  const DaySquare({Key key}) : super(key: key);
+  const DaySquare({Key key, this.parentFn}) : super(key: key);
+  final Function parentFn;
   @override
   DaySquareState createState() => DaySquareState();
 }
@@ -130,7 +131,7 @@ class DaySquareState extends ConsumerState<DaySquare> {
                     builder: (context) {
                       return EditForm(
                         calendarId: null,
-                        inputMode: InputMode.create,
+                        inputMode: InputMode.create,parentFn: widget.parentFn,
                       );
                     },
                   ),
