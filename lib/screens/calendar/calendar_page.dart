@@ -54,6 +54,16 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   // Future<void> tracking() async {
   //   await Admob.requestTrackingAuthorization();
   // }
+  // 親要素を更新するfunction
+  void _setStateFunction(String input) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(input),
+      ),
+    );
+    print("親要素更新");
+    setState(() {});
+  }
 
   void reviewCount() {
     print(SharedPrefs.getLoginCount());
@@ -63,7 +73,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
       AppReview.requestReview.then((onValue) {
         print(onValue);
       });
-    }else if (Platform.isAndroid && SharedPrefs.getLoginCount() % 20 == 0){
+    }else if (Platform.isAndroid && SharedPrefs.getLoginCount() % 20 == 0) {
       AppReview.requestReview.then((onValue) {
         print(onValue);
         // showDialog(
@@ -128,12 +138,12 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                                   await Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) {
-                                        return EditForm(calendarId: null,inputMode: InputMode.create);
+                                        return EditForm(calendarId: null, inputMode: InputMode.create,parentFn:_setStateFunction);
                                       },
                                     ),
                                   );
                                   reviewCount();
-                                  setState(() {});
+                                  // setState(() {});
                                 },
                               ),
                             ),
@@ -238,7 +248,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           SlidableAction(
                             onPressed: (_) {
                               _delete(calendarData[index]['id']);
-                              setState(() {});
+                              _setStateFunction('削除に成功しました');
                             },
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,
@@ -361,6 +371,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
           } else {
             return Container();
           }
-        });
+      });
   }
 }

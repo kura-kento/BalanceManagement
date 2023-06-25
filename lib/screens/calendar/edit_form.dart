@@ -3,7 +3,6 @@ import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
-import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,8 +20,9 @@ enum InputMode{
 }
 
 class EditForm extends ConsumerStatefulWidget {
-  EditForm({Key key, this.calendarId, this.inputMode}) : super(key: key);
+  EditForm({Key key, this.calendarId, this.inputMode, this.parentFn}) : super(key: key);
 
+  final Function parentFn;
   final int calendarId;
   final InputMode inputMode;
 
@@ -35,8 +35,6 @@ class EditFormState extends ConsumerState<EditForm> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = [];
-
-  DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = [];
 
   MoneyValue moneyValue = MoneyValue.income;
@@ -63,25 +61,46 @@ class EditFormState extends ConsumerState<EditForm> {
     super.initState();
   }
 
-  Future<void> initData() async{
+  Future<void> initData() async {
     calendar = await DatabaseHelper().selectCalendar(widget.calendarId);
+
+    //編集フォームでドロップダウンの位置決め
+    List<Category> _categoryList = await DatabaseHelper().getCategoryList(calendar.money >= 0);
+    List<int> _category = [];
+    _categoryList.forEach((Category category) {
+      _category.add(category.id);
+    });
+    _selectCategory = _category.indexOf(calendar.categoryId)+1;
+
     moneyValue = calendar.money >= 0 ? MoneyValue.income : MoneyValue.spending;
-    numberController = TextEditingController(text: '${calendar.money * (calendar.money < 0 ? -1:1 )}');
+    numberController = TextEditingController(text: '${Utils.formatNumber(calendar.money * (calendar.money < 0 ? -1:1 ))}');
     titleController = TextEditingController(text: '${calendar.title}');
     memoController = TextEditingController(text: '${calendar.memo}');
+  }
+
+  //編集フォームでドロップダウンの位置決め
+  Future<void> defaultButton() async {
+    // print(moneyValue == MoneyValue.income ? 'プラス':'マイナス');
+    // print(calendar.money >= 0 ? 'プラス':'マイナス');
+    // List<Category> _categoryList = await DatabaseHelper().getCategoryList(moneyValue == MoneyValue.income);
+    // List<int> _category = [];
+    // _categoryList.forEach((Category category) {
+    //   _category.add(category.id);
+    // });
+    // _selectCategory = _category.indexOf(calendar.categoryId)+1;
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    FocusScope.of(context).requestFocus(new FocusNode());
+    // FocusScope.of(context).requestFocus(new FocusNode());
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     selectDay = ref.watch(selectDayProvider);
-    if(AdMob.isNoAds() == false){
+    if(AdMob.isNoAds() == false) {
       myBanner.load();
     }
 
@@ -133,32 +152,30 @@ class EditFormState extends ConsumerState<EditForm> {
                       children: <Widget>[
                         Row(children: btnPlusMinus()),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Expanded(
                               flex: 1,
                               child: Container(
                                 padding: App.padding,
                                 child: InkWell(
-                                    child: Container(
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Color(0xff999999),
-                                          width: 1.0,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
+                                  child: Container(
+                                    height: 65,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Color(0xff999999),
+                                        width: 1.0,
                                       ),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Expanded(child: Text(_categoryItems[_selectCategory].title)),
-                                            Text("＞")
-                                          ],
-                                        ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[Expanded(child: Text(_categoryItems[_selectCategory].title)), Text("＞")],
                                       ),
                                     ),
+                                  ),
                                   // カテゴリボタンを押した時のプルダウンボタン
                                   onTap: () {
                                     pullDownVoid();
@@ -168,16 +185,16 @@ class EditFormState extends ConsumerState<EditForm> {
                             ),
                             const SizedBox(width: 8),
                             Expanded(
-                                flex: 2,
-                                child: Padding(
-                                    padding: App.padding,
-                                    child: TextField(
-                                      controller: titleController,
-                                      // style: textStyle,
-                                      decoration: InputDecoration(
-                                          labelText: AppLocalizations.of(context).title,
-                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-                                    )))
+                              flex: 2,
+                              child: Padding(
+                                padding: App.padding,
+                                child: TextField(
+                                  controller: titleController,
+                                  // style: textStyle,
+                                  decoration: InputDecoration(labelText: AppLocalizations.of(context).title, border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         /*
@@ -218,7 +235,8 @@ class EditFormState extends ConsumerState<EditForm> {
                               onPressed: () {
                                 _save();
                                 moveToLastScreen();
-                                setState(() {});
+                                widget.parentFn('保存に成功しました');
+                                // setState(() {});
                               },
                             ),
                         ),
@@ -280,14 +298,19 @@ class EditFormState extends ConsumerState<EditForm> {
     });
     return _list;
   }
-   moveToLastScreen() async {
-    FocusScope.of(context).unfocus();
-    await new Future.delayed(new Duration(microseconds: 3000));
-    Navigator.pop(context);
+
+ moveToLastScreen() async {
+    //
+    // await new Future.delayed(new Duration(microseconds: 3000));
+    Future.delayed(Duration(milliseconds: 1000))
+        .then((_) {
+      FocusScope.of(context).unfocus();
+      Navigator.pop(context);
+    });
   }
 
   Future <void> _save() async {
-    if (widget.inputMode == InputMode.edit) {  // Case 1: Update operation
+    if (widget.inputMode == InputMode.edit) {
       print(calendar);
       await databaseHelper.updateCalendar(Calendar.withId(widget.calendarId,
                                                                   Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
@@ -296,7 +319,7 @@ class EditFormState extends ConsumerState<EditForm> {
                                                                   calendar.date,
                                                                   _categoryItems[_selectCategory].id)
       );
-    } else { // Case 2: Insert Operation
+    } else {
       await databaseHelper.insertCalendar(Calendar(Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
                                                             '${memoController.text}',
@@ -318,10 +341,10 @@ class EditFormState extends ConsumerState<EditForm> {
   }
 
   Future<void> updateListViewCategory() async {
-//収支どちらか全てのDBを取得
-    this.categoryList = await databaseHelperCategory.getCategoryList(moneyValue == MoneyValue.income);
+    //収支どちらか全てのDBを取得
+    this.categoryList = await DatabaseHelper().getCategoryList(moneyValue == MoneyValue.income);
     List<Category> _categoryItemsCache =[Category.withId(0, AppLocalizations.of(context).space, moneyValue == MoneyValue.income)];
-    for(int i=0;i<categoryList.length;i++){
+    for(int i=0; i < categoryList.length; i++) {
       _categoryItemsCache.add(categoryList[i]);
     }
     _categoryItems= _categoryItemsCache;
@@ -329,7 +352,7 @@ class EditFormState extends ConsumerState<EditForm> {
   }
 
   Widget dustButton() {
-    if(widget.inputMode == InputMode.edit){
+    if(widget.inputMode == InputMode.edit) {
       return IconButton(
         onPressed: () {
           _delete(widget.calendarId);
@@ -338,19 +361,9 @@ class EditFormState extends ConsumerState<EditForm> {
         },
         icon: Icon(Icons.delete),
       );
-    }else{
+    } else {
       return SizedBox.shrink();
     }
-  }
-
-  //編集フォームでドロップダウンの位置決め
-  Future<void> defaultButton() async {
-      List<Category> _categoryList = await databaseHelperCategory.getCategoryList(moneyValue == MoneyValue.income ? true:false);
-      List<int> _category = [];
-      _categoryList.forEach((Category category){
-        _category.add(category.id);
-      });
-    _selectCategory = _category.indexOf(calendar.categoryId)+1;
   }
 
   // プルダウン
@@ -358,68 +371,69 @@ class EditFormState extends ConsumerState<EditForm> {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-            builder: (context, setState1) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xffffffff),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xff999999),
-                          width: 0.0,
-                        ),
+        return StatefulBuilder(builder: (context, setState1) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xffffffff),
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Color(0xff999999),
+                      width: 0.0,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    CupertinoButton(
+                      child: Text(
+                        AppLocalizations.of(context).edit,
+                        style: TextStyle(color: Colors.cyan),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        CupertinoButton(
-                          child: Text(
-                            AppLocalizations.of(context).edit, style: TextStyle(color: Colors.cyan),),
-                          onPressed: () async {
-                            await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return CategoryPage(moneyValue: moneyValue);
-                                },
-                              ),
-                            );
-                            updateListViewCategory();
-                            setState1(() {});
-                          },
-                        ),
-                        CupertinoButton(
-                          child: Text(
-                            AppLocalizations.of(context).done, style: TextStyle(color: Colors.cyan),
+                      onPressed: () async {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return CategoryPage(moneyValue: moneyValue);
+                            },
                           ),
-                          onPressed: () {
-                            moveToLastScreen();
-                          },
-                        ),
-                      ],
+                        );
+                        updateListViewCategory();
+                        setState1(() {});
+                      },
                     ),
-                  ),
-                  Container(
-                    color: Color(0xffffffff),
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: CupertinoPicker(
-                        scrollController: FixedExtentScrollController(initialItem: _selectCategory),
-                        diameterRatio: 1.0,
-                        itemExtent: 40.0,
-                        children: _categoryItems.map(_pickerItem).toList(),
-                        onSelectedItemChanged:
-                            (int index) {
-                          setState(() {
-                            _selectCategory = index;
-                          });
-                        }),
-                  ),
-                ],
-              );
-            });
+                    CupertinoButton(
+                      child: Text(
+                        AppLocalizations.of(context).done,
+                        style: TextStyle(color: Colors.cyan),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                color: Color(0xffffffff),
+                height: MediaQuery.of(context).size.height / 3,
+                child: CupertinoPicker(
+                    scrollController: FixedExtentScrollController(initialItem: _selectCategory),
+                    diameterRatio: 1.0,
+                    itemExtent: 40.0,
+                    children: _categoryItems.map(_pickerItem).toList(),
+                    onSelectedItemChanged: (int index) {
+                      setState(() {
+                        _selectCategory = index;
+                      });
+                    }),
+              ),
+            ],
+          );
+        });
       },
     );
   }

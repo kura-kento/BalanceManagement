@@ -4,7 +4,6 @@ import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/screens/other/setting_detail.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
-import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/widget/daialog_select.dart';
 import 'package:balancemanagement_app/widget/reward_widget.dart';
@@ -19,8 +18,6 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  DatabaseHelper databaseHelper = DatabaseHelper();
-  DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = <Category>[];
   TextEditingController passwordController = TextEditingController(text: SharedPrefs.getPassword());
 
@@ -159,18 +156,9 @@ class _SettingPageState extends State<SettingPage> {
     Navigator.pop(context);
   }
 
-  Widget expandedNull(value){
-    return Expanded(
-        flex: value,
-        child:Container(
-          child:Text(""),
-        )
-    );
-  }
-
   Future<void> updateListViewCategory() async{
 //全てのDBを取得
-     List<Category> _categoryList = await databaseHelperCategory.getCategoryList(true);
+     List<Category> _categoryList = await DatabaseHelper().getCategoryList(true);
       setState(() {
         this.categoryList = _categoryList;
       });
@@ -188,7 +176,7 @@ class _SettingPageState extends State<SettingPage> {
 //ダイアログ
 
   Future<void> allDelete() async{
-      await databaseHelper.allDeleteCalendar();
+      await DatabaseHelper().allDeleteCalendar();
       Navigator.of(context).pop();
   }
 

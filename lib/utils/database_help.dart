@@ -55,17 +55,16 @@ class DatabaseHelper {
 
     if(newVersion == 3) {
       await db.execute('CREATE TABLE $categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
-      await db.insert(categoryTable,Category("売上",true).toMap());
-      await db.insert(categoryTable,Category("購入",false).toMap());
+      await db.insert(categoryTable,Category("売上 ",true).toMap());
+      await db.insert(categoryTable,Category("購入 ",false).toMap());
       for(var i=0;i<6;i++){
-        await db.insert(categoryTable,Category("その他${i+1}",true).toMap());
-        await db.insert(categoryTable,Category("その他${i+1}",false).toMap());
+        await db.insert(categoryTable,Category("その他${i+1} ",true).toMap());
+        await db.insert(categoryTable,Category("その他${i+1} ",false).toMap());
       }
     }
   }
 
   static void _updateDb(Database db, int oldVersion, int newVersion) async {
-
     if(newVersion == 3) {
       // データの名前を変更する
       await db.execute('ALTER TABLE $calendarTable RENAME TO hoge');
@@ -75,59 +74,24 @@ class DatabaseHelper {
       await db.execute('INSERT INTO $calendarTable SELECT * FROM hoge');
       // 名前の変更した元データを削除する
       await db.execute('DROP TABLE hoge');
-
     }
-
-      // version3 カテゴリ移行
-      if(newVersion == 3) {
-        getApplicationDocumentsDirectory().then((directory) async {
-          await db.execute('ATTACH DATABASE "' + directory.path + "/category.db" + '" as sub').catchError((e) {
-            print(e);
-          }).whenComplete(() {
-            print("ATTACH　成功");
-          });
-
-          await db.execute('CREATE TABLE main.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
-          // データを移行する
-          await db.execute('INSERT INTO main.$categoryTable SELECT * FROM sub.$categoryTable');
-          // アッタチを切る
-          await db.execute('DETACH sub');
+    // version3 カテゴリ移行
+    if(newVersion == 3) {
+      getApplicationDocumentsDirectory().then((directory) async {
+        await db.execute('ATTACH DATABASE "' + directory.path + "/category.db" + '" as sub').catchError((e) {
+          print(e);
+        }).whenComplete(() {
+          print("ATTACH　成功");
         });
-      }
 
-
-      // Directory directory = await getApplicationDocumentsDirectory();
-      // 外部テーブルに接続する(アタッチ)
-      // await db.execute('ATTACH DATABASE "' + directory.path + "/category.db" + '" as sub').catchError((e) {
-      //   print(e);
-      // }).whenComplete(() {
-      //   print("ATTACH　成功");
-      // });
-      // await db.execute('CREATE TABLE main.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
-      // // データを移行する
-      // await db.execute('INSERT INTO main.$categoryTable SELECT * FROM sub.$categoryTable');
-      // // アッタチを切る
-      // await db.execute('DETACH sub');
+        await db.execute('CREATE TABLE main.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
+        // データを移行する
+        await db.execute('INSERT INTO main.$categoryTable SELECT * FROM sub.$categoryTable');
+        // アッタチを切る
+        await db.execute('DETACH sub');
+      });
+    }
   }
-
-  // DBの移行（アタッチ）
-  // static Future<Database> attachDb({Database db, String databaseName, String databaseAlias}) async {
-  //   // 外部テーブルに接続する(アタッチ)
-  //   Directory directory = await getApplicationDocumentsDirectory();
-  //   String absoluteEndPath = join(directory.path, databaseName);
-  //   await db.rawQuery('ATTACH DATABASE "$absoluteEndPath" as sub');
-  //   // print("アタッチ完了");
-  //   //
-  //   // await db.rawQuery('DETACH "$databaseAlias"');
-  //
-  //   return db;
-  // }
-  // =======初期設定 END======================
-
-  // static void _updateDb() async {
-  //   await db.execute('CREATE TABLE $calendarTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
-  //       '$colMoney INTEGER, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
-  // }
 
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
   Future<List<Map<String, dynamic>>> getCalendarMonthMapList(month) async {
@@ -236,10 +200,6 @@ class DatabaseHelper {
     });
     return result;
   }
-  // SELECT cal.*
-  // FROM $calendarTable AS cal
-  // INNER JOIN $categoryTable AS cat on cat.id = cal.$colCategoryId
-  // WHERE $colDate LIKE '$date%'
 
   /*
   * 【SELECT】 選択した収支
@@ -251,19 +211,16 @@ class DatabaseHelper {
   }
 
 //挿入　更新　削除
-  // Insert Operation: Insert a Note object to database
   Future<int> insertCalendar(Calendar calendar) async {
     var result = await this.database.insert(calendarTable, calendar.toMap());
     return result;
   }
 
-  // Update Operation: Update a Note object and save it to database
   Future<int> updateCalendar(Calendar calendar) async {
     final result = await this.database.update(calendarTable, calendar.toMap(), where: '$colId = ?', whereArgs: [calendar.id]);
     return result;
   }
 
-  // Delete Operation: Delete a Note object from database
   Future<int> deleteCalendar(int id) async {
     final result = await this.database.rawDelete('DELETE FROM $calendarTable WHERE $colId = $id');
     return result;
@@ -282,7 +239,6 @@ class DatabaseHelper {
     return result;
   }
 
-  // 'Map List' [List <Map>]を取得し、それを 'Calendar List' [List <Note>]に変換します
   Future<List<Calendar>> getCalendarList() async {
     //全てのデータを取得
     final calendarMapList = await getCalendarMapList(); // Get 'Map List' from database
@@ -293,6 +249,32 @@ class DatabaseHelper {
       calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
     }
     return calendarList;
+  }
+
+  //カテゴリーリストで収支毎の値を取得する。
+  Future<List<Category>> getCategoryList(value) async {
+    //全てのデータを取得
+    final categoryMapList = await getCategoryMapList(); // Get 'Map List' from database
+    final int count = categoryMapList.length;         // Count the number of map entries in db table
+
+    final List<Category> categoryList = [];
+
+    for (var i = 0; i < count; i++) {
+      if(categoryMapList[i]['plus'] == value.toString()){
+        categoryList.add(Category.fromMapObject(categoryMapList[i]));
+      }
+    }
+    return categoryList;
+  }
+
+  Future<int> updateCategory(Category category) async {
+    final result = await this.database.update(categoryTable, category.toMap(), where: '$colId = ?', whereArgs: [category.id]);
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> getCategoryMapList() async {
+    final result = await this.database.query(categoryTable, orderBy: '$colId ASC');
+    return result;
   }
 
   Future<List> getMonthList(last_month) async {

@@ -115,7 +115,7 @@ class _GraphBarPageState extends State<GraphBarPage> {
                   setState(() {});
               },
             ),
-            Text('収入・支出'),
+            Text('支出'),
             Radio(
               // title: Text('収支・支出'),
               value: RadioValue.Twice,

@@ -125,7 +125,6 @@ class DaySquareState extends ConsumerState<DaySquare> {
             ),
             onTap: () async {
               if (selectDay == date) {
-                // TODO:
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {

@@ -4,6 +4,8 @@ import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/database_help.dart';
+
 enum MoneyValue{
   income,
   spending
@@ -18,8 +20,6 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-
-  DatabaseHelperCategory databaseHelperCategory = DatabaseHelperCategory();
   List<Category> categoryList = [];
 
   List<TextEditingController> titleControllerList = [];
@@ -86,7 +86,7 @@ class _CategoryPageState extends State<CategoryPage> {
                     // TODO: padding: EdgeInsets.all(20.0),
                     onPressed: () async{
                         _update(categoryList[i].id,titleControllerList[i].text, widget.moneyValue);
-                        this.categoryList = await databaseHelperCategory.getCategoryList( widget.moneyValue == MoneyValue.income);
+                        this.categoryList = await DatabaseHelper().getCategoryList( widget.moneyValue == MoneyValue.income);
                         setState(() {});
                     },
                     child: Padding(
@@ -115,7 +115,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
   Future<void> updateListViewCategory(value) async{
 //収支どちらか全てのDBを取得
-      this.categoryList = await databaseHelperCategory.getCategoryList(value);
+      this.categoryList = await DatabaseHelper().getCategoryList(value);
       List<TextEditingController> _controllerList = [];
       for(int i=0;i < categoryList.length;i++){
         if(categoryList[i].plus == value){
@@ -135,7 +135,7 @@ class _CategoryPageState extends State<CategoryPage> {
         break;
       }
     }
-    await databaseHelperCategory.updateCategory(Category.withId(_id,after,(value == MoneyValue.income)));
+    await DatabaseHelper().updateCategory(Category.withId(_id,after,(value == MoneyValue.income)));
     print(_id);
   }
 }
