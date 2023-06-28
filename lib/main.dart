@@ -38,38 +38,14 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(color: Colors.white70),
         primarySwatch: Colors.grey,
         fontFamily: "Noto Sans JP",
+          cupertinoOverrideTheme: CupertinoThemeData(
+              textTheme: CupertinoTextThemeData(
+                dateTimePickerTextStyle: TextStyle(fontSize: 20.0, color: Colors.black87, fontFamily: "Noto Sans JP"),
+                pickerTextStyle: TextStyle(fontSize: 20.0, color: Colors.black87, fontFamily: "Noto Sans JP"),
+              )
+          )
       ),
-      home: CupertinoApp(
-        supportedLocales: [const Locale('ja', 'JP'), const Locale('en')],
-        localizationsDelegates: [const AppLocalizationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate, DefaultCupertinoLocalizations.delegate],
-        debugShowCheckedModeBanner: false,
-        theme: CupertinoThemeData(
-          primaryColor: Colors.black87,
-          textTheme: CupertinoTextThemeData(
-            // primaryColor: CupertinoColors.black, // プライマリカラー
-            tabLabelTextStyle: TextStyle(fontFamily: "Noto Sans JP"),
-            textStyle: TextStyle(
-            //   fontSize: 16.0,
-            //   color: CupertinoColors.black,
-            //   fontWeight: FontWeight.normal,
-              fontFamily: "Noto Sans JP",
-            ),
-            pickerTextStyle: TextStyle(
-              // fontSize: 16.0,
-              // color: CupertinoColors.black,
-              // fontWeight: FontWeight.normal,
-              fontFamily: "Noto Sans JP",
-            ),
-            navTitleTextStyle: TextStyle(
-            //   fontSize: 18.0,
-            //   color: CupertinoColors.black,
-            //   fontWeight: FontWeight.bold,
-              fontFamily: "Noto Sans JP",
-            ),
-            // 他のテキストスタイルを追加することもできます
-          ),
-        ),
-        home: FutureBuilder(
+      home: FutureBuilder(
           //AsyncSnapshot = future:　の中
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
@@ -84,7 +60,6 @@ class MyApp extends StatelessWidget {
           },
           future: setting(),
         ),
-      ),
     );
   }
   Future<Widget> setting()async{

@@ -3,12 +3,9 @@ import 'dart:io';
 import 'package:app_review/app_review.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
-import 'package:balancemanagement_app/models/calendar.dart';
-import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/screens/calendar/week.dart';
 import 'package:balancemanagement_app/utils/app.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
-import 'package:balancemanagement_app/utils/datebase_help_category.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,12 +53,12 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   // }
   // 親要素を更新するfunction
   void _setStateFunction(String input) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(input),
-      ),
-    );
-    print("親要素更新");
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: Text(input),
+    //   ),
+    // );
+    // print("親要素更新");
     setState(() {});
   }
 
@@ -76,31 +73,29 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     }else if (Platform.isAndroid && SharedPrefs.getLoginCount() % 20 == 0) {
       AppReview.requestReview.then((onValue) {
         print(onValue);
-        // showDialog(
-        //   context: context,
-        //   builder: (_) {
-        //     return AlertDialog(
-        //       title: Text("このアプリは満足していますか？"),
-        //       // content: Text("このアプリは満足していますか？"),
-        //       actions: <Widget>[
-        //         // ボタン領域
-        //         FlatButton(
-        //           child: Text("いいえ"),
-        //           onPressed: () {
-        //             Navigator.pop(context);
-        //           },
-        //         ),
-        //         FlatButton(
-        //           child: Text("はい"),
-        //           onPressed: () {
-        //             Navigator.pop(context);
-        //             print(onValue);
-        //           },
-        //         ),
-        //       ],
-        //     );
-        //   },
-        // );
+        showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: Text("このアプリは満足していますか？"),
+              // content: Text("このアプリは満足していますか？"),
+              actions: <Widget>[
+                // ボタン領域
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("いいえ")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      print(onValue);
+                    },
+                    child: Text("はい")),
+              ],
+            );
+          },
+        );
       });
     }
   }
@@ -138,7 +133,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                                   await Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) {
-                                        return EditForm(calendarId: null, inputMode: InputMode.create,parentFn:_setStateFunction);
+                                        return EditForm(calendarId: null, inputMode: InputMode.create, parentFn:_setStateFunction);
                                       },
                                     ),
                                   );
@@ -212,7 +207,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           return Column(
                             children: [
                               Week(),
-                              DaySquare(),
+                              DaySquare(parentFn: _setStateFunction,),
                               calendarBottomList(),
                             ],
                           ); // 日付ごとの四角の枠;
@@ -274,7 +269,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return EditForm(calendarId: calendarData[index]['id'], inputMode: InputMode.edit,);
+                                return EditForm(calendarId: calendarData[index]['id'], inputMode: InputMode.edit, parentFn: _setStateFunction,);
                               },
                             ),
                           );

@@ -39,7 +39,7 @@ class EditFormState extends ConsumerState<EditForm> {
 
   MoneyValue moneyValue = MoneyValue.income;
 
-  List<Category> _categoryItems =[Category.withId(0, "カテゴリー", true)];
+  List<Category> _categoryItems =[Category.withId(0, "（空白）", true)];
   int _selectCategory = 0;
 
   TextEditingController titleController = TextEditingController();
