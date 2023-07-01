@@ -29,6 +29,7 @@ dependencies:
   path_provider: ^2.0.11
   shared_preferences: ^2.0.15
   syncfusion_flutter_gauges: ^20.4.41
+  keyboard_actions: ^3.4.7
 #  intl: ^0.16.0
 #  path_provider_macos: ^0.0.1
 #  admob_flutter: ^1.0.1

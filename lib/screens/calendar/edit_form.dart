@@ -10,7 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:keyboard_actions/keyboard_actions_item.dart';
 import '../../utils/app.dart';
+import '../../widget/CustomKeyboardTextField.dart';
 import 'calendar_page.dart';
 import 'category_form.dart';
 
@@ -48,6 +51,7 @@ class EditFormState extends ConsumerState<EditForm> {
   FixedExtentScrollController scrollController = FixedExtentScrollController();
   Calendar calendar;
   DateTime selectDay;
+  FocusNode moneyFocusNode = new FocusNode();
 
   @override
   void initState() {
@@ -202,24 +206,7 @@ class EditFormState extends ConsumerState<EditForm> {
                         */
                         Padding(
                             padding: App.padding,
-                            child: TextFormField(
-                              //autofocus: true,
-                                controller: numberController,
-                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
-                                ],
-                                decoration: InputDecoration(
-                                    labelText: moneyValue == MoneyValue.income
-                                        ?
-                                    AppLocalizations.of(context).income
-                                        :
-                                    AppLocalizations.of(context).spending,
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5.0)
-                                    )
-                                )
-                            )
+                            child: CustomKeyboardTextField()
                         ),
                         Padding(
                             padding: App.padding,
@@ -435,6 +422,34 @@ class EditFormState extends ConsumerState<EditForm> {
           );
         });
       },
+    );
+  }
+
+  KeyboardActionsConfig _buildConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor:  const Color(0xFFd5d7de),
+      nextFocus: false,
+      actions: [
+        KeyboardActionsItem(focusNode: moneyFocusNode, toolbarButtons: [
+              (node) {
+            return GestureDetector(
+              onTap: () {
+                _save();
+                node.unfocus();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  AppLocalizations.of(context).done,
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 0, 122, 255), fontSize: 20),
+                ),
+              ),
+            );
+          }
+        ]),
+      ],
     );
   }
 }
