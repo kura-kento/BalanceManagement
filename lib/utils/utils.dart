@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class Utils {
   //カンマ区切り
@@ -32,6 +33,10 @@ class Utils {
       return value;
     }
   }
+
+  static String numDel(number) {
+    return number.substring(0, number.length - 1);
+  }
 //何文字以上で…に変える
   static double parseSize(context, value) {
     return value * MediaQuery.of(context).size.width / 375.0;
@@ -45,5 +50,27 @@ class Utils {
       return value.toString();
     }
   }
+
+  //四則演算　変換
+  static String parseOperation(value) {
+    if(value == '×') {
+      return '*';
+    }else if(value == '÷') {
+      return '/';
+    }
+    return value;
+  }
+
+  //　文字列を計算する
+  static String evaluate(value) {
+    try {
+      final expression = Parser().parse(value);
+      final double result = expression.evaluate(EvaluationType.REAL, ContextModel());
+      return result.toString();
+    } catch (e) {
+      return 'Error';
+    }
+  }
+
 }
 

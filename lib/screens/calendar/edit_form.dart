@@ -236,7 +236,7 @@ class EditFormState extends ConsumerState<EditForm> {
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context).memo,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0)),
+                                  borderRadius: BorderRadius.circular(5.0),),
                             ),
                             maxLines: null,
                           ),
