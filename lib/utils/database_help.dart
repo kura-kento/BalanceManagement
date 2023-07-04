@@ -13,7 +13,7 @@ class DatabaseHelper {
   static DatabaseHelper _databaseHelper;    // Singleton DatabaseHelper
   static Database db;                // Singleton Database
 
-  static String calendarTable = 'claendar';
+  static String calendarTable = 'calendar';
   static String colId = 'id';
   static String colMoney = 'money';
   static String colTitle = 'title';
@@ -188,7 +188,7 @@ class DatabaseHelper {
     String date = DateFormat('yyyy-MM-dd').format(_date);
     final result = await database.rawQuery(
         '''
-  SELECT $calendarTable.* , ($categoryTable.$colTitle || $calendarTable.$colTitle) AS title
+  SELECT $calendarTable.* , (ifnull($categoryTable.$colTitle, '') || ifnull($calendarTable.$colTitle, '')) AS title
   FROM $calendarTable
   LEFT JOIN $categoryTable ON $categoryTable.id = $calendarTable.$colCategoryId
   WHERE $colDate LIKE '$date%'
