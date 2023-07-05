@@ -1,7 +1,7 @@
 name: balancemanagement_app
 description: A new Flutter application.
 
-version: 1.5.1+12
+version: 1.5.1+14
 
 environment:
   sdk: ">=2.2.2 <3.0.0"

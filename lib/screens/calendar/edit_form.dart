@@ -39,7 +39,7 @@ class EditFormState extends ConsumerState<EditForm> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = [];
   List<Category> categoryList = [];
-
+  bool _isDisabled = false;
   MoneyValue moneyValue = MoneyValue.income;
 
   List<Category> _categoryItems =[Category.withId(0, "（空白）", true)];
@@ -219,7 +219,8 @@ class EditFormState extends ConsumerState<EditForm> {
                                 AppLocalizations.of(context).save,
                                 textScaleFactor: 1.5,
                               ),
-                              onPressed: () {
+                              onPressed: _isDisabled ? null : () {
+                                setState(() => _isDisabled = true);
                                 _save();
                                 moveToLastScreen();
                                 widget.parentFn('保存に成功しました');
