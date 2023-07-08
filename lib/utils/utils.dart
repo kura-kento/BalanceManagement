@@ -52,21 +52,31 @@ class Utils {
   }
 
   //四則演算　変換
-  static String parseOperation(value) {
-    if(value == '×') {
-      return '*';
-    }else if(value == '÷') {
-      return '/';
-    }
-    return value;
-  }
+  // static String parseOperation(value) {
+  //   if(value == '×') {
+  //     return '*';
+  //   }else if(value == '÷') {
+  //     return '/';
+  //   }
+  //   return value;
+  // }
 
   //　文字列を計算する
-  static String evaluate(value) {
+  static String calculation(String front,String operation,String back) {
+    double _front = double.parse(front);
+    double _back  = double.parse(back);
+    double result;
     try {
-      final expression = Parser().parse(value);
-      final double result = expression.evaluate(EvaluationType.REAL, ContextModel());
-      return result.toString();
+      if(operation == '+') {
+        result = (_front + _back);
+      } else if (operation == '-') {
+        result = (_front - _back);
+      } else if (operation == '×') {
+        result = (_front * _back);
+      } else if (operation == '÷') {
+        result = (_front / _back);
+      }
+      return formatNumber(result);
     } catch (e) {
       return 'Error';
     }

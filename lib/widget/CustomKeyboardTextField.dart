@@ -55,42 +55,66 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
     final currentValue = _textEditingController.text;
 
     if (value == '=') {
-        var expression = selectOperationText +" "+ Utils.parseOperation(selectOperation) +" "+ selectOperationText;
-        var _result = Utils.evaluate(expression);
-        _textEditingController.text = _result;
-        operationClear();
-    } else if(['+','-','×','÷'].contains(value)) {
-      // 同じボタンが押されたらキャンセル
-      // if(selectOperation == value) {
-      //   _textEditingController.text = selectOperationText;
-      //   selectOperationText = '';
-      //   selectOperation = null;
-      // } else {      }
-
-      // 未選択
-      if(selectOperationText == '') {
-
-      }else {
-
-      }
+      _textEditingController.text = Utils.calculation(
+          selectOperationText,
+          selectOperation,
+          _textEditingController.text
+      );
       operationClear();
+    } else if(['+','-','×','÷'].contains(value)) {
+      print(('2+2*3'));
+      // ストックにあるか
+      if(selectOperationText != '') {
+        // 未記入　ストック有り　
+        if (_textEditingController.text == '') {
+            print("未記入　ストック有り");
+            selectOperation = value;
+        } else {
+          print("記入　ストック有り 計算する");
+          _textEditingController.text = Utils.calculation(
+              selectOperationText,
+              selectOperation,
+              _textEditingController.text
+          );
+          operationStock(value);
+        }
+      } else {
+        // 未記入　ストック無し
+        if (_textEditingController.text == '') {
+          print("未記入　ストック無し 何も起こらない（エラーを出したい）");
+        } else {
+          print("記入　ストック無し");
+          operationStock(value);
+        }
+      }
     } else if (value == 'Del') {
-      _textEditingController.text = Utils.numDel(_textEditingController.text);
+       if(_textEditingController.text != '') {
+         _textEditingController.text = Utils.numDel(_textEditingController.text);
+       }
     } else if (value == 'AC') {
-      selectOperationText = '';
-      selectOperation = null;
+      operationClear();
       _textEditingController.clear();
     } else {
-      // Append the pressed key to the TextField
       final newText = '$currentValue$value';
-      _textEditingController.text = newText;
+
+      bool isMatch = new RegExp(r'^\d+\.?\d*$').hasMatch(newText);
+      if(isMatch) {
+        _textEditingController.text = newText;
+      } else {
+        print("正規表現 マッチ間違い");
+      }
     }
     setState(() {});
   }
   void operationClear() {
     selectOperationText = '';
     selectOperation = null;
-    _textEditingController.clear();
+  }
+
+  void operationStock(value) {
+    selectOperationText = _textEditingController.text; //ストックに移動
+    _textEditingController.clear(); //未記入にする
+    selectOperation = value; //四則演算を登録
   }
 
   @override
@@ -101,9 +125,6 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
           controller: _textEditingController,
           focusNode: _focusNode,
           keyboardType: TextInputType.none,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
-          ],
           decoration: InputDecoration(
               labelText: selectOperation == null ? '金額' : selectOperationText,
               border: OutlineInputBorder(
