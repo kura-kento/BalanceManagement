@@ -7,6 +7,8 @@ class App {
    static Color minusColor = Colors.redAccent[200];
 
    static Color NoAdsButtonColor = Color(0xffFFD865);
+   static Color selectTextColor  = Colors.cyan;
+   static int numFixed = 3;
 
    static int addHours = 40;
 

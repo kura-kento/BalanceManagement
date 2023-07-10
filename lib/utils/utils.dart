@@ -1,7 +1,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:math_expressions/math_expressions.dart';
+
+import 'app.dart';
 
 class Utils {
   //カンマ区切り
@@ -44,6 +45,7 @@ class Utils {
 
   // 小数点0の場合は切り上げする。
   static String formatNumber(value) {
+    value = double.parse(value.toStringAsFixed(App.numFixed));
     if (value == value.roundToDouble()) {
       return value.round().toString();
     } else {
@@ -76,6 +78,7 @@ class Utils {
       } else if (operation == '÷') {
         result = (_front / _back);
       }
+
       return formatNumber(result);
     } catch (e) {
       return 'Error';

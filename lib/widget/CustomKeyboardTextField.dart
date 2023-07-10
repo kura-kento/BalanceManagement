@@ -1,5 +1,7 @@
+import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'dart:core';
 
@@ -21,12 +23,15 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
   TextEditingController changeController;
   BoxBorder _border = Border.all(width: 1.0, color:Colors.red);
   double _margin = 2.5;
+  bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
 
+  // TODO　カーソルが移動した時の処理
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChange);
     _focusNode.requestFocus();
+    isCustomKeyBoard = true;
   }
 
   void didChangeDependencies() {
@@ -62,7 +67,6 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
       );
       operationClear();
     } else if(['+','-','×','÷'].contains(value)) {
-      print(('2+2*3'));
       // ストックにあるか
       if(selectOperationText != '') {
         // 未記入　ストック有り　
@@ -104,6 +108,7 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
         print("正規表現 マッチ間違い");
       }
     }
+    moveToLastCharacter();
     setState(() {});
   }
   void operationClear() {
@@ -121,18 +126,27 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TextField(
-          controller: _textEditingController,
-          focusNode: _focusNode,
-          keyboardType: TextInputType.none,
-          decoration: InputDecoration(
-              labelText: selectOperation == null ? '金額' : selectOperationText,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0)
+        Container(
+          height: 65,
+          child: KeyboardActions(
+            config: _buildConfig(context),
+            child: TextField(
+              controller: _textEditingController,
+              focusNode: _focusNode,
+              keyboardType: isCustomKeyBoard ? TextInputType.none : const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
+              ],
+              // showCursor: false,
+              decoration: InputDecoration(
+                  labelText: selectOperation == null ? '金額' : selectOperationText,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0)
+                  ),
               ),
+            ),
           ),
         ),
-        SizedBox(height: 16.0),
         CustomKeyboard(),
       ],
     );
@@ -219,6 +233,7 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
     Widget btn = GestureDetector(
       onTap: () => _onKeyPressed(value),
       child: Container(
+        // width: MediaQuery.of(context).size.width / 5,
         height: height,
         alignment: Alignment.center,
         margin: EdgeInsets.all(_margin),
@@ -244,5 +259,129 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
         child: btn,
       );
     }
+  }
+
+  KeyboardActionsConfig _buildConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor:  const Color(0xFFd5d7de),
+      nextFocus: false,
+      actions: [
+        KeyboardActionsItem(focusNode: _focusNode, toolbarButtons: [
+              (node) {
+          return Container(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(Icons.calculate_outlined, size: 40, color: Colors.cyan,),
+                    onPressed: () {
+                      SharedPrefs.setIsCustomKeyBoard(!isCustomKeyBoard);
+                      setState(() {});
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              _textEditingController.text = Utils.calculation(_textEditingController.text,'×','1.08');
+                              moveToLastCharacter();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(4.0),
+                              margin: const EdgeInsets.all(4.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.cyan,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                '税込8%',
+                                style: const TextStyle(
+                                    color: Colors.cyan, fontSize: 15),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              _textEditingController.text = Utils.calculation(_textEditingController.text,'×','1.1');
+                              moveToLastCharacter();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(4.0),
+                              margin: const EdgeInsets.all(4.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.cyan,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                '税込10%',
+                                style: const TextStyle(
+                                    color: Colors.cyan, fontSize: 15),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              node.unfocus();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '完了',
+                                style: const TextStyle(
+                                    color: Colors.cyan, fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      // GestureDetector(
+                      //   onTap: () => _onKeyPressed('7'),
+                      //   child: Container(
+                      //     width: MediaQuery.of(context).size.width / 5,
+                      //     height: 80,
+                      //     alignment: Alignment.center,
+                      //     margin: EdgeInsets.all(_margin),
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.transparent,
+                      //       border: _border,
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     child: Text('7', style: TextStyle(fontSize: 24.0,),),
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+          }
+        ]),
+      ],
+    );
+  }
+
+  // フォーカスを最後飲み時に置く
+  void moveToLastCharacter() {
+    _textEditingController.selection = TextSelection.fromPosition(
+      TextPosition(offset: _textEditingController.text.length),
+    );
   }
 }

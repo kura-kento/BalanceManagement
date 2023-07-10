@@ -46,6 +46,11 @@ class SharedPrefs {
   static Future<bool> setIsPlusButton(bool value) => _sharedPreferences.setBool(isPlusButton, value);
   static bool getIsPlusButton() => _sharedPreferences.getBool(isPlusButton) ?? true;
 
+  // キーボードをカスタム状態か通常か？
+  static const isCustomKeyBoard = 'isCustomKeyBoard';
+  static Future<bool> setIsCustomKeyBoard(bool value) => _sharedPreferences.setBool(isCustomKeyBoard, value);
+  static bool getIsCustomKeyBoard() => _sharedPreferences.getBool(isCustomKeyBoard) ?? false;
+
   //0円を表示させない
   static const isZeroHidden = 'isZeroHidden';
   static Future<bool> setIsZeroHidden(bool value) => _sharedPreferences.setBool(isZeroHidden, value);
