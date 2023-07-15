@@ -10,6 +10,7 @@ import 'package:balancemanagement_app/widget/reward_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../utils/color_picker.dart';
 
 class SettingPage extends StatefulWidget {
 
@@ -102,6 +103,20 @@ class _SettingPageState extends State<SettingPage> {
                                 },
                               ),
                             )
+                          ),
+                          Divider(color: Colors.grey,height:0),
+                          ListTile(
+                            title: const Text('カラーテーマ'),
+                            leading: const Icon(Icons.color_lens_outlined),
+                            onTap: (){
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return const ColorPicker();
+                                  },
+                                ),
+                              );
+                            },
                           ),
                           Divider(color: Colors.grey,height:0),
                           InkWell(

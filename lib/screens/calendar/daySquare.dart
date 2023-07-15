@@ -149,7 +149,7 @@ class DaySquareState extends ConsumerState<DaySquare> {
   }
 
   Widget dayText(date) {
-    return             Padding(
+    return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Row(
         // crossAxisAlignment: CrossAxisAlignment.start,

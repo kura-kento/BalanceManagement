@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:keyboard_actions/keyboard_actions_item.dart';
+import '../../utils/CostomTheme.dart';
 import '../../utils/app.dart';
 import '../../widget/CustomKeyboardTextField.dart';
 import 'calendar_page.dart';
@@ -109,10 +110,10 @@ class EditFormState extends ConsumerState<EditForm> {
     }
 
     return Container(
-      color: Colors.grey[300],
+      color: CustomTheme.primaryColor,
       child: SafeArea(
         child: Scaffold(
-        //  resizeToAvoidBottomInset: false,
+          // resizeToAvoidBottomInset: false,
           body: Column(
             children: <Widget>[
               Align(

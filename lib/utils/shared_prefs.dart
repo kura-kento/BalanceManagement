@@ -11,9 +11,13 @@ class SharedPrefs {
 
   static SharedPreferences _sharedPreferences;
 
+  static bool isInstance()  {
+    return  _sharedPreferences != null;
+  }
+
   static Future<void> setInstance() async {
-    if (null != _sharedPreferences)
-      return;
+    if (null != _sharedPreferences) return;
+
     _sharedPreferences = await SharedPreferences.getInstance();
   }
 
@@ -62,4 +66,10 @@ class SharedPrefs {
   //【共通】リワード広告
   static Future<bool> setRewardTime(String value) => _sharedPreferences.setString(rewardTime, value);
   static String getRewardTime() => _sharedPreferences.getString(rewardTime) ?? '2021-01-01 00:00:00';
+
+  // カラーピック
+  static const customColor = 'customColor';
+  static Future<bool> setCustomColor(String value) => _sharedPreferences?.setString(customColor, value);
+  static String getCustomColor() => _sharedPreferences?.getString(customColor) ?? '0xFF8FCFFA';
+
 }

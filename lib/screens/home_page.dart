@@ -5,6 +5,7 @@ import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/screens/calendar/calendar_page.dart';
 import 'package:balancemanagement_app/screens/other/password_screen.dart';
 import 'package:balancemanagement_app/screens/other/setting_page.dart';
+import 'package:balancemanagement_app/utils/CostomTheme.dart';
 import 'package:balancemanagement_app/utils/admob.dart';
 import 'package:balancemanagement_app/utils/page_animation.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -93,7 +94,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
 
     return Container(
-      color: Colors.grey[300],
+      color: CustomTheme.primaryColor,
       child: SafeArea(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
