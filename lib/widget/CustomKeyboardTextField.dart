@@ -1,60 +1,56 @@
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:math_expressions/math_expressions.dart';
 import 'dart:core';
 
 import '../utils/utils.dart';
 
-class CustomKeyboardTextField extends StatefulWidget {
+final priceControllerProvider = StateProvider<TextEditingController>((ref) => TextEditingController());
+final selectOperationTextProvider = StateProvider<String>((ref) => '');
+
+class CustomKeyboardTextField extends ConsumerStatefulWidget {
+  CustomKeyboardTextField({Key key});
+  
   @override
   _CustomKeyboardTextFieldState createState() => _CustomKeyboardTextFieldState();
 }
 
-class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
-  final TextEditingController _textEditingController = TextEditingController();
-
+class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextField>{
   final FocusNode _focusNode = FocusNode();
-  OverlayEntry overlayEntry;
-  String selectOperation = null;
-  String selectOperationText = '';
-  // final TextEditingController selectOperationController = TextEditingController();
-  TextEditingController changeController;
-  BoxBorder _border = Border.all(width: 1.0, color:Colors.red);
-  double _margin = 2.5;
+  TextEditingController priceController;
+  String selectOperation = null; // 四則演算
+  String selectOperationText; // 計算の前の数字（一時保存）
+  // TextEditingController changeController;
+
   bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
 
   // TODO　カーソルが移動した時の処理
   @override
   void initState() {
     super.initState();
-    // _focusNode.addListener(_onFocusChange);
-    // _focusNode.requestFocus();
-    isCustomKeyBoard = true;
+    // isCustomKeyBoard = true;
   }
 
   void didChangeDependencies() {
     super.didChangeDependencies();
   }
-
+  
   @override
   void dispose() {
-    _textEditingController.dispose();
+    priceController.dispose();
     _focusNode.dispose();
-    // _focusNode.removeListener(_onFocusChange);
     super.dispose();
-  }
-
-  void _onFocusChange() {
-     if(_focusNode.hasFocus) {
-       // overlayEntry = createOverlayEntry(_onKeyPressed);
-       // Overlay.of(context).insert(overlayEntry);
-     }
   }
 
   @override
   Widget build(BuildContext context) {
+    print("カスタムキーボード build");
+    priceController = ref.watch(priceControllerProvider);
+    selectOperationText = ref.watch(selectOperationTextProvider);
+    
+  
     return Column(
       children: [
         Container(
@@ -62,7 +58,7 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
           child: KeyboardActions(
             config: _buildConfig(context),
             child: TextField(
-              controller: _textEditingController,
+              controller: priceController,
               focusNode: _focusNode,
               keyboardType: isCustomKeyBoard ? TextInputType.none : const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: <TextInputFormatter>[
@@ -70,7 +66,7 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
               ],
               // showCursor: false,
               decoration: InputDecoration(
-                  labelText: selectOperation == null ? '金額' : selectOperationText,
+                  labelText: selectOperationText == '' ? '金額' : selectOperationText,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0)
                   ),
@@ -78,7 +74,6 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
             ),
           ),
         ),
-       // CustomKeyboard(),
       ],
     );
   }
@@ -90,7 +85,9 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
       nextFocus: false,
       actions: [
         KeyboardActionsItem(
-            footerBuilder: (_) => CustomKeyboard2(),
+            footerBuilder: !isCustomKeyBoard ? null : (_) => CustomKeyboard2(
+                selectOperation: selectOperation,
+            ),
             focusNode: _focusNode,
             toolbarButtons: [
               (node) {
@@ -120,7 +117,7 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
                           children: [
                             InkWell(
                               onTap: () {
-                                _textEditingController.text = Utils.calculation(_textEditingController.text,'×','1.08');
+                                priceController.text = Utils.calculation(priceController.text,'×','1.08');
                                 moveToLastCharacter();
                               },
                               child: Container(
@@ -142,7 +139,7 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
                             ),
                             InkWell(
                               onTap: () {
-                                _textEditingController.text = Utils.calculation(_textEditingController.text,'×','1.1');
+                                priceController.text = Utils.calculation(priceController.text,'×','1.1');
                                 moveToLastCharacter();
                               },
                               child: Container(
@@ -192,39 +189,41 @@ class _CustomKeyboardTextFieldState extends State<CustomKeyboardTextField>{
 
   // フォーカスを最後飲み時に置く
   void moveToLastCharacter() {
-    _textEditingController.selection = TextSelection.fromPosition(
-      TextPosition(offset: _textEditingController.text.length),
+    priceController.selection = TextSelection.fromPosition(
+      TextPosition(offset: priceController.text.length),
     );
   }
 }
 
-// CustomKeyboard側の実装
-class CustomKeyboard2 extends StatelessWidget
-    implements PreferredSizeWidget {
-  final ValueNotifier<String> notifier;
 
-  CustomKeyboard2({Key key, this.notifier}) : super(key: key);
+// CustomKeyboard側の実装
+class CustomKeyboard2 extends ConsumerStatefulWidget implements PreferredSizeWidget {
+  CustomKeyboard2({Key key, this.selectOperation}) : super(key: key);
+  var selectOperation;
+
+  @override
+  _CustomKeyboard2State createState() => _CustomKeyboard2State();
 
   @override
   Size get preferredSize => Size.fromHeight(350);
-  final TextEditingController _textEditingController = TextEditingController();
+}
+  class _CustomKeyboard2State extends ConsumerState<CustomKeyboard2> {
 
-  final FocusNode _focusNode = FocusNode();
-  OverlayEntry overlayEntry;
-  String selectOperation = null;
-  String selectOperationText = '';
-  // final TextEditingController selectOperationController = TextEditingController();
-  TextEditingController changeController;
+  TextEditingController priceController;
   BoxBorder _border = Border.all(width: 1.0, color:Colors.red);
   double _margin = 2.5;
   bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
+  String selectOperationText;
 
   @override
   Widget build(BuildContext context) {
+    priceController = ref.watch(priceControllerProvider);
+    selectOperationText = ref.watch(selectOperationTextProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        height: preferredSize.height,
+        height: widget.preferredSize.height,
         width: double.infinity,
         padding: EdgeInsets.all(_margin),
         decoration: BoxDecoration(
@@ -288,8 +287,8 @@ class CustomKeyboard2 extends StatelessWidget
 
   // フォーカスを最後飲み時に置く
   void moveToLastCharacter() {
-    _textEditingController.selection = TextSelection.fromPosition(
-      TextPosition(offset: _textEditingController.text.length),
+    priceController.selection = TextSelection.fromPosition(
+      TextPosition(offset: priceController.text.length),
     );
   }
 
@@ -302,7 +301,7 @@ class CustomKeyboard2 extends StatelessWidget
         alignment: Alignment.center,
         margin: EdgeInsets.all(_margin),
         decoration: BoxDecoration(
-          color: value == selectOperation ? Colors.yellow : Colors.transparent,
+          color: value == widget.selectOperation ? Colors.yellow : Colors.transparent,
           border: _border,
           borderRadius: BorderRadius.circular(10),
         ),
@@ -326,34 +325,35 @@ class CustomKeyboard2 extends StatelessWidget
   }
 
   void _onKeyPressed(String value) {
-    final currentValue = _textEditingController.text;
+    print(value);
+    final currentValue = priceController.text;
 
     if (value == '=') {
-      _textEditingController.text = Utils.calculation(
+      priceController.text = Utils.calculation(
           selectOperationText,
-          selectOperation,
-          _textEditingController.text
+          widget.selectOperation,
+          priceController.text
       );
       operationClear();
     } else if(['+','-','×','÷'].contains(value)) {
       // ストックにあるか
       if(selectOperationText != '') {
         // 未記入　ストック有り　
-        if (_textEditingController.text == '') {
+        if (priceController.text == '') {
           print("未記入　ストック有り");
-          selectOperation = value;
+          widget.selectOperation = value;
         } else {
           print("記入　ストック有り 計算する");
-          _textEditingController.text = Utils.calculation(
+          priceController.text = Utils.calculation(
               selectOperationText,
-              selectOperation,
-              _textEditingController.text
+              widget.selectOperation,
+              priceController.text
           );
           operationStock(value);
         }
       } else {
         // 未記入　ストック無し
-        if (_textEditingController.text == '') {
+        if (priceController.text == '') {
           print("未記入　ストック無し 何も起こらない（エラーを出したい）");
         } else {
           print("記入　ストック無し");
@@ -361,18 +361,18 @@ class CustomKeyboard2 extends StatelessWidget
         }
       }
     } else if (value == 'Del') {
-      if(_textEditingController.text != '') {
-        _textEditingController.text = Utils.numDel(_textEditingController.text);
+      if(priceController.text != '') {
+        priceController.text = Utils.numDel(priceController.text);
       }
     } else if (value == 'AC') {
       operationClear();
-      _textEditingController.clear();
+      priceController.clear();
     } else {
       final newText = '$currentValue$value';
 
       bool isMatch = new RegExp(r'^\d+\.?\d*$').hasMatch(newText);
       if(isMatch) {
-        _textEditingController.text = newText;
+        priceController.text = newText;
       } else {
         print("正規表現 マッチ間違い");
       }
@@ -382,13 +382,13 @@ class CustomKeyboard2 extends StatelessWidget
   }
 
   void operationClear() {
-    selectOperationText = '';
-    selectOperation = null;
+    ref.read(selectOperationTextProvider.notifier).state = '';
+    widget.selectOperation = null;
   }
 
   void operationStock(value) {
-    selectOperationText = _textEditingController.text; //ストックに移動
-    _textEditingController.clear(); //未記入にする
-    selectOperation = value; //四則演算を登録
+    ref.read(selectOperationTextProvider.notifier).state = priceController.text; //ストックに移動
+    priceController.clear(); //未記入にする
+    widget.selectOperation = value; //四則演算を登録
   }
 }

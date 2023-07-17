@@ -47,7 +47,7 @@ class EditFormState extends ConsumerState<EditForm> {
   int _selectCategory = 0;
 
   TextEditingController titleController = TextEditingController();
-  TextEditingController numberController = TextEditingController();
+  TextEditingController priceController; //プロバイダー化
   TextEditingController memoController = TextEditingController();
   FixedExtentScrollController scrollController = FixedExtentScrollController();
   Calendar calendar;
@@ -78,7 +78,7 @@ class EditFormState extends ConsumerState<EditForm> {
     _selectCategory = _category.indexOf(calendar.categoryId)+1;
 
     moneyValue = calendar.money >= 0 ? MoneyValue.income : MoneyValue.spending;
-    numberController = TextEditingController(text: '${Utils.formatNumber(calendar.money * (calendar.money < 0 ? -1:1 ))}');
+    ref.read(priceControllerProvider.notifier).state = TextEditingController(text: '${Utils.formatNumber(calendar.money * (calendar.money < 0 ? -1:1 ))}');
     titleController = TextEditingController(text: '${calendar.title}');
     memoController = TextEditingController(text: '${calendar.memo}');
   }
@@ -102,9 +102,16 @@ class EditFormState extends ConsumerState<EditForm> {
     super.dispose();
   }
 
+  void setState2() {
+    print("edit from更新");
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     selectDay = ref.watch(selectDayProvider);
+    priceController = ref.watch(priceControllerProvider);
+
     if(AdMob.isNoAds() == false) {
       myBanner.load();
     }
@@ -143,7 +150,7 @@ class EditFormState extends ConsumerState<EditForm> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: dustButton(),
+                      child: saveButton(),
                     ),
                   ],
                 ),
@@ -302,23 +309,25 @@ class EditFormState extends ConsumerState<EditForm> {
     if (widget.inputMode == InputMode.edit) {
       print(calendar);
       await databaseHelper.updateCalendar(Calendar.withId(widget.calendarId,
-                                                                  Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
+                                                                  Utils.toDouble(priceController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                                   '${titleController.text}',
                                                                   '${memoController.text}',
                                                                   calendar.date,
                                                                   _categoryItems[_selectCategory].id)
       );
     } else {
-      await databaseHelper.insertCalendar(Calendar(Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
+      await databaseHelper.insertCalendar(Calendar(Utils.toDouble(priceController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
                                                             '${memoController.text}',
                                                               selectDay,
                                                             _categoryItems[_selectCategory].id));
     }
   }
+
   Future <void> _delete(int id) async {
     await databaseHelper.deleteCalendar(id);
   }
+
   Widget _pickerItem(Category category) {
     return Center(
       child: Text(
@@ -340,19 +349,20 @@ class EditFormState extends ConsumerState<EditForm> {
     setState(() {});
   }
 
-  Widget dustButton() {
-    if(widget.inputMode == InputMode.edit) {
+  Widget saveButton() {
+    // if(widget.inputMode == InputMode.edit) {
       return IconButton(
         onPressed: () {
-          _delete(widget.calendarId);
+          _save();
           moveToLastScreen();
+          FocusScope.of(context).unfocus();
           setState(() {});
         },
-        icon: Icon(Icons.delete),
+        icon: Icon(Icons.save_as),
       );
-    } else {
-      return SizedBox.shrink();
-    }
+    // } else {
+    //   return SizedBox.shrink();
+    // }
   }
 
   // プルダウン

@@ -84,7 +84,7 @@ class DatabaseHelper {
           print("ATTACH　成功");
         });
 
-        await db.execute('CREATE TABLE main.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
+        await db.execute('CREATE TABLE sub.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
         // データを移行する
         await db.execute('INSERT INTO main.$categoryTable SELECT * FROM sub.$categoryTable');
         // アッタチを切る

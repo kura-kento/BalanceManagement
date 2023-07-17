@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         appBarTheme: AppBarTheme(color: Colors.white70),
         primaryColor: Color(int.parse(SharedPrefs.getCustomColor())),
+        backgroundColor: Colors.grey[100],
         fontFamily: "Noto Sans JP",
           cupertinoOverrideTheme: CupertinoThemeData(
               textTheme: CupertinoTextThemeData(

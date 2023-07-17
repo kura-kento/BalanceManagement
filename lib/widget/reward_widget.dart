@@ -26,7 +26,7 @@ class _RewardWidgetState extends State<RewardWidget> {
     super.initState();
   }
 
-  static String getRewardedUnitId(){
+  static String getRewardedUnitId() {
     String BannerUnitId = "";
     if(Platform.isAndroid) {
       // Android のとき
