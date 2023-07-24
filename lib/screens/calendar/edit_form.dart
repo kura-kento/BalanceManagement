@@ -56,43 +56,31 @@ class EditFormState extends ConsumerState<EditForm> {
 
   @override
   void initState() {
-    if(widget.inputMode == InputMode.edit) {
-      initData();
-      defaultButton();
-    } else {
-      moneyValue = SharedPrefs.getIsPlusButton() ? MoneyValue.income : MoneyValue.spending;
-    }
-    updateListViewCategory();
+    initData();
     super.initState();
   }
 
   Future<void> initData() async {
-    calendar = await DatabaseHelper().selectCalendar(widget.calendarId);
+    if(widget.inputMode == InputMode.edit) {
+      calendar = await DatabaseHelper().selectCalendar(widget.calendarId);
+      moneyValue = calendar.money >= 0 ? MoneyValue.income : MoneyValue.spending;
 
-    //編集フォームでドロップダウンの位置決め
-    List<Category> _categoryList = await DatabaseHelper().getCategoryList(calendar.money >= 0);
-    List<int> _category = [];
-    _categoryList.forEach((Category category) {
-      _category.add(category.id);
-    });
-    _selectCategory = _category.indexOf(calendar.categoryId)+1;
+      //TODO: リファクタリング予定 編集フォームでドロップダウンの位置決め
+      updateListViewCategory();
+      List<Category> _categoryList = await DatabaseHelper().getCategoryList(calendar.money >= 0);
+      List<int> _category = [];
+      _categoryList.forEach((Category category) {
+        _category.add(category.id);
+      });
+      _selectCategory = _category.indexOf(calendar.categoryId)+1;
 
-    moneyValue = calendar.money >= 0 ? MoneyValue.income : MoneyValue.spending;
     ref.read(priceControllerProvider.notifier).state = TextEditingController(text: '${Utils.formatNumber(calendar.money * (calendar.money < 0 ? -1:1 ))}');
     titleController = TextEditingController(text: '${calendar.title}');
     memoController = TextEditingController(text: '${calendar.memo}');
-  }
-
-  //編集フォームでドロップダウンの位置決め
-  Future<void> defaultButton() async {
-    // print(moneyValue == MoneyValue.income ? 'プラス':'マイナス');
-    // print(calendar.money >= 0 ? 'プラス':'マイナス');
-    // List<Category> _categoryList = await DatabaseHelper().getCategoryList(moneyValue == MoneyValue.income);
-    // List<int> _category = [];
-    // _categoryList.forEach((Category category) {
-    //   _category.add(category.id);
-    // });
-    // _selectCategory = _category.indexOf(calendar.categoryId)+1;
+    } else {
+      updateListViewCategory();
+      moneyValue = SharedPrefs.getIsPlusButton() ? MoneyValue.income : MoneyValue.spending;
+    }
   }
 
   @override
@@ -216,40 +204,40 @@ class EditFormState extends ConsumerState<EditForm> {
                             padding: App.padding,
                             child: CustomKeyboardTextField()
                         ),
-                        Padding(
-                            padding: App.padding,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).primaryColorDark,
-                                foregroundColor: Theme.of(context).primaryColorLight,
-                              ),
-                              child: Text(
-                                AppLocalizations.of(context).save,
-                                textScaleFactor: 1.5,
-                              ),
-                              onPressed: _isDisabled ? null : () {
-                                setState(() => _isDisabled = true);
-                                _save();
-                                moveToLastScreen();
-                                widget.parentFn('保存に成功しました');
-                                // setState(() {});
-                              },
-                            ),
-                        ),
-                        Padding(
-                          padding: App.padding,
-                          child: TextField(
-                            controller: memoController,
-                            minLines: 1,
-                            maxLength: 1000,
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context).memo,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0),),
-                            ),
-                            maxLines: null,
-                          ),
-                        ),
+                        // Padding(
+                        //     padding: App.padding,
+                        //     child: ElevatedButton(
+                        //       style: ElevatedButton.styleFrom(
+                        //         backgroundColor: Theme.of(context).primaryColorDark,
+                        //         foregroundColor: Theme.of(context).primaryColorLight,
+                        //       ),
+                        //       child: Text(
+                        //         AppLocalizations.of(context).save,
+                        //         textScaleFactor: 1.5,
+                        //       ),
+                        //       onPressed: _isDisabled ? null : () {
+                        //         setState(() => _isDisabled = true);
+                        //         _save();
+                        //         moveToLastScreen();
+                        //         widget.parentFn('保存に成功しました');
+                        //         // setState(() {});
+                        //       },
+                        //     ),
+                        // ),
+                        // Padding(
+                        //   padding: App.padding,
+                        //   child: TextField(
+                        //     controller: memoController,
+                        //     minLines: 1,
+                        //     maxLength: 1000,
+                        //     decoration: InputDecoration(
+                        //       labelText: AppLocalizations.of(context).memo,
+                        //       border: OutlineInputBorder(
+                        //           borderRadius: BorderRadius.circular(5.0),),
+                        //     ),
+                        //     maxLines: null,
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -345,7 +333,7 @@ class EditFormState extends ConsumerState<EditForm> {
     for(int i=0; i < categoryList.length; i++) {
       _categoryItemsCache.add(categoryList[i]);
     }
-    _categoryItems= _categoryItemsCache;
+    _categoryItems = _categoryItemsCache;
     setState(() {});
   }
 

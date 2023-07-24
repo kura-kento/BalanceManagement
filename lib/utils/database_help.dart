@@ -260,7 +260,7 @@ class DatabaseHelper {
     final List<Category> categoryList = [];
 
     for (var i = 0; i < count; i++) {
-      if(categoryMapList[i]['plus'] == value.toString()){
+      if(categoryMapList[i]['plus'] == value.toString()) {
         categoryList.add(Category.fromMapObject(categoryMapList[i]));
       }
     }

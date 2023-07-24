@@ -22,7 +22,6 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
   TextEditingController priceController;
   String selectOperation = null; // 四則演算
   String selectOperationText; // 計算の前の数字（一時保存）
-  // TextEditingController changeController;
 
   bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
 
@@ -39,7 +38,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
   
   @override
   void dispose() {
-    priceController.dispose();
+    // priceController.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -49,8 +48,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
     print("カスタムキーボード build");
     priceController = ref.watch(priceControllerProvider);
     selectOperationText = ref.watch(selectOperationTextProvider);
-    
-  
+
     return Column(
       children: [
         Container(
@@ -85,8 +83,14 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
       nextFocus: false,
       actions: [
         KeyboardActionsItem(
-            footerBuilder: !isCustomKeyBoard ? null : (_) => CustomKeyboard2(
-                selectOperation: selectOperation,
+            // footerBuilder: !isCustomKeyBoard ? null : (_) => CustomKeyboard2(
+            //     selectOperation: selectOperation,
+            // ),
+            footerBuilder: !isCustomKeyBoard ? null : (_) => PreferredSize(
+                preferredSize: Size.fromHeight(300),
+                child: CustomKeyboard2(
+                      selectOperation: selectOperation,
+                )
             ),
             focusNode: _focusNode,
             toolbarButtons: [
@@ -197,90 +201,86 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
 
 
 // CustomKeyboard側の実装
-class CustomKeyboard2 extends ConsumerStatefulWidget implements PreferredSizeWidget {
+class CustomKeyboard2 extends ConsumerStatefulWidget {
   CustomKeyboard2({Key key, this.selectOperation}) : super(key: key);
   var selectOperation;
 
   @override
   _CustomKeyboard2State createState() => _CustomKeyboard2State();
 
-  @override
-  Size get preferredSize => Size.fromHeight(350);
 }
   class _CustomKeyboard2State extends ConsumerState<CustomKeyboard2> {
-
   TextEditingController priceController;
+  String selectOperationText;
+
   BoxBorder _border = Border.all(width: 1.0, color:Colors.red);
   double _margin = 2.5;
   bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
-  String selectOperationText;
+
 
   @override
   Widget build(BuildContext context) {
     priceController = ref.watch(priceControllerProvider);
     selectOperationText = ref.watch(selectOperationTextProvider);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        height: widget.preferredSize.height,
-        width: double.infinity,
-        padding: EdgeInsets.all(_margin),
-        decoration: BoxDecoration(
-          border: _border,
-          color: Colors.grey[200],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 4,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      _buildKeyboardKey('7'),
-                      _buildKeyboardKey('8'),
-                      _buildKeyboardKey('9'),
-                      _buildKeyboardKey('÷'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      _buildKeyboardKey('4'),
-                      _buildKeyboardKey('5'),
-                      _buildKeyboardKey('6'),
-                      _buildKeyboardKey('×'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      _buildKeyboardKey('1'),
-                      _buildKeyboardKey('2'),
-                      _buildKeyboardKey('3'),
-                      _buildKeyboardKey('-'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      _buildKeyboardKey('0',flex: 2),
-                      _buildKeyboardKey('.'),
-                      _buildKeyboardKey('+'),
-                    ],
-                  ),
-                ],
-              ),
+    return Container(
+      height: 300,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: _margin + 5,horizontal: _margin),
+      decoration: BoxDecoration(
+        border: _border,
+        color: Colors.grey[200],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 4,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    _buildKeyboardKey('7'),
+                    _buildKeyboardKey('8'),
+                    _buildKeyboardKey('9'),
+                    _buildKeyboardKey('÷'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    _buildKeyboardKey('4'),
+                    _buildKeyboardKey('5'),
+                    _buildKeyboardKey('6'),
+                    _buildKeyboardKey('×'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    _buildKeyboardKey('1'),
+                    _buildKeyboardKey('2'),
+                    _buildKeyboardKey('3'),
+                    _buildKeyboardKey('-'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    _buildKeyboardKey('0',flex: 2),
+                    _buildKeyboardKey('.'),
+                    _buildKeyboardKey('+'),
+                  ],
+                ),
+              ],
             ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                children: [
-                  _buildKeyboardKey('AC',flex: null),
-                  _buildKeyboardKey('Del',flex: null),
-                  _buildKeyboardKey('=',flex: null, height: (70.0+_margin) * 2),
-                ],),
-            ),
-          ],
-        ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Column(
+              children: [
+                _buildKeyboardKey('AC',flex: null),
+                _buildKeyboardKey('Del',flex: null),
+                _buildKeyboardKey('=',flex: null, height: (55.0+_margin) * 2),
+              ],),
+          ),
+        ],
       ),
     );
   }
@@ -292,7 +292,7 @@ class CustomKeyboard2 extends ConsumerStatefulWidget implements PreferredSizeWid
     );
   }
 
-  Widget _buildKeyboardKey(String value, {flex = 1, height = 70.0}) {
+  Widget _buildKeyboardKey(String value, {flex = 1, height = 55.0}) {
     Widget btn = GestureDetector(
       onTap: () => _onKeyPressed(value),
       child: Container(
