@@ -18,7 +18,7 @@ class CustomKeyboardTextField extends ConsumerStatefulWidget {
 }
 
 class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextField>{
-  final FocusNode _focusNode = FocusNode();
+  FocusNode _focusNode = FocusNode();
   TextEditingController priceController;
   String selectOperation = null; // 四則演算
   String selectOperationText; // 計算の前の数字（一時保存）
@@ -29,6 +29,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
   @override
   void initState() {
     super.initState();
+
     // isCustomKeyBoard = true;
   }
 
@@ -78,16 +79,13 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
 
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
       keyboardBarColor:  const Color(0xFFd5d7de),
       nextFocus: false,
       actions: [
         KeyboardActionsItem(
-            // footerBuilder: !isCustomKeyBoard ? null : (_) => CustomKeyboard2(
-            //     selectOperation: selectOperation,
-            // ),
             footerBuilder: !isCustomKeyBoard ? null : (_) => PreferredSize(
-                preferredSize: Size.fromHeight(300),
+                preferredSize: Size.fromHeight(250),
                 child: CustomKeyboard2(
                       selectOperation: selectOperation,
                 )
@@ -107,7 +105,17 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
                     icon: Icon(Icons.calculate_outlined, size: 40, color: Colors.cyan,),
                     onPressed: () {
                       SharedPrefs.setIsCustomKeyBoard(!isCustomKeyBoard);
+                      isCustomKeyBoard = !isCustomKeyBoard;
+                      FocusScope.of(context).unfocus();
                       setState(() {});
+                      // TODO 閉じ切るまで待つ処理を入れる
+                      Future.delayed(Duration(milliseconds: 500))
+                          .then((_) {
+                        _focusNode.requestFocus();
+                        setState(() {});
+                      });
+                      // FocusScope.of(context).requestFocus(_focusNode);
+                      // setState(() {});
                     },
                   ),
                 ),
@@ -214,9 +222,8 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
   String selectOperationText;
 
   BoxBorder _border = Border.all(width: 1.0, color:Colors.red);
-  double _margin = 2.5;
+  double _margin = 4;
   bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
-
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +231,7 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
     selectOperationText = ref.watch(selectOperationTextProvider);
 
     return Container(
-      height: 300,
+      height: 250,
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: _margin + 5,horizontal: _margin),
       decoration: BoxDecoration(
@@ -277,7 +284,7 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
               children: [
                 _buildKeyboardKey('AC',flex: null),
                 _buildKeyboardKey('Del',flex: null),
-                _buildKeyboardKey('=',flex: null, height: (55.0+_margin) * 2),
+                _buildKeyboardKey('=',flex: null, height: (45.0+_margin) * 2),
               ],),
           ),
         ],
@@ -292,7 +299,7 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
     );
   }
 
-  Widget _buildKeyboardKey(String value, {flex = 1, height = 55.0}) {
+  Widget _buildKeyboardKey(String value, {flex = 1, height = 45.0}) {
     Widget btn = GestureDetector(
       onTap: () => _onKeyPressed(value),
       child: Container(
@@ -378,7 +385,7 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
       }
     }
     moveToLastCharacter();
-    // setState(() {});
+    setState(() {});
   }
 
   void operationClear() {

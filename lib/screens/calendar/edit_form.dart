@@ -224,20 +224,20 @@ class EditFormState extends ConsumerState<EditForm> {
                         //       },
                         //     ),
                         // ),
-                        // Padding(
-                        //   padding: App.padding,
-                        //   child: TextField(
-                        //     controller: memoController,
-                        //     minLines: 1,
-                        //     maxLength: 1000,
-                        //     decoration: InputDecoration(
-                        //       labelText: AppLocalizations.of(context).memo,
-                        //       border: OutlineInputBorder(
-                        //           borderRadius: BorderRadius.circular(5.0),),
-                        //     ),
-                        //     maxLines: null,
-                        //   ),
-                        // ),
+                        Padding(
+                          padding: App.padding,
+                          child: TextField(
+                            controller: memoController,
+                            minLines: 4,
+                            maxLength: 1000,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context).memo,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),),
+                            ),
+                            maxLines: null,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -284,8 +284,6 @@ class EditFormState extends ConsumerState<EditForm> {
   }
 
  moveToLastScreen() async {
-    //
-    // await new Future.delayed(new Duration(microseconds: 3000));
     Future.delayed(Duration(milliseconds: 1000))
         .then((_) {
       FocusScope.of(context).unfocus();
