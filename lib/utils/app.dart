@@ -8,6 +8,7 @@ class App {
 
    static Color NoAdsButtonColor = Color(0xffFFD865);
    static Color selectTextColor  = Colors.cyan;
+   static Color keyboardBackgroundColor  = const Color(0xFFd5d7de);
    static int numFixed = 3;
 
    static int addHours = 40;

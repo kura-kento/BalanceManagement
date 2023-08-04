@@ -138,7 +138,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                                     ),
                                   );
                                   reviewCount();
-                                  // setState(() {});
+                                  setState(() {});
                                 },
                               ),
                             ),
@@ -225,7 +225,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   }
 
   // カレンダー下のリスト
-  Widget calendarBottomList()  {
+  Widget calendarBottomList() {
     return FutureBuilder(
         future: DatabaseHelper().selectDayList(selectDay), // Future<T> 型を返す非同期処理
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {

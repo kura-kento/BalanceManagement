@@ -78,8 +78,9 @@ class EditFormState extends ConsumerState<EditForm> {
     titleController = TextEditingController(text: '${calendar.title}');
     memoController = TextEditingController(text: '${calendar.memo}');
     } else {
-      updateListViewCategory();
       moneyValue = SharedPrefs.getIsPlusButton() ? MoneyValue.income : MoneyValue.spending;
+      updateListViewCategory();
+      ref.read(priceControllerProvider.notifier).state = TextEditingController();
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'dart:core';
 
+import '../utils/app.dart';
 import '../utils/utils.dart';
 
 final priceControllerProvider = StateProvider<TextEditingController>((ref) => TextEditingController());
@@ -17,7 +18,7 @@ class CustomKeyboardTextField extends ConsumerStatefulWidget {
   _CustomKeyboardTextFieldState createState() => _CustomKeyboardTextFieldState();
 }
 
-class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextField>{
+class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextField> {
   FocusNode _focusNode = FocusNode();
   TextEditingController priceController;
   String selectOperation = null; // 四則演算
@@ -65,10 +66,10 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
               ],
               // showCursor: false,
               decoration: InputDecoration(
-                  labelText: selectOperationText == '' ? '金額' : selectOperationText,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0)
-                  ),
+                labelText: selectOperationText == '' ? '金額' : selectOperationText,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0)
+                ),
               ),
             ),
           ),
@@ -80,7 +81,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
       keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
-      keyboardBarColor:  const Color(0xFFd5d7de),
+      keyboardBarColor:  App.keyboardBackgroundColor,
       nextFocus: false,
       actions: [
         KeyboardActionsItem(
@@ -221,8 +222,7 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
   TextEditingController priceController;
   String selectOperationText;
 
-  BoxBorder _border = Border.all(width: 1.0, color:Colors.red);
-  double _margin = 4;
+  double _margin = 2;
   bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
 
   @override
@@ -233,10 +233,9 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
     return Container(
       height: 250,
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: _margin + 5,horizontal: _margin),
+      padding: EdgeInsets.symmetric(vertical: _margin + 5,horizontal: _margin + 5),
       decoration: BoxDecoration(
-        border: _border,
-        color: Colors.grey[200],
+        color: App.keyboardBackgroundColor,
       ),
       child: Row(
         children: [
@@ -284,7 +283,7 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
               children: [
                 _buildKeyboardKey('AC',flex: null),
                 _buildKeyboardKey('Del',flex: null),
-                _buildKeyboardKey('=',flex: null, height: (45.0+_margin) * 2),
+                _buildKeyboardKey('=',flex: null, height: (45.0 + (_margin * 2)) * 2),
               ],),
           ),
         ],
@@ -300,22 +299,26 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
   }
 
   Widget _buildKeyboardKey(String value, {flex = 1, height = 45.0}) {
-    Widget btn = GestureDetector(
-      onTap: () => _onKeyPressed(value),
-      child: Container(
-        // width: MediaQuery.of(context).size.width / 5,
-        height: height,
-        alignment: Alignment.center,
-        margin: EdgeInsets.all(_margin),
-        decoration: BoxDecoration(
-          color: value == widget.selectOperation ? Colors.yellow : Colors.transparent,
-          border: _border,
-          borderRadius: BorderRadius.circular(10),
+    Widget btn = Container(
+      padding: EdgeInsets.all(_margin),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: value == widget.selectOperation ? Colors.yellow : Colors.white,
+          foregroundColor: Colors.black87
         ),
-        child: Text(
-          value,
-          style: TextStyle(
-            fontSize: 24.0,
+        onPressed: () => _onKeyPressed(value),
+        child: Container(
+          height: height,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: value == widget.selectOperation ? Colors.yellow : Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 24.0,
+            ),
           ),
         ),
       ),
