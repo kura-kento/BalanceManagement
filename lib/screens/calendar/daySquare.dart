@@ -136,6 +136,7 @@ class DaySquareState extends ConsumerState<DaySquare> {
                     },
                   ),
                 );
+                widget.parentFn('保存に成功しました');
                 setState(() {});
               } else {
                 ref.read(selectDayProvider.notifier).state = date;

@@ -32,6 +32,7 @@ dependencies:
   keyboard_actions: ^3.4.7
   math_expressions: ^2.4.0
   flutter_circle_color_picker: ^0.3.0
+  flutter_keyboard_visibility: ^5.4.1
 #  intl: ^0.16.0
 #  path_provider_macos: ^0.0.1
 #  admob_flutter: ^1.0.1

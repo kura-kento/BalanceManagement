@@ -74,13 +74,13 @@ class EditFormState extends ConsumerState<EditForm> {
       });
       _selectCategory = _category.indexOf(calendar.categoryId)+1;
 
-    ref.read(priceControllerProvider.notifier).state = TextEditingController(text: '${Utils.formatNumber(calendar.money * (calendar.money < 0 ? -1:1 ))}');
-    titleController = TextEditingController(text: '${calendar.title}');
-    memoController = TextEditingController(text: '${calendar.memo}');
+      ref.read(priceControllerProvider.notifier).state = TextEditingController(text: '${Utils.formatNumber(calendar.money * (calendar.money < 0 ? -1:1 ))}');
+      titleController = TextEditingController(text: '${calendar.title}');
+      memoController = TextEditingController(text: '${calendar.memo}');
     } else {
       moneyValue = SharedPrefs.getIsPlusButton() ? MoneyValue.income : MoneyValue.spending;
       updateListViewCategory();
-      ref.read(priceControllerProvider.notifier).state = TextEditingController();
+      // ref.read(priceControllerProvider.notifier).state = TextEditingController();
     }
   }
 
@@ -100,6 +100,9 @@ class EditFormState extends ConsumerState<EditForm> {
   Widget build(BuildContext context) {
     selectDay = ref.watch(selectDayProvider);
     priceController = ref.watch(priceControllerProvider);
+    if(widget.inputMode == InputMode.create) {
+      priceController.clear();
+    }
 
     if(AdMob.isNoAds() == false) {
       myBanner.load();

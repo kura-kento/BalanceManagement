@@ -23,7 +23,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
   TextEditingController priceController;
   String selectOperation = null; // 四則演算
   String selectOperationText; // 計算の前の数字（一時保存）
-
+  double common_height = 230;
   bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
 
   // TODO　カーソルが移動した時の処理
@@ -50,6 +50,9 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
     print("カスタムキーボード build");
     priceController = ref.watch(priceControllerProvider);
     selectOperationText = ref.watch(selectOperationTextProvider);
+    if(MediaQuery.of(context).size.height > 800){
+      common_height = 260;
+    }
 
     return Column(
       children: [
@@ -86,7 +89,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
       actions: [
         KeyboardActionsItem(
             footerBuilder: !isCustomKeyBoard ? null : (_) => PreferredSize(
-                preferredSize: Size.fromHeight(250),
+                preferredSize: Size.fromHeight(common_height),
                 child: CustomKeyboard2(
                       selectOperation: selectOperation,
                 )
@@ -221,7 +224,7 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
   class _CustomKeyboard2State extends ConsumerState<CustomKeyboard2> {
   TextEditingController priceController;
   String selectOperationText;
-
+  double common_height = 230;
   double _margin = 2;
   bool isCustomKeyBoard = SharedPrefs.getIsCustomKeyBoard();
 
@@ -230,8 +233,12 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
     priceController = ref.watch(priceControllerProvider);
     selectOperationText = ref.watch(selectOperationTextProvider);
 
+    if(MediaQuery.of(context).size.height > 800) {
+      common_height = 260;
+    }
+
     return Container(
-      height: 250,
+      height: common_height,
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: _margin + 5,horizontal: _margin + 5),
       decoration: BoxDecoration(
@@ -241,7 +248,9 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
         children: [
           Expanded(
             flex: 4,
-            child: Column(
+            child: ListView(
+              reverse: true,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 Row(
                   children: [
@@ -274,17 +283,19 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
                     _buildKeyboardKey('+'),
                   ],
                 ),
-              ],
+              ].reversed.toList(),
             ),
           ),
           Expanded(
             flex: 1,
-            child: Column(
+            child: ListView(
+              reverse: true,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 _buildKeyboardKey('AC',flex: null),
                 _buildKeyboardKey('Del',flex: null),
-                _buildKeyboardKey('=',flex: null, height: (45.0 + (_margin * 2)) * 2),
-              ],),
+                _buildKeyboardKey('=',flex: null, height: (45.0 + (_margin)) * 2),
+              ].reversed.toList(),),
           ),
         ],
       ),
@@ -300,26 +311,18 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
 
   Widget _buildKeyboardKey(String value, {flex = 1, height = 45.0}) {
     Widget btn = Container(
-      padding: EdgeInsets.all(_margin),
+      margin: EdgeInsets.all(_margin),
+      height: height,
+      width: 1000, // 画面いっぱいに
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: value == widget.selectOperation ? Colors.yellow : Colors.white,
-          foregroundColor: Colors.black87
+          foregroundColor: Colors.black87,
         ),
         onPressed: () => _onKeyPressed(value),
-        child: Container(
-          height: height,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: value == widget.selectOperation ? Colors.yellow : Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: 24.0,
-            ),
-          ),
+        child: Text(
+          value,
+          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -339,12 +342,19 @@ class CustomKeyboard2 extends ConsumerStatefulWidget {
     final currentValue = priceController.text;
 
     if (value == '=') {
-      priceController.text = Utils.calculation(
-          selectOperationText,
-          widget.selectOperation,
-          priceController.text
-      );
-      operationClear();
+      // 未記入　ストック有り
+      if(selectOperationText != '' && priceController.text == '') {
+        priceController.text = selectOperationText;
+        operationClear();
+      } else {
+        priceController.text = Utils.calculation(
+            selectOperationText,
+            widget.selectOperation,
+            priceController.text
+        );
+        operationClear();
+      }
+
     } else if(['+','-','×','÷'].contains(value)) {
       // ストックにあるか
       if(selectOperationText != '') {
