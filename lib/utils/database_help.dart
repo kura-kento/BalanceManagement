@@ -10,8 +10,8 @@ import '../models/category.dart';
 
 class DatabaseHelper {
 
-  static DatabaseHelper _databaseHelper;    // Singleton DatabaseHelper
-  static Database db;                // Singleton Database
+  static DatabaseHelper? _databaseHelper;    // Singleton DatabaseHelper
+  static late Database db;                // Singleton Database
 
   static String calendarTable = 'calendar';
   static String colId = 'id';
@@ -27,13 +27,9 @@ class DatabaseHelper {
   DatabaseHelper._createInstance(); // DatabaseHelperのインスタンスを作成するための名前付きコンストラクタ
 
   factory DatabaseHelper() {
-    _databaseHelper ??= DatabaseHelper._createInstance();
-    return _databaseHelper;
+    return _databaseHelper ??= DatabaseHelper._createInstance();
   }
-
-  Database get database{
-    return db;
-  }
+  Database get database { return db; }
 
   static Future<Database> initializeDatabase() async {
     // データベースを保存するためのAndroidとiOSの両方のディレクトリパスを取得する
@@ -204,8 +200,8 @@ class DatabaseHelper {
   /*
   * 【SELECT】 選択した収支
    */
-  Future<Calendar> selectCalendar(int id) async {
-    final calendar = await this.database.query(calendarTable, where: 'id = ${id}');
+  Future<Calendar> selectCalendar(int? id) async {
+    final calendar = await this.database.query(calendarTable, where: 'id = ${id ?? -1}');
     final result = Calendar.fromMapObject(calendar[0]);
     return result;
   }
@@ -236,7 +232,7 @@ class DatabaseHelper {
     final x = await this.database.rawQuery('SELECT COUNT (*) from $calendarTable');
     //firstIntValueはlist型からint型に変更している。
     final result = Sqflite.firstIntValue(x);
-    return result;
+    return result ?? 0;
   }
 
   Future<List<Calendar>> getCalendarList() async {

@@ -5,13 +5,13 @@ import '../utils/app.dart';
 
 class CustomAppBar extends StatefulWidget {
   CustomAppBar({
-    Key key,
-    this.title,
-    this.leftButton,
-    this.rightButton,
-    this.onTap,
-    this.color,
-    this.fontColor,
+    Key? key,
+    required this.title,
+    required this.leftButton,
+    required this.rightButton,
+    required this.onTap,
+    required this.color,
+    required this.fontColor,
   }) : super(key: key);
 
   String title;

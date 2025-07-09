@@ -6,9 +6,9 @@ class MonthlyData {
   int money;
   charts.Color barColor;
   MonthlyData({
-    @required this.month,
-    @required this.money,
-    @required this.barColor
+    required this.month,
+    required this.money,
+    required this.barColor
   });
 }
 

@@ -9,14 +9,14 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 import '../main.dart';
 
 class RewardWidget extends StatefulWidget {
-  const RewardWidget({Key key}) : super(key: key);
+  const RewardWidget({Key? key}) : super(key: key);
 
   @override
   _RewardWidgetState createState() => _RewardWidgetState();
 }
 
 class _RewardWidgetState extends State<RewardWidget> {
-  RewardedAd _rewardedAd;
+  RewardedAd? _rewardedAd;
   int _numRewardedLoadAttempts = 0;
   int maxFailedLoadAttempts = 3; //再度繰り返す回数
 
@@ -119,7 +119,7 @@ class _RewardWidgetState extends State<RewardWidget> {
     print(diffTime);
 
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [

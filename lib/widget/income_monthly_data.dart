@@ -6,9 +6,9 @@ class IncomeMonthlyData {
   int income;
   charts.Color barColor;
   IncomeMonthlyData({
-    @required this.month,
-    @required this.income,
-    @required this.barColor
+    required this.month,
+    required this.income,
+    required this.barColor
   });
 }
 

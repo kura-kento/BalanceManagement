@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:app_review/app_review.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/screens/calendar/week.dart';
@@ -22,7 +21,7 @@ final selectDayProvider = StateProvider<DateTime>((ref) => DateTime.now());
 final addMonthProvider = StateProvider<int>((ref) => 0);
 
 class CalendarPage extends ConsumerStatefulWidget {
-  const CalendarPage({Key key}) : super(key: key);
+  const CalendarPage({Key? key}) : super(key: key);
   @override
   CalendarPageState createState() => CalendarPageState();
 }
@@ -30,8 +29,8 @@ class CalendarPage extends ConsumerStatefulWidget {
 class CalendarPageState extends ConsumerState<CalendarPage> {
   final DateTime _today = DateTime.now();
   //選択している日
-  DateTime selectDay;
-  int addMonth;
+  late DateTime selectDay;
+  late int addMonth;
   bool isLoading = true;
 
   PageController pageController = PageController(initialPage: App.infinityPage);
@@ -66,38 +65,38 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     print(SharedPrefs.getLoginCount());
     SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
 
-    if (Platform.isIOS && SharedPrefs.getLoginCount() % 10 == 0) {
-      AppReview.requestReview.then((onValue) {
-        print(onValue);
-      });
-    }else if (Platform.isAndroid && SharedPrefs.getLoginCount() % 20 == 0) {
-      AppReview.requestReview.then((onValue) {
-        print(onValue);
-        showDialog(
-          context: context,
-          builder: (_) {
-            return AlertDialog(
-              title: Text("このアプリは満足していますか？"),
-              // content: Text("このアプリは満足していますか？"),
-              actions: <Widget>[
-                // ボタン領域
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("いいえ")),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      print(onValue);
-                    },
-                    child: Text("はい")),
-              ],
-            );
-          },
-        );
-      });
-    }
+    // if (Platform.isIOS && SharedPrefs.getLoginCount() % 10 == 0) {
+    //   AppReview.requestReview.then((onValue) {
+    //     print(onValue);
+    //   });
+    // }else if (Platform.isAndroid && SharedPrefs.getLoginCount() % 20 == 0) {
+    //   AppReview.requestReview.then((onValue) {
+    //     print(onValue);
+    //     showDialog(
+    //       context: context,
+    //       builder: (_) {
+    //         return AlertDialog(
+    //           title: Text("このアプリは満足していますか？"),
+    //           // content: Text("このアプリは満足していますか？"),
+    //           actions: <Widget>[
+    //             // ボタン領域
+    //             ElevatedButton(
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                 },
+    //                 child: Text("いいえ")),
+    //             ElevatedButton(
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                   print(onValue);
+    //                 },
+    //                 child: Text("はい")),
+    //           ],
+    //         );
+    //       },
+    //     );
+    //   });
+    // }
   }
 
   @override

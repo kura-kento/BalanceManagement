@@ -14,7 +14,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'graph/graph_bar_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   int _currentIndex = 0;
   final _pageWidgets = [
     const CalendarPage(),
-    GraphBarPage(),
+    // GraphBarPage(),
     SettingPage(),
   ];
 

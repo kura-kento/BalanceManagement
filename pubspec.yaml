@@ -4,7 +4,7 @@ description: A new Flutter application.
 version: 1.5.1+14
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -17,21 +17,26 @@ dependencies:
 
   auto_size_text: ^3.0.0
   app_tracking_transparency: ^2.0.3
-  app_review: ^2.1.2+1
+#  app_review: ^2.1.2+1
+  in_app_review: ^2.0.10
   cupertino_icons: ^1.0.2
   charts_flutter: ^0.12.0
-  flutter_lock_screen: ^2.0.1
-  flutter_slidable: ^2.0.0
+#  flutter_lock_screen: ^2.0.1
+  flutter_slidable: ^4.0.0
   flutter_riverpod: ^2.1.3
-  google_mobile_ads: ^2.3.0
-  infinity_page_view: ^1.0.0
+  google_mobile_ads: ^6.0.0
   local_auth: ^2.1.3
   path_provider: ^2.0.11
   shared_preferences: ^2.0.15
-  syncfusion_flutter_gauges: ^20.4.41
+  syncfusion_flutter_gauges: ^30.1.39
+#  infinity_page_view: ^1.0.0
+#  page_view_indicators
 #  intl: ^0.16.0
 #  path_provider_macos: ^0.0.1
 #  admob_flutter: ^1.0.1
+#  win32: ^5.14.0
+  material_design_icons_flutter: ^7.0.7296
+  passcode_screen: ^2.0.1
 
 
 dependency_overrides:
@@ -51,36 +56,10 @@ flutter_icons:
 flutter:
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   fonts:
     - family: Noto Sans JP
       fonts:
         - asset: fonts/NotoSansJP-Regular.ttf
-#  fonts:
-#    - family: din
-#      fonts:
-#        - asset: assets/fonts/din1451alt.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages

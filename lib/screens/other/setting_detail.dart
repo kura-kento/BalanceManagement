@@ -8,7 +8,7 @@ import '../../utils/shared_prefs.dart';
 import '../../utils/utils.dart';
 
 class SettingDetail extends StatefulWidget {
-  const SettingDetail({Key key}) : super(key: key);
+  const SettingDetail({Key? key}) : super(key: key);
 
   @override
   State<SettingDetail> createState() => _SettingDetailState();

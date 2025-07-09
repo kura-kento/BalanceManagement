@@ -10,7 +10,7 @@ enum MoneyValue{
 }
 
 class CategoryPage extends StatefulWidget {
-  CategoryPage({Key key,this.moneyValue}) : super(key: key);
+  CategoryPage({Key? key,required this.moneyValue}) : super(key: key);
   final MoneyValue moneyValue;
 
 @override
@@ -60,7 +60,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   onTap: (){
-                    titleControllerList[i].text = categoryList[i].title;
+                    titleControllerList[i].text = categoryList[i].title ?? '';
                   },
                   controller: titleControllerList[i],
                   //style: textStyle,
@@ -125,7 +125,7 @@ class _CategoryPageState extends State<CategoryPage> {
   }
   //アップデート
   Future <void> _update(beforeId,after,value) async {
-    int _id;
+    int? _id;
     //削除予定
     for(var i=0;i<categoryList.length;i++) {
       if (categoryList[i].id == beforeId){
@@ -133,8 +133,10 @@ class _CategoryPageState extends State<CategoryPage> {
         break;
       }
     }
-    await DatabaseHelper().updateCategory(Category.withId(_id,after,(value == MoneyValue.income)));
-    print(_id);
+    if (_id != null) {
+      await DatabaseHelper().updateCategory(Category.withId(_id,after,(value == MoneyValue.income)));
+    }
+    // print(_id);
   }
 }
 

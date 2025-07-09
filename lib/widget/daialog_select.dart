@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectDialog extends StatefulWidget {
-  const SelectDialog({Key key}) : super(key: key);
+  const SelectDialog({Key? key}) : super(key: key);
 
   @override
   _SelectDialogState createState() => _SelectDialogState();

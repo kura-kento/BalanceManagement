@@ -11,7 +11,7 @@ import 'calendar_page.dart';
 import 'edit_form.dart';
 
 class DaySquare extends ConsumerStatefulWidget {
-  const DaySquare({Key key, this.parentFn}) : super(key: key);
+  const DaySquare({Key? key, required this.parentFn}) : super(key: key);
   final Function parentFn;
   @override
   DaySquareState createState() => DaySquareState();
@@ -20,8 +20,8 @@ class DaySquare extends ConsumerStatefulWidget {
 class DaySquareState extends ConsumerState<DaySquare> {
   final DateTime _today = DateTime.now();
   // //選択している日
-  DateTime selectDay;
-  int addMonth;
+  late DateTime selectDay;
+  late int addMonth;
 
   @override
   Widget build(BuildContext context) {

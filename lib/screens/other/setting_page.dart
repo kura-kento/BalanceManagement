@@ -168,7 +168,7 @@ class _SettingPageState extends State<SettingPage> {
     String _labelTextCategory = "";
     for(var i = 0;i < categoryList.length;i++){
       if(i == 0){
-        _labelTextCategory = categoryList[i].title;
+        _labelTextCategory = categoryList[i].title ?? '';
       }
     }
     return _labelTextCategory;
@@ -181,7 +181,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
 //カテゴリーの名前を取得。
-  List<Category> categories(value){
+  List<Category> categories(value) {
     List<Category> _categories = [];
     if(value){
       for(var i = 0; i < categoryList.length; i++){
@@ -199,16 +199,16 @@ class _SettingPageState extends State<SettingPage> {
     return _categories;
   }
   String dropDownButton(value){
-    String _id;
+    String? _id;
     for(var i=0;i<categoryList.length;i++){
       if(categoryList[i].plus == value){
         _id = categoryList[i].id.toString();
       }
     }
-    return _id;
+    return _id ?? ''; // TODO 間違ってるかも[?? '']
   }
   String labelText(number,value){
-    String _title;
+    String? _title;
       if(number == ""){
         for(var i = 0; i < categoryList.length; i++){
           if(categoryList[i].plus == value){
@@ -222,6 +222,6 @@ class _SettingPageState extends State<SettingPage> {
           }
         }
       }
-      return _title;
+      return _title ?? ''; // TODO 間違ってるかも[?? '']
   }
 }

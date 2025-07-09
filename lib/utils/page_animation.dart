@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SlidePageRoute extends PageRouteBuilder {
   final Widget page;
   final RouteSettings settings;
-  SlidePageRoute({this.page, this.settings})
+  SlidePageRoute({required this.page, required this.settings})
       : super(
     pageBuilder: (
         BuildContext context,

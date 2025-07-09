@@ -14,7 +14,7 @@ class AdMob{
       // iOSの広告ユニットID
       return 'ca-app-pub-7136658286637435/7202771519';
     }
-    return null;
+    return '';
   }
 
   static BannerAd admobBanner() {

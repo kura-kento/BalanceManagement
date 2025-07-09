@@ -1,39 +1,39 @@
 
 class Category {
 
-  int _id;
-  String _title;
-  bool _plus;
+  int? id;
+  String? title;
+  bool? plus;
 
 
-  Category(this._title, this._plus);
+  Category(this.title, this.plus);
 
-  Category.withId(this._id, this._title, this._plus);
+  Category.withId(this.id, this.title, this.plus);
 
-  int get id => _id;
-
-  String get title => _title;
-
-  bool get plus => _plus;
-
-  set title(String newTitle) {
-    if ( newTitle.length <=  20 ){
-      this._title = newTitle;
-    }
-  }
-
-  set plus(bool newPlus) {
-      this._plus = newPlus;
-  }
+  // int get id => id;
+  //
+  // String get title => title;
+  //
+  // bool get plus => plus;
+  //
+  // set title(String newTitle) {
+  //   if ( newTitle.length <=  20 ){
+  //     this.title = newTitle;
+  //   }
+  // }
+  //
+  // set plus(bool newPlus) {
+  //     this.plus = newPlus;
+  // }
 
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
 
     Map<String, dynamic> map = {};
 
-    map['id'] = _id;
-    map['title'] = _title;
-    map['plus'] = _plus.toString();
+    map['id'] = id;
+    map['title'] = title;
+    map['plus'] = plus.toString();
 
     return map;
   }
@@ -41,8 +41,8 @@ class Category {
   // Mapオブジェクトからオブジェクトを抽出する
   Category.fromMapObject(Map<String, dynamic> map) {
     //print(map);
-    this._id = map['id'];
-    this._title = map['title'];
-    this._plus = map['plus'] == "true" ? true:false;
+    this.id = map['id'];
+    this.title = map['title'];
+    this.plus = map['plus'] == "true" ? true:false;
   }
 }

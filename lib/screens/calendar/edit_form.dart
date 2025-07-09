@@ -20,10 +20,10 @@ enum InputMode{
 }
 
 class EditForm extends ConsumerStatefulWidget {
-  EditForm({Key key, this.calendarId, this.inputMode, this.parentFn}) : super(key: key);
+  EditForm({Key? key, this.calendarId, required this.inputMode, required this.parentFn}) : super(key: key);
 
   final Function parentFn;
-  final int calendarId;
+  final int? calendarId;
   final InputMode inputMode;
 
   @override
@@ -46,8 +46,8 @@ class EditFormState extends ConsumerState<EditForm> {
   TextEditingController numberController = TextEditingController();
   TextEditingController memoController = TextEditingController();
   FixedExtentScrollController scrollController = FixedExtentScrollController();
-  Calendar calendar;
-  DateTime selectDay;
+  late Calendar calendar;
+  late DateTime selectDay;
 
   @override
   void initState() {
@@ -63,17 +63,17 @@ class EditFormState extends ConsumerState<EditForm> {
 
   Future<void> initData() async {
     calendar = await DatabaseHelper().selectCalendar(widget.calendarId);
-
+    num calendarMoney = calendar.money ?? 0;
     //編集フォームでドロップダウンの位置決め
-    List<Category> _categoryList = await DatabaseHelper().getCategoryList(calendar.money >= 0);
+    List<Category> _categoryList = await DatabaseHelper().getCategoryList(calendarMoney >= 0);
     List<int> _category = [];
     _categoryList.forEach((Category category) {
-      _category.add(category.id);
+      _category.add(category.id ?? 0); //TODO [ ?? 0] は違う
     });
-    _selectCategory = _category.indexOf(calendar.categoryId)+1;
+    _selectCategory = _category.indexOf(calendar.categoryId ?? 0)+1;
 
-    moneyValue = calendar.money >= 0 ? MoneyValue.income : MoneyValue.spending;
-    numberController = TextEditingController(text: '${Utils.formatNumber(calendar.money * (calendar.money < 0 ? -1:1 ))}');
+    moneyValue = calendarMoney >= 0 ? MoneyValue.income : MoneyValue.spending;
+    numberController = TextEditingController(text: '${Utils.formatNumber(calendarMoney * (calendarMoney < 0 ? -1:1 ))}');
     titleController = TextEditingController(text: '${calendar.title}');
     memoController = TextEditingController(text: '${calendar.memo}');
   }
@@ -172,7 +172,7 @@ class EditFormState extends ConsumerState<EditForm> {
                                       padding: EdgeInsets.symmetric(horizontal: 10.0),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[Expanded(child: Text(_categoryItems[_selectCategory].title)), Text("＞")],
+                                        children: <Widget>[Expanded(child: Text(_categoryItems[_selectCategory].title ?? "")), Text("＞")],
                                       ),
                                     ),
                                   ),
@@ -313,13 +313,17 @@ class EditFormState extends ConsumerState<EditForm> {
   Future <void> _save() async {
     if (widget.inputMode == InputMode.edit) {
       print(calendar);
-      await databaseHelper.updateCalendar(Calendar.withId(widget.calendarId,
-                                                                  Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
-                                                                  '${titleController.text}',
-                                                                  '${memoController.text}',
-                                                                  calendar.date,
-                                                                  _categoryItems[_selectCategory].id)
+      // TODO [widget.calendarId ?? 0]ではないかと
+      await databaseHelper.updateCalendar(
+          Calendar.withId(
+              widget.calendarId ?? 0,
+              Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
+              '${titleController.text}',
+              '${memoController.text}',
+              calendar.date,
+              _categoryItems[_selectCategory].id)
       );
+
     } else {
       await databaseHelper.insertCalendar(Calendar(Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
@@ -334,7 +338,7 @@ class EditFormState extends ConsumerState<EditForm> {
   Widget _pickerItem(Category category) {
     return Center(
       child: Text(
-        category.title,
+        category.title ?? '',
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 32),
       ),
@@ -356,7 +360,7 @@ class EditFormState extends ConsumerState<EditForm> {
     if(widget.inputMode == InputMode.edit) {
       return IconButton(
         onPressed: () {
-          _delete(widget.calendarId);
+          _delete(widget.calendarId ?? 0); // TODO [widget.calendarId ?? 0]ではない
           moveToLastScreen();
           setState(() {});
         },

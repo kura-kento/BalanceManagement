@@ -3,52 +3,52 @@ import 'package:flutter/material.dart';
 class Messages
 {
   Messages({
-    @required this.space,
-    @required this.monday,
-    @required this.tuesday,
-    @required this.wednesday,
-    @required this.thursday,
-    @required this.friday,
-    @required this.saturday,
-    @required this.sunday,
+    required this.space,
+    required this.monday,
+    required this.tuesday,
+    required this.wednesday,
+    required this.thursday,
+    required this.friday,
+    required this.saturday,
+    required this.sunday,
     
-    @required this.annualTotal,
-    @required this.monthlyTotal,
-    @required this.monthlyTotalPlus,
-    @required this.monthlyTotalMinus,
+    required this.annualTotal,
+    required this.monthlyTotal,
+    required this.monthlyTotalPlus,
+    required this.monthlyTotalMinus,
 
-    @required this.plus,
-    @required this.minus,
-    @required this.title,
-    @required this.income,
-    @required this.save,
-    @required this.calendar,
-    @required this.graph,
-    @required this.setting,
-    @required this.memo,
-    @required this.totalValue,
-    @required this.done,
+    required this.plus,
+    required this.minus,
+    required this.title,
+    required this.income,
+    required this.save,
+    required this.calendar,
+    required this.graph,
+    required this.setting,
+    required this.memo,
+    required this.totalValue,
+    required this.done,
 
-    @required this.edit,
-    @required this.spending,
-    @required this.newAdditionPage,
-    @required this.editPage,
-    @required this.update,
-    @required this.categoryEditing,
-    @required this.addPosition,
-    @required this.unit,
-    @required this.top,
-    @required this.bottom,
-    @required this.changeTo,
-    @required this.deleteAllBalancedata,
+    required this.edit,
+    required this.spending,
+    required this.newAdditionPage,
+    required this.editPage,
+    required this.update,
+    required this.categoryEditing,
+    required this.addPosition,
+    required this.unit,
+    required this.top,
+    required this.bottom,
+    required this.changeTo,
+    required this.deleteAllBalancedata,
 
-    @required this.deleteAllDialog,
-    @required this.delete,
-    @required this.cancel,
-    @required this.wednesday1,
+    required this.deleteAllDialog,
+    required this.delete,
+    required this.cancel,
+    required this.wednesday1,
     
-    @required this.weekAgo,
-    @required this.weekLater,
+    required this.weekAgo,
+    required this.weekLater,
   });
 
   final String space;
@@ -215,7 +215,7 @@ class AppLocalizations
 
   static Messages of(BuildContext context)
   {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations).messages;
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)?.messages ?? Messages.ja();
   }
 }
 
