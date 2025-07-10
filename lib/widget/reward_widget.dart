@@ -115,8 +115,8 @@ class _RewardWidgetState extends State<RewardWidget> {
   Widget build(BuildContext context) {
     DateTime chargeTime = DateTime.parse(SharedPrefs.getRewardTime());
     int diffTime = chargeTime.difference(DateTime.now()).inHours;
-    print('広告非表示期限：'+ SharedPrefs.getRewardTime());
-    print(diffTime);
+    // print('広告非表示期限：'+ SharedPrefs.getRewardTime());
+    // print(diffTime);
 
     return Container(
       color: Theme.of(context).colorScheme.background,
@@ -141,6 +141,9 @@ class _RewardWidgetState extends State<RewardWidget> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)
+              ),
               backgroundColor: App.NoAdsButtonColor, //ボタンの背景色
             ),
             onPressed: _rewardedAd == null ? null : () {

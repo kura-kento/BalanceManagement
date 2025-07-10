@@ -10,6 +10,7 @@ import 'package:balancemanagement_app/widget/reward_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
 
 class SettingPage extends StatefulWidget {
 
@@ -51,15 +52,9 @@ class _SettingPageState extends State<SettingPage> {
                           Divider(color: Colors.grey,height:0),
                           SelectDialog(),
                           Divider(color: Colors.grey,height:0),
-                          InkWell(
-                            child: Container(
-                              padding: EdgeInsets.all(15.0),
-                              child: Center(child: Text(
-                                '詳細設定',
-                                textAlign: TextAlign.center,
-                                textScaleFactor: 1.5,
-                              )),
-                            ) ,
+                          ListTile(
+                            title: Text('詳細設定',style: TextStyle(fontWeight: FontWeight.bold),),
+                            leading: Icon(Icons.settings, color: Theme.of(context).iconTheme.color,),
                             onTap: () async {
                               await Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -72,7 +67,8 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                           Divider(color: Colors.grey,height:0),
                           ListTile(
-                              title: Text('パスワードの有無'),
+                              leading: Icon(Icons.password, color: Theme.of(context).iconTheme.color,),
+                              title: Text('パスワードの有無',style: TextStyle(fontWeight: FontWeight.bold)),
                               trailing: CupertinoSwitch(
                                 value: SharedPrefs.getIsPassword(),
                                 onChanged: (bool value) {
@@ -111,8 +107,7 @@ class _SettingPageState extends State<SettingPage> {
                               child: Center(
                                 child: Text(
                                   AppLocalizations.of(context).deleteAllBalancedata,
-                                  textScaleFactor: 1.5,
-                                  style: TextStyle(color: Colors.red),
+                                  style: TextStyle(color: Colors.red,fontSize: 20,fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
@@ -127,7 +122,7 @@ class _SettingPageState extends State<SettingPage> {
                                         actions: <Widget>[
                                           CupertinoDialogAction(
                                             child: Text(AppLocalizations.of(context).delete),
-                                            onPressed: () => allDelete(),
+                                            onPressed: () => allDelete(context),
                                             isDestructiveAction: true,
                                           ),
                                           CupertinoDialogAction(
@@ -152,9 +147,10 @@ class _SettingPageState extends State<SettingPage> {
         ),
     );
   }
-  void moveToLastScreen(){
-    Navigator.pop(context);
-  }
+
+  // void moveToLastScreen(context) {
+  //   Navigator.pop(context);
+  // }
 
   Future<void> updateListViewCategory() async{
 //全てのDBを取得
@@ -175,7 +171,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 //ダイアログ
 
-  Future<void> allDelete() async{
+  Future<void> allDelete(context) async{
       await DatabaseHelper().allDeleteCalendar();
       Navigator.of(context).pop();
   }

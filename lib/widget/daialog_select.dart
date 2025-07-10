@@ -14,18 +14,15 @@ class SelectDialog extends StatefulWidget {
 class _SelectDialogState extends State<SelectDialog> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: Container(
-        padding: EdgeInsets.all(15.0),
-        child: Center(child: Text(
-          AppLocalizations.of(context).addPosition,
-          textAlign: TextAlign.center,
-          textScaleFactor: 1.5,
-        )),
-      ) ,
-      onTap: (){
-        AddPositionDialog(context);
-      },
+    return ListTile(
+        leading: Icon(Icons.ad_units_outlined, color: Theme.of(context).iconTheme.color,),
+        title: Text(
+            AppLocalizations.of(context).addPosition,
+            style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        onTap: () {
+          AddPositionDialog(context);
+        },
     );
   }
 
