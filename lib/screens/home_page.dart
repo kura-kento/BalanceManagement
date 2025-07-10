@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   int _currentIndex = 0;
   final _pageWidgets = [
     const CalendarPage(),
-    // GraphBarPage(),
+    GraphBarPage(),
     SettingPage(),
   ];
 

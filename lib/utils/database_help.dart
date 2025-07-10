@@ -38,7 +38,7 @@ class DatabaseHelper {
     // Open/指定されたパスにデータベースを作成する
     final _database = await openDatabase(
       path,
-      version: 3,
+      version: 10, // 旧3
       onCreate: _createDb,
       onUpgrade: _updateDb,
     );
@@ -49,44 +49,60 @@ class DatabaseHelper {
     await db.execute('CREATE TABLE $calendarTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
         '$colMoney REAL, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
 
-    if(newVersion == 3) {
-      await db.execute('CREATE TABLE $categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
-      await db.insert(categoryTable,Category("売上 ",true).toMap());
-      await db.insert(categoryTable,Category("購入 ",false).toMap());
-      for(var i=0;i<6;i++){
-        await db.insert(categoryTable,Category("その他${i+1} ",true).toMap());
-        await db.insert(categoryTable,Category("その他${i+1} ",false).toMap());
-      }
+    await db.execute('CREATE TABLE $categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
+    await db.insert(categoryTable,Category("売上 ",true).toMap());
+    await db.insert(categoryTable,Category("購入 ",false).toMap());
+    for(var i=0;i<6;i++){
+      await db.insert(categoryTable,Category("その他${i+1} ",true).toMap());
+      await db.insert(categoryTable,Category("その他${i+1} ",false).toMap());
     }
   }
 
   static void _updateDb(Database db, int oldVersion, int newVersion) async {
-    if(newVersion == 3) {
-      // データの名前を変更する
-      await db.execute('ALTER TABLE $calendarTable RENAME TO hoge');
-      // 新しいデータ型に変更したテーブルを作成
-      await db.execute('CREATE TABLE $calendarTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colMoney REAL, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
-      // データを移行する
-      await db.execute('INSERT INTO $calendarTable SELECT * FROM hoge');
-      // 名前の変更した元データを削除する
-      await db.execute('DROP TABLE hoge');
-    }
-    // version3 カテゴリ移行
-    if(newVersion == 3) {
-      getApplicationDocumentsDirectory().then((directory) async {
-        await db.execute('ATTACH DATABASE "' + directory.path + "/category.db" + '" as sub').catchError((e) {
-          print(e);
-        }).whenComplete(() {
-          print("ATTACH　成功");
-        });
+    print("_updateDb");
+    // if(newVersion == 3) {
+    //   // データの名前を変更する
+    //   await db.execute('ALTER TABLE $calendarTable RENAME TO hoge');
+    //   // 新しいデータ型に変更したテーブルを作成
+    //   await db.execute('CREATE TABLE $calendarTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colMoney REAL, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
+    //   // データを移行する
+    //   await db.execute('INSERT INTO $calendarTable SELECT * FROM hoge');
+    //   // 名前の変更した元データを削除する
+    //   await db.execute('DROP TABLE hoge');
+    // }
+    // // version3 カテゴリ移行
+    // if(newVersion == 3) {
+    //   getApplicationDocumentsDirectory().then((directory) async {
+    //     await db.execute('ATTACH DATABASE "' + directory.path + "/category.db" + '" as sub').catchError((e) {
+    //       print(e);
+    //     }).whenComplete(() {
+    //       print("ATTACH　成功");
+    //     });
+    //
+    //     await db.execute('CREATE TABLE main.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
+    //     // データを移行する
+    //     await db.execute('INSERT INTO main.$categoryTable SELECT * FROM sub.$categoryTable');
+    //     // アッタチを切る
+    //     await db.execute('DETACH sub');
+    //   });
+    // }
 
-        await db.execute('CREATE TABLE main.$categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
-        // データを移行する
-        await db.execute('INSERT INTO main.$categoryTable SELECT * FROM sub.$categoryTable');
-        // アッタチを切る
-        await db.execute('DETACH sub');
-      });
-    }
+    // if (oldVersion < 10) {
+    //   /**
+    //    * flutter: Table: calendar
+    //       flutter: Table: sqlite_sequence
+    //       flutter: SQL: CREATE TABLE sqlite_sequence(name,seq)
+    //       flutter: Table: category
+    //       flutter: SQL: CREATE TABLE category(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, plus TEXT)
+    //    */
+    //   print("DB更新");
+    //   final List<Map<String, dynamic>> hoge = await db.rawQuery('SELECT name, sql FROM sqlite_master WHERE type="table"');
+    //
+    //   for (final row in hoge) {
+    //     print('Table: ${row['name']}');
+    //     print('SQL: ${row['sql']}');
+    //   }
+    // }
   }
 
   // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
@@ -118,7 +134,7 @@ class DatabaseHelper {
   }
 
   //選択年を全て持ってくる
-  Future<Map<String,dynamic>> getCalendarYearMap(date) async{
+  Future<Map<String,dynamic>> getCalendarYearMap(date) async {
     final _text = DateFormat('yyyy').format(date);
     final result = await this.database.rawQuery('SELECT COALESCE(SUM($colMoney),0) AS SUM,'
         'COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,'

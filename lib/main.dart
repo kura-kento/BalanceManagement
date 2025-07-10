@@ -66,10 +66,11 @@ class MyApp extends StatelessWidget {
     await SharedPrefs.setInstance();
     DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
     WidgetsFlutterBinding.ensureInitialized();
-    if(SharedPrefs.getIsPassword()){
-      return PassLock();
-    }else{
-      return HomePage();
+
+    if(SharedPrefs.getIsPassword() && SharedPrefs.getPassword() != '') {
+      return PassLock(returnPage: HomePage());
+    } else {
+      return  HomePage();
     }
   }
 }
