@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:intl/intl.dart';
 import '../../utils/app.dart';
 import 'calendar_page.dart';
 import 'category_form.dart';
@@ -131,10 +132,8 @@ class EditFormState extends ConsumerState<EditForm> {
                     Expanded(
                       flex: 5,
                       child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Text(widget.inputMode == InputMode.edit
-                              ? AppLocalizations.of(context).editPage
-                              : AppLocalizations.of(context).newAdditionPage)),
+                         alignment: Alignment.bottomCenter,
+                         child: Text(DateFormat('yyyy年MM月dd日').format(selectDay),style: TextStyle(fontSize: 18),),),
                     ),
                     Expanded(
                       flex: 1,
@@ -151,30 +150,23 @@ class EditFormState extends ConsumerState<EditForm> {
                     child: ListView(
                       children: <Widget>[
                         Row(children: btnPlusMinus()),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                padding: App.padding,
+                        Padding(
+                          padding: App.padding,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                flex: 1,
                                 child: InkWell(
                                   child: Container(
-                                    height: 65,
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.only(left: 10),
+                                    height: 55,
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Color(0xff999999),
-                                        width: 1.0,
-                                      ),
+                                      border: Border.all(color: false ? Theme.of(context).colorScheme.primary : Color(0x99666666), width: 1.3,),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[Expanded(child: Text(_categoryItems[_selectCategory].title ?? "")), Text("＞")],
-                                      ),
-                                    ),
+                                    child: Text(_categoryItems[_selectCategory].title ?? "", style: TextStyle(fontWeight: FontWeight.normal),),
                                   ),
                                   // カテゴリボタンを押した時のプルダウンボタン
                                   onTap: () {
@@ -182,49 +174,59 @@ class EditFormState extends ConsumerState<EditForm> {
                                   },
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              flex: 2,
-                              child: Padding(
-                                padding: App.padding,
-                                child: TextField(
-                                  controller: titleController,
-                                  // style: textStyle,
-                                  decoration: InputDecoration(labelText: AppLocalizations.of(context).title, border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                flex: 2,
+                                child: Container(
+                                  child: TextField(
+                                    controller: titleController,
+                                    decoration: InputDecoration(
+                                        labelText: AppLocalizations.of(context).title,
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         /*
                         * 金額　フォーム
                         */
                         Padding(
-                            padding: App.padding,
-                            child: TextFormField(
-                              //autofocus: true,
-                                controller: numberController,
-                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
-                                ],
-                                decoration: InputDecoration(
-                                    labelText: moneyValue == MoneyValue.income
-                                        ?
-                                    AppLocalizations.of(context).income
-                                        :
-                                    AppLocalizations.of(context).spending,
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5.0)
-                                    )
+                          padding: App.padding,
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Spacer(flex: 1,),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  flex: 2,
+                                  child: TextFormField(
+                                    //autofocus: true,
+                                      controller: numberController,
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      inputFormatters: <TextInputFormatter>[
+                                        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
+                                      ],
+                                      decoration: InputDecoration(
+                                          labelText: moneyValue == MoneyValue.income
+                                              ?
+                                          AppLocalizations.of(context).income
+                                              :
+                                          AppLocalizations.of(context).spending,
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5.0)
+                                          )
+                                      )
+                                  ),
                                 )
-                            )
+                              ]),
                         ),
                         Padding(
                             padding: App.padding,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 backgroundColor: Theme.of(context).primaryColorDark,
                                 foregroundColor: Theme.of(context).primaryColorLight,
                               ),
@@ -245,7 +247,7 @@ class EditFormState extends ConsumerState<EditForm> {
                           padding: App.padding,
                           child: TextField(
                             controller: memoController,
-                            minLines: 1,
+                            minLines: 5,
                             maxLength: 1000,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context).memo,
@@ -273,16 +275,18 @@ class EditFormState extends ConsumerState<EditForm> {
     List<Widget> _list = [];
     [MoneyValue.income,MoneyValue.spending].asMap().forEach((index,element) {
       if(index == 1) {
-        _list.add(
-          SizedBox(width: 8)
-        );
+        _list.add(SizedBox(width: 8));
       }
       _list.add(
         Expanded(
           flex: 1,
           child: ElevatedButton(
-            child: Text(index == 0 ? AppLocalizations.of(context).plus : AppLocalizations.of(context).minus),
+            child: Text(
+                index == 0 ? AppLocalizations.of(context).plus : AppLocalizations.of(context).minus,
+                style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+            ),
             style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               backgroundColor: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
               foregroundColor: moneyValue == element ? Colors.white : Colors.grey[400],
             ),
