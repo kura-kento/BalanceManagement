@@ -59,6 +59,11 @@ class SharedPrefs {
   static Future<bool>? setTextSize(double value) => _sharedPreferences?.setDouble(textSize, value);
   static double getTextSize() => _sharedPreferences?.getDouble(textSize) ?? 11.0;
 
+  // 固定メモ
+  static const memo = 'memo';
+  static Future<bool>? setMemo(String value) => _sharedPreferences?.setString(memo, value);
+  static String getMemo() => _sharedPreferences?.getString(memo) ?? '';
+
   //0円を表示させない
   static const isZeroHidden = 'isZeroHidden';
   static Future<bool>? setIsZeroHidden(bool value) => _sharedPreferences?.setBool(isZeroHidden, value);

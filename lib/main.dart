@@ -35,6 +35,8 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: [const AppLocalizationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate, DefaultCupertinoLocalizations.delegate],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: CupertinoColors.systemBlue),
+        primaryColor: App.bgColor,
         appBarTheme: const AppBarTheme(color: Colors.white70),
         primarySwatch: Colors.grey,
         fontFamily: "Noto Sans JP",

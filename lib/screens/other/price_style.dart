@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -33,18 +34,38 @@ class _PriceStyleState extends State<PriceStyle> {
                   '金額の色 変更',
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.white,
+                    // color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
               body: Column(
                 children: [
-                  SizedBox(height: 50,),
-                  Transform.scale(
-                      scale: 2,
-                      child: squareText(pickerPlusColor,pickerMinusColor),
+                  ListTile(
+                      title: Text('0円を表示させない'),
+                      trailing: CupertinoSwitch(
+                        value: SharedPrefs.getIsZeroHidden(),
+                        onChanged: (bool value) {
+                          setState(() {
+                            SharedPrefs.setIsZeroHidden(value);
+                          });
+                        },
+                      )
                   ),
+                  SizedBox(height: 50,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Transform.scale(
+                      scale: 2,
+                      child: squareText(pickerPlusColor,pickerMinusColor,0),
+                    ),
+                    Container(width: 50),
+                    Transform.scale(
+                      scale: 2,
+                      child: squareText(pickerPlusColor,pickerMinusColor,100),
+                    ),
+                  ],),
                   SizedBox(height: 50,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,13 +79,11 @@ class _PriceStyleState extends State<PriceStyle> {
                               enableAlpha:false,
                               displayThumbColor: false,
                               portraitOnly: true,
+                              colorPickerWidth: 200,
                               pickerColor: color,
-                              // paletteType: PaletteType.hsv,
                               onColorChanged: (Color value) {
-                                // print('0x${value.value.toRadixString(16).toUpperCase()}');
                                 if (index == 0) {
                                   pickerPlusColor = value;
-
                                 } else {
                                   pickerMinusColor = value;
                                 }
@@ -98,7 +117,7 @@ class _PriceStyleState extends State<PriceStyle> {
                       SharedPrefs.setMinusColor(_minusColor);
                       RestartWidget.restartApp(context);
                     },
-                    child: const Text('変更', style: TextStyle(fontSize: 18, color: Colors.white),),
+                    child: const Text('変更', style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.bold),),
                     // child: Icon(icon),
                   ),
                 ],
@@ -108,7 +127,7 @@ class _PriceStyleState extends State<PriceStyle> {
       ),
     );
   }
-  Widget squareText(plusColor,minusColor) {
+  Widget squareText(plusColor,minusColor, money) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -127,13 +146,17 @@ class _PriceStyleState extends State<PriceStyle> {
                 child: Container(),),
             ),
             //　プラス金額
+            SharedPrefs.getIsZeroHidden() && money == 0
+                ?
+            Container()
+                :
             Expanded(
               flex: 1,
               child: Container(
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: AutoSizeText(
-                    '100${SharedPrefs.getUnit()}',
+                    '$money${SharedPrefs.getUnit()}',
                     style: TextStyle(color: plusColor),
                     minFontSize: 3,
                     maxLines: 1,
@@ -142,13 +165,17 @@ class _PriceStyleState extends State<PriceStyle> {
               ),
             ),
             //　マイナス金額
+            SharedPrefs.getIsZeroHidden() && money == 0
+                ?
+            Container()
+                :
             Expanded(
               flex: 1,
               child: Container(
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: AutoSizeText(
-                    '-100${SharedPrefs.getUnit()}',
+                    '-$money${SharedPrefs.getUnit()}',
                     style: TextStyle(color: minusColor),
                     minFontSize: 3,
                     maxLines: 1,

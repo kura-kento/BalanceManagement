@@ -277,6 +277,7 @@ class EditFormState extends ConsumerState<EditForm> {
       if(index == 1) {
         _list.add(SizedBox(width: 8));
       }
+      final baseColor = (index == 0) ? App.plusColor : App.minusColor;
       _list.add(
         Expanded(
           flex: 1,
@@ -287,7 +288,7 @@ class EditFormState extends ConsumerState<EditForm> {
             ),
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              backgroundColor: (index == 0 ? Colors.blue:Colors.red)[100 + (moneyValue == element ? 300:0)],
+              backgroundColor: (moneyValue == element ? baseColor : Color.alphaBlend(Color(0x80FAFAFA),baseColor)),
               foregroundColor: moneyValue == element ? Colors.white : Colors.grey[400],
             ),
             onPressed: () {

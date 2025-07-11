@@ -35,6 +35,11 @@ class App {
       );
    }
 
+   // 縦のサイズが小さい
+   static bool isSmall(context) {
+      return MediaQuery.of(context).size.height < 700;
+   }
+
    static double sizeConvert(context,double size) {
       return size;
       // if(isIPad(context)) {
@@ -43,4 +48,6 @@ class App {
       //    return size;
       // }
    }
+
+
 }
