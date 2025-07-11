@@ -2,10 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-
+import '../../Common/Admob/admob_banner.dart';
+import '../../Common/shared_prefs.dart';
 import '../../main.dart';
-import '../../utils/admob_banner.dart';
-import '../../utils/shared_prefs.dart';
 
 class PriceStyle extends StatefulWidget {
   const PriceStyle({super.key});

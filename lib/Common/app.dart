@@ -1,4 +1,4 @@
-import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 class App {

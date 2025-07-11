@@ -1,8 +1,8 @@
-import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'app.dart' show App;
+import '../app.dart' show App;
 
 class PreviewDialog {
   static Future<void> _show({

@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
-import 'package:balancemanagement_app/screens/calendar/calendar_page.dart';
-import 'package:balancemanagement_app/screens/other/password_screen.dart';
-import 'package:balancemanagement_app/screens/other/setting_page.dart';
-import 'package:balancemanagement_app/utils/page_animation.dart';
-import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/View/calendar/calendar_page.dart';
+import 'package:balancemanagement_app/Common/PassLock/password_screen.dart';
+import 'package:balancemanagement_app/Common/page_animation.dart';
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../utils/admob_banner.dart';
-import '../utils/app.dart';
+import '../Common/Admob/admob_banner.dart';
+import '../Common/app.dart';
+import 'Setting/setting_page.dart';
 import 'graph/graph_bar_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 //メインのページ
   @override
   Widget build(BuildContext context) {
-
     return Container(
       color: App.bgColor,
       child: SafeArea(

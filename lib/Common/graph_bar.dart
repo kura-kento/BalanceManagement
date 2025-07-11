@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balancemanagement_app/utils/shared_prefs.dart';
-import 'package:balancemanagement_app/utils/utils.dart';
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
+import 'package:balancemanagement_app/Common/utils.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';

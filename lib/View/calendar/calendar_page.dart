@@ -2,20 +2,19 @@ import 'dart:async';
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
-import 'package:balancemanagement_app/screens/calendar/week.dart';
-import 'package:balancemanagement_app/utils/app.dart';
-import 'package:balancemanagement_app/utils/database_help.dart';
-import 'package:balancemanagement_app/utils/shared_prefs.dart';
-import 'package:balancemanagement_app/utils/utils.dart';
+import 'package:balancemanagement_app/View/calendar/week.dart';
+import 'package:balancemanagement_app/Common/app.dart';
+import 'package:balancemanagement_app/models/DB/database_help.dart';
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
+import 'package:balancemanagement_app/Common/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-
-import '../../utils/previewDialog.dart';
-import '../../widget/drawer.dart';
+import '../../Common/Widget/drawer.dart';
+import '../../Common/Widget/previewDialog.dart';
 import 'daySquare.dart';
 import 'edit_form.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'shared_prefs.dart';
+import '../shared_prefs.dart';
 
 class AdMob{
 

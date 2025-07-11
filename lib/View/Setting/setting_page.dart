@@ -1,19 +1,17 @@
 import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balancemanagement_app/View/Setting/price_style.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
-import 'package:balancemanagement_app/screens/other/price_style.dart';
-import 'package:balancemanagement_app/utils/database_help.dart';
-import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/models/DB/database_help.dart';
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:balancemanagement_app/widget/daialog_select.dart';
-import 'package:balancemanagement_app/widget/reward_widget.dart';
+import 'package:balancemanagement_app/Common/Widget/reward_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart';
+import '../../Common/app.dart';
 
-import '../../utils/app.dart';
 
 class SettingPage extends StatefulWidget {
 
@@ -100,7 +98,7 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                       dividerWidget,
                       ListTile(
-                          leading: Icon(Icons.text_format, color: Theme.of(context).iconTheme.color,),
+                          leading: Icon(Icons.currency_yen, color: Theme.of(context).iconTheme.color,),
                           title: Text("単位を変更",style: TextStyle(fontWeight: FontWeight.bold)),
                           trailing: ElevatedButton(
                             style: ElevatedButton.styleFrom(

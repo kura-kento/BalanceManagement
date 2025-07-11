@@ -1,8 +1,8 @@
-import 'package:balancemanagement_app/screens/home_page.dart';
-import 'package:balancemanagement_app/screens/other/password_screen.dart';
-import 'package:balancemanagement_app/utils/app.dart';
-import 'package:balancemanagement_app/utils/database_help.dart';
-import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/View/home_page.dart';
+import 'package:balancemanagement_app/Common/PassLock/password_screen.dart';
+import 'package:balancemanagement_app/Common/app.dart';
+import 'package:balancemanagement_app/models/DB/database_help.dart';
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

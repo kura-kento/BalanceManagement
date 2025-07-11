@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:balancemanagement_app/utils/app.dart';
-import 'package:balancemanagement_app/utils/shared_prefs.dart';
+import 'package:balancemanagement_app/Common/app.dart';
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class RewardWidget extends StatefulWidget {
   const RewardWidget({Key? key}) : super(key: key);

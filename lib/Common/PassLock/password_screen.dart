@@ -8,7 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:passcode_screen/circle.dart';
 import 'package:passcode_screen/keyboard.dart';
 import 'package:passcode_screen/passcode_screen.dart';
-import '../../utils/shared_prefs.dart';
+import '../shared_prefs.dart';
 import 'faceId.dart';
 
 class PassLock extends StatefulWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../main.dart';
-import '../utils/app.dart';
-import '../utils/shared_prefs.dart';
+import '../../../main.dart';
+import '../app.dart';
+import '../shared_prefs.dart';
 
 
 class DrawerWidget extends StatefulWidget {

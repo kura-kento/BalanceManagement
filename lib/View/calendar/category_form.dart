@@ -2,7 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:flutter/material.dart';
-import '../../utils/database_help.dart';
+
+import '../../models/DB/database_help.dart';
 
 enum MoneyValue{
   income,
