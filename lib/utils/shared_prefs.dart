@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
@@ -41,10 +42,22 @@ class SharedPrefs {
   static Future<bool>? setIsPlus(bool value) => _sharedPreferences?.setBool(isPlus, value);
   static bool getIsPlus() => _sharedPreferences?.getBool(isPlus) ?? true;
 
-
   static const isPlusButton = 'isPlusButton';
   static Future<bool>? setIsPlusButton(bool value) => _sharedPreferences?.setBool(isPlusButton, value);
   static bool getIsPlusButton() => _sharedPreferences?.getBool(isPlusButton) ?? true;
+
+  // 金額の色
+  static const plusColor = 'plusColor';
+  static Future<bool>? setPlusColor(String value) => _sharedPreferences?.setString(plusColor, value);
+  static String getPlusColor() => _sharedPreferences?.getString(plusColor) ?? '0x${Colors.lightBlueAccent.toARGB32().toRadixString(16).toUpperCase()}';
+
+  static const minusColor = 'minusColor';
+  static Future<bool>? setMinusColor(String value) => _sharedPreferences?.setString(minusColor, value);
+  static String getMinusColor() => _sharedPreferences?.getString(minusColor) ?? '0x${Colors.redAccent.toARGB32().toRadixString(16).toUpperCase()}';
+
+  static const textSize = 'textSize';
+  static Future<bool>? setTextSize(double value) => _sharedPreferences?.setDouble(textSize, value);
+  static double getTextSize() => _sharedPreferences?.getDouble(textSize) ?? 11.0;
 
   //0円を表示させない
   static const isZeroHidden = 'isZeroHidden';
@@ -57,4 +70,9 @@ class SharedPrefs {
   //【共通】リワード広告
   static Future<bool>? setRewardTime(String value) => _sharedPreferences?.setString(rewardTime, value);
   static String getRewardTime() => _sharedPreferences?.getString(rewardTime) ?? '2021-01-01 00:00:00';
+
+  //【共通】レビューの冷却期間
+  static const reviewSkipTime = 'reviewSkipTime';
+  static Future<bool>? setReviewSkipTime(String value) => _sharedPreferences?.setString(reviewSkipTime, value);
+  static String getReviewSkipTime() => _sharedPreferences?.getString(reviewSkipTime) ?? '2021-01-01 00:00:00';
 }

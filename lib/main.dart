@@ -1,5 +1,6 @@
 import 'package:balancemanagement_app/screens/home_page.dart';
 import 'package:balancemanagement_app/screens/other/password_screen.dart';
+import 'package:balancemanagement_app/utils/app.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,9 +52,7 @@ class MyApp extends StatelessWidget {
               return snapshot.data;
             } else {
               return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
+                body: Center(child: CircularProgressIndicator(),),
               );
             }
           },
@@ -67,7 +66,7 @@ class MyApp extends StatelessWidget {
     DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
     WidgetsFlutterBinding.ensureInitialized();
 
-    if(SharedPrefs.getIsPassword() && SharedPrefs.getPassword() != '') {
+    if (SharedPrefs.getIsPassword() && SharedPrefs.getPassword() != '') {
       return PassLock(returnPage: HomePage());
     } else {
       return  HomePage();
@@ -93,6 +92,9 @@ class _RestartWidgetState extends State<RestartWidget> {
 
   void restartApp() {
     setState(() {
+      App.plusColor = Color(int.parse(SharedPrefs.getPlusColor()));
+      App.minusColor = Color(int.parse(SharedPrefs.getMinusColor()));
+      App.dayTextSize = SharedPrefs.getTextSize();
       key = UniqueKey();
     });
   }
@@ -110,6 +112,7 @@ class _RestartWidgetState extends State<RestartWidget> {
 //todo　お問い合わせ(画像、募金)
 //todo　カラーテーマ
 //todo　広告の位置ボタン選択レイアウト
+//todo　固定メモ
 // ・グラフページ「合計」タブ、マイナスの時もプラス表記の不具合修正
 // ・「編集ページ」整数が小数点表記となる不具合修正
 //小数点追加

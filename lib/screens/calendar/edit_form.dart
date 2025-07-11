@@ -106,7 +106,7 @@ class EditFormState extends ConsumerState<EditForm> {
     }
 
     return Container(
-      color: Colors.grey[300],
+      color: App.bgColor,
       child: SafeArea(
         child: Scaffold(
         //  resizeToAvoidBottomInset: false,
@@ -119,7 +119,7 @@ class EditFormState extends ConsumerState<EditForm> {
                     : Container(),
               ),
               Container(
-                color: Colors.grey[300],
+                color: App.bgColor,
                 child: Row(
                   children: <Widget>[
                     Expanded(

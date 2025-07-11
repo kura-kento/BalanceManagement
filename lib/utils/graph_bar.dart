@@ -1,10 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/utils/utils.dart';
-/// Bar chart example
+
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
+
+import 'app.dart';
 
 class SimpleBarChart extends StatefulWidget {
   SimpleBarChart(this.seriesList, {this.animate});
@@ -38,16 +39,6 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
             selectionModels: [
               new charts.SelectionModelConfig(
                   changedListener: (charts.SelectionModel<String> model) {
-                    // print(model.selectedSeries[0].domainFn(model.selectedDatum[0].index));
-                    // print(model.selectedSeries[0].measureFn(model.selectedDatum[0].index));
-                    // print(model.selectedSeries[0].id);
-                    // print(model.selectedSeries[0].colorFn(model.selectedDatum[0].index));
-                    //
-                    // isMinus = (model.selectedSeries[0].colorFn(model.selectedDatum[0].index).toString() != '#1976d2ff' && model.selectedSeries[0].id == 'payout');
-                    // sum = model.selectedSeries[0].measureFn(model.selectedDatum[0].index);
-                    // month = model.selectedSeries[0].domainFn(model.selectedDatum[0].index);
-                    // setState(() {});
-
                     final selectedDatum = model.selectedDatum;
                     if (selectedDatum.isNotEmpty) {
                       final series = model.selectedSeries[0];
@@ -55,8 +46,12 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
                       final color = series.colorFn!(index);
                       final value = series.measureFn(index);
                       final domain = series.domainFn(index);
-
+                      // print(color);
+                      // print(charts.ColorUtil.fromDartColor(App.plusColor));
+                      // print(series.id);
+                      // TODO 間違っているけど問題なさそう
                       isMinus = (color.toString() != '#1976d2ff' && series.id == 'payout');
+                      // isMinus = true;
                       sum = value?.toDouble() ?? 0;
                       month = domain;
                       setState(() {});

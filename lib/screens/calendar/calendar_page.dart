@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 
+import '../../utils/previewDialog.dart';
 import 'daySquare.dart';
 import 'edit_form.dart';
 
@@ -65,38 +66,9 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     print(SharedPrefs.getLoginCount());
     SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
 
-    // if (Platform.isIOS && SharedPrefs.getLoginCount() % 10 == 0) {
-    //   AppReview.requestReview.then((onValue) {
-    //     print(onValue);
-    //   });
-    // }else if (Platform.isAndroid && SharedPrefs.getLoginCount() % 20 == 0) {
-    //   AppReview.requestReview.then((onValue) {
-    //     print(onValue);
-    //     showDialog(
-    //       context: context,
-    //       builder: (_) {
-    //         return AlertDialog(
-    //           title: Text("このアプリは満足していますか？"),
-    //           // content: Text("このアプリは満足していますか？"),
-    //           actions: <Widget>[
-    //             // ボタン領域
-    //             ElevatedButton(
-    //                 onPressed: () {
-    //                   Navigator.pop(context);
-    //                 },
-    //                 child: Text("いいえ")),
-    //             ElevatedButton(
-    //                 onPressed: () {
-    //                   Navigator.pop(context);
-    //                   print(onValue);
-    //                 },
-    //                 child: Text("はい")),
-    //           ],
-    //         );
-    //       },
-    //     );
-    //   });
-    // }
+    Future.delayed(const Duration(microseconds: 1000), () {
+      PreviewDialog.reviewCount(context); //レビューカウント
+    });
   }
 
   @override
@@ -108,7 +80,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
       children: [
         Expanded(
           child: Container(
-            color: Colors.grey[300],
+            color: App.bgColor,
             child: SafeArea(
               child: Scaffold(
                 body: Column(
@@ -116,7 +88,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                   children: <Widget>[
                     Container(
                       height: 40,
-                      color: Colors.grey[300],
+                      color: App.bgColor,
                       child: Row(
                         children: <Widget>[
                           Spacer(flex: 1),
@@ -272,6 +244,9 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                               },
                             ),
                           );
+                          Future.delayed(const Duration(microseconds: 1000), () {
+                            PreviewDialog.reviewCount(context); //レビューカウント
+                          });
                           setState(() {});
                         },
                       ),

@@ -1,10 +1,15 @@
+import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 class App {
    static int graphLength = 10;
 
-   static Color plusColor = Colors.lightBlueAccent;
-   static Color minusColor = Colors.redAccent;
+   static Color bgColor = Color(0xffE0E0E0); // grey[300]
+   // static Color plusColor = Colors.lightBlueAccent;
+   // static Color minusColor = Colors.redAccent;
+   static Color plusColor = Color(int.parse(SharedPrefs.getPlusColor()));
+   static Color minusColor = Color(int.parse(SharedPrefs.getMinusColor()));
+   static double dayTextSize = SharedPrefs.getTextSize();
 
    static Color NoAdsButtonColor = Color(0xffFFD865);
 
@@ -28,5 +33,14 @@ class App {
             fontWeight: FontWeight.bold,
          ),
       );
+   }
+
+   static double sizeConvert(context,double size) {
+      return size;
+      // if(isIPad(context)) {
+      //    return size * 1.5;
+      // } else {
+      //    return size;
+      // }
    }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
+import 'package:balancemanagement_app/screens/other/price_style.dart';
 import 'package:balancemanagement_app/screens/other/setting_detail.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
@@ -12,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 
+import '../../utils/app.dart';
+
 class SettingPage extends StatefulWidget {
 
   @override
@@ -21,7 +24,7 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   List<Category> categoryList = <Category>[];
   TextEditingController passwordController = TextEditingController(text: SharedPrefs.getPassword());
-
+  Widget dividerWidget = Divider(color: Colors.grey[300], height:0);
   @override
   void initState() {
     updateListViewCategory();
@@ -31,119 +34,130 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: GestureDetector(
-            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-            child: Column(
-              children: [
-                Container(
-                    height: 40,
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.grey[300],
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(AppLocalizations.of(context).setting, style: TextStyle(fontSize: 20,color: Colors.black)),
-                    )
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          RewardWidget(),
-                          Divider(color: Colors.grey,height:0),
-                          SelectDialog(),
-                          Divider(color: Colors.grey,height:0),
-                          ListTile(
-                            title: Text('詳細設定',style: TextStyle(fontWeight: FontWeight.bold),),
-                            leading: Icon(Icons.settings, color: Theme.of(context).iconTheme.color,),
-                            onTap: () async {
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return SettingDetail();
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                          Divider(color: Colors.grey,height:0),
-                          ListTile(
-                              leading: Icon(Icons.password, color: Theme.of(context).iconTheme.color,),
-                              title: Text('パスワードの有無',style: TextStyle(fontWeight: FontWeight.bold)),
-                              trailing: CupertinoSwitch(
-                                value: SharedPrefs.getIsPassword(),
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    SharedPrefs.setIsPassword(value);
-                                  });
-                                },
-                              )
-                          ),
-                          ListTile(
-                            title: Container(
-                              padding: EdgeInsets.only(top: 10),
-                              child: TextField(
-                                controller: passwordController,
-                                maxLength: 8,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly
-                                  // FilteringTextInputFormatter.allow(RegExp(r'[0–9]+'))
-                                ],
-                                decoration: InputDecoration(
-                                  labelText: "パスワード",
-                                  border: OutlineInputBorder(),
-                                ),
-                                onChanged: (String value) {
-                                  SharedPrefs.setPassword(value);
-                                },
-                              ),
-                            )
-                          ),
-                          Divider(color: Colors.grey,height:0),
-                          InkWell(
-                            child: Container(
-                              padding: EdgeInsets.all(15.0),
-                              width: MediaQuery.of(context).size.width,
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of(context).deleteAllBalancedata,
-                                  style: TextStyle(color: Colors.red,fontSize: 20,fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                                setState(() {
-                                  showCupertinoDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return CupertinoAlertDialog(
-                                        title: Text(AppLocalizations.of(context).deleteAllDialog),
-                                        //content: Text(""),
-                                        actions: <Widget>[
-                                          CupertinoDialogAction(
-                                            child: Text(AppLocalizations.of(context).delete),
-                                            onPressed: () => allDelete(context),
-                                            isDestructiveAction: true,
-                                          ),
-                                          CupertinoDialogAction(
-                                            child: Text(AppLocalizations.of(context).cancel),
-                                            onPressed: () => Navigator.of(context).pop(),
-                                            isDefaultAction: true,
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                });
-                            },
-                          ),
-                          Divider(color: Colors.grey,height:0),
-                        ],
-                      )
-                  ),
-                ),
-              ],
+        body: Column(
+          children: [
+            Container(
+                height: 40,
+                width: MediaQuery.of(context).size.width,
+                color: App.bgColor,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(AppLocalizations.of(context).setting, style: TextStyle(fontSize: 20,color: Colors.black)),
+                )
             ),
+            Expanded(
+              child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      RewardWidget(),
+                      dividerWidget,
+                      SelectDialog(),
+                      dividerWidget,
+                      ListTile(
+                          leading: Icon(Icons.password, color: Theme.of(context).iconTheme.color,),
+                          title: Text('パスワードの有無',style: TextStyle(fontWeight: FontWeight.bold)),
+                          trailing: CupertinoSwitch(
+                            value: SharedPrefs.getIsPassword(),
+                            onChanged: (bool value) {
+                              setState(() {
+                                SharedPrefs.setIsPassword(value);
+                              });
+                            },
+                          )
+                      ),
+                      ListTile(
+                        title: Container(
+                          padding: EdgeInsets.only(top: 10),
+                          child: TextField(
+                            controller: passwordController,
+                            maxLength: 8,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                              // FilteringTextInputFormatter.allow(RegExp(r'[0–9]+'))
+                            ],
+                            decoration: InputDecoration(
+                              labelText: "パスワード",
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (String value) {
+                              SharedPrefs.setPassword(value);
+                            },
+                          ),
+                        )
+                      ),
+                      dividerWidget,
+                      ListTile(
+                        title: const Text('金額の色',style: TextStyle(fontWeight: FontWeight.bold),),
+                        leading: const Icon(Icons.color_lens_outlined),
+                        onTap: (){
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const PriceStyle();
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      dividerWidget,
+                      ListTile(
+                        title: Text('カレンダー 詳細設定',style: TextStyle(fontWeight: FontWeight.bold),),
+                        leading: Icon(Icons.settings, color: Theme.of(context).iconTheme.color,),
+                        onTap: () async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SettingDetail();
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      dividerWidget,
+                      InkWell(
+                        child: Container(
+                          padding: EdgeInsets.all(15.0),
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: Text(
+                              AppLocalizations.of(context).deleteAllBalancedata,
+                              style: TextStyle(color: Colors.red,fontSize: 20,fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                            setState(() {
+                              showCupertinoDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CupertinoAlertDialog(
+                                    title: Text(AppLocalizations.of(context).deleteAllDialog),
+                                    //content: Text(""),
+                                    actions: <Widget>[
+                                      CupertinoDialogAction(
+                                        child: Text(AppLocalizations.of(context).delete),
+                                        onPressed: () => allDelete(context),
+                                        isDestructiveAction: true,
+                                      ),
+                                      CupertinoDialogAction(
+                                        child: Text(AppLocalizations.of(context).cancel),
+                                        onPressed: () => Navigator.of(context).pop(),
+                                        isDefaultAction: true,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            });
+                        },
+                      ),
+                      dividerWidget,
+                    ],
+                  )
+              ),
+            ),
+          ],
         ),
     );
   }

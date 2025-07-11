@@ -22,6 +22,8 @@ class _GraphBarPageState extends State<GraphBarPage> {
   List<OrdinalSales> data = [];
   List<OrdinalSales>  ListPlus = [];
   List<OrdinalSales>  ListMinus = [];
+  final chartPlusColor = charts.ColorUtil.fromDartColor(App.plusColor);
+  final ChartMinusColor = charts.ColorUtil.fromDartColor(App.minusColor);
 
   @override
   void initState(){
@@ -40,7 +42,6 @@ class _GraphBarPageState extends State<GraphBarPage> {
     List _ListMinus = await databaseHelper.getMonthListMinus(_month);
     ListPlus = await dataSet(_ListPlus).reversed.toList();
     ListMinus = await dataSet(_ListMinus).reversed.toList();
-
     setState(() {});
   }
 
@@ -66,7 +67,7 @@ class _GraphBarPageState extends State<GraphBarPage> {
     return [
       new charts.Series<OrdinalSales, String>(
         id: 'income',
-        colorFn: (OrdinalSales sales,i) => sales.sales >= 0 ? charts.MaterialPalette.blue.shadeDefault:charts.MaterialPalette.red.shadeDefault,
+        colorFn: (OrdinalSales sales,i) => sales.sales >= 0 ? chartPlusColor:ChartMinusColor,
         domainFn: (OrdinalSales sales, _) => sales.year,
         measureFn: (OrdinalSales sales, _) => sales.sales,
         data: data,
