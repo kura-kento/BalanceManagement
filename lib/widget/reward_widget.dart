@@ -154,11 +154,11 @@ class _RewardWidgetState extends State<RewardWidget> {
               width: 250,
               child: Center(
                 child: Text(
-                  "リワード広告視聴で\n広告非表示期間を貯める(${App.addHours}時間)",
+                  "リワード広告視聴で広告\n非表示期間を貯める(${App.addHours}時間)",
                   textScaleFactor: 1.5,
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: App.BTNfontsize
+                      fontSize: App.BTNfontsize,
                   ),
                 ),
               ),

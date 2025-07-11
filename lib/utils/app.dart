@@ -15,7 +15,7 @@ class App {
 
    static int addHours = 40;
 
-   static double BTNfontsize = 10;
+   static double BTNfontsize = 12;
 
    static int infinityPage = 10000;
 

@@ -4,7 +4,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
 import 'package:balancemanagement_app/screens/other/price_style.dart';
-import 'package:balancemanagement_app/screens/other/setting_detail.dart';
 import 'package:balancemanagement_app/utils/database_help.dart';
 import 'package:balancemanagement_app/utils/shared_prefs.dart';
 import 'package:balancemanagement_app/widget/daialog_select.dart';
@@ -107,7 +106,7 @@ class _SettingPageState extends State<SettingPage> {
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                               foregroundColor: Colors.black,
-                              backgroundColor: App.NoAdsButtonColor, //ボタンの背景色
+                              backgroundColor: Colors.black54, //ボタンの背景色
                             ),
                             onPressed: () {
                               setState(() {
@@ -120,7 +119,7 @@ class _SettingPageState extends State<SettingPage> {
                               minFontSize: 4,
                               maxLines: 1,
                               textScaleFactor: 1.5,
-                              style: TextStyle(fontSize: App.BTNfontsize),
+                              style: TextStyle(fontSize: App.BTNfontsize,color: Colors.white,fontWeight: FontWeight.bold),
                             ),
                           ),
                       ),
