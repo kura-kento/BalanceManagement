@@ -149,23 +149,22 @@ class DaySquareState extends ConsumerState<DaySquare> {
   }
 
   Widget dayText(date) {
-    return             Padding(
-      padding: const EdgeInsets.all(2.0),
+    return Container(
+      height: 50/3,
       child: Row(
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
             flex: 2,
             child: Container(
-              height: 46/3,
               color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(_today) ? Colors.red[300] : Colors.transparent ,
               child: Center(
                 child: Text(
                   '${Utils.toInt(date.day)}',
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: Utils.parseSize(context, 10.0),
+                    fontSize: Utils.parseSize(context, SharedPrefs.getTextSize()),
                     color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(_today) ? Colors.white : Colors.black87 ,
+                    height: 0.75,
                   ),
                 ),
               ),

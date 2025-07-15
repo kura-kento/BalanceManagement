@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../Common/app.dart';
+import '../../Common/utils.dart';
 
 
 class SettingPage extends StatefulWidget {
@@ -53,9 +54,9 @@ class _SettingPageState extends State<SettingPage> {
                       SelectDialog(),
                       dividerWidget,
                       ListTile(
-                        title: const Text('金額の色',style: TextStyle(fontWeight: FontWeight.bold),),
-                        leading: const Icon(Icons.color_lens_outlined),
-                        onTap: (){
+                        title: const Text('カレンダー 詳細設定',style: TextStyle(fontWeight: FontWeight.bold),),
+                        leading: const Icon(Icons.calendar_month),
+                        onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
@@ -95,6 +96,31 @@ class _SettingPageState extends State<SettingPage> {
                             SharedPrefs.setPassword(value);
                           },
                         )
+                      ),
+                      dividerWidget,
+                      ListTile(
+                        leading: Icon(Icons.swipe_left_alt_outlined, color: Theme.of(context).iconTheme.color,),
+                        title: Text('小数点の設定(四捨五入)',style: TextStyle(fontWeight: FontWeight.bold)),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                              Text('例) 98.76543の場合',style: TextStyle(fontSize:16, fontWeight: FontWeight.bold)),
+                              Text('${Utils.round(98.76543)}円',style: TextStyle(fontSize:16, fontWeight: FontWeight.bold)),
+                          ],
+                       ),
+                      ),
+                      Slider(
+                        value: SharedPrefs.getDecimalPlace() * 1.0,
+                        min: 0,
+                        max: 5,
+                        divisions: 5,
+                        activeColor:App.NoAdsButtonColor,
+                        label: SharedPrefs.getDecimalPlace().toString(),
+                        onChanged: (double double) {
+                          // print(int.parse(double.toString()));
+                          SharedPrefs.setDecimalPlace(double.toInt());
+                          setState(() {});
+                        },
                       ),
                       dividerWidget,
                       ListTile(

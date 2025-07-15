@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../../Common/Admob/admob_banner.dart';
+import '../../Common/app.dart';
 import '../../Common/shared_prefs.dart';
+import '../../Common/utils.dart';
 import '../../main.dart';
 
 class PriceStyle extends StatefulWidget {
@@ -30,7 +32,7 @@ class _PriceStyleState extends State<PriceStyle> {
               appBar: AppBar(
                 backgroundColor: Theme.of(context).primaryColor,
                 title: const Text(
-                  '金額の色 変更',
+                  'カレンダー 詳細設定',
                   style: TextStyle(
                     fontSize: 20,
                     // color: Colors.white,
@@ -51,43 +53,55 @@ class _PriceStyleState extends State<PriceStyle> {
                         },
                       )
                   ),
-                  SizedBox(height: 50,),
+                  Text('日付サイズ変更 ※不具合解消用', textAlign: TextAlign.start ,style: TextStyle(color: Colors.red),),
+                  Slider(
+                    value: SharedPrefs.getTextSize(),
+                    min: 0,
+                    max: 20,
+                    divisions: 40,
+                    activeColor:App.NoAdsButtonColor,
+                    label: SharedPrefs.getTextSize().toString(),
+                    onChanged: (double) {
+                      SharedPrefs.setTextSize(double);
+                      setState(() {});
+                    },
+                  ),
+                  SizedBox(height: 5,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                     Transform.scale(
-                      scale: 2,
+                      scale: 1.5,
                       child: squareText(pickerPlusColor,pickerMinusColor,0),
                     ),
-                    Container(width: 50),
+                    Container(width: 25),
                     Transform.scale(
-                      scale: 2,
+                      scale: 1.5,
                       child: squareText(pickerPlusColor,pickerMinusColor,100),
                     ),
                   ],),
-                  SizedBox(height: 50,),
+                  SizedBox(height: 15,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate([pickerPlusColor, pickerMinusColor].length, (index) {
                         Color color = [pickerPlusColor, pickerMinusColor][index];
                         return  Expanded(
                           flex: 1,
-                          child: ClipRect(
-                            child: ColorPicker(
-                              labelTypes: [],
-                              enableAlpha:false,
-                              displayThumbColor: false,
-                              portraitOnly: true,
-                              colorPickerWidth: 200,
-                              pickerColor: color,
-                              onColorChanged: (Color value) {
-                                if (index == 0) {
-                                  pickerPlusColor = value;
-                                } else {
-                                  pickerMinusColor = value;
-                                }
-                                setState(() {});
-                              },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(border: Border.all(color:Color(0xff999999), width: 1.5)),
+                              height: App.isSmall(context) ? 200 : 300,
+                              child: MaterialPicker(
+                                pickerColor: color,
+                                onColorChanged: (Color value) {
+                                      if (index == 0) {
+                                        pickerPlusColor = value;
+                                      } else {
+                                        pickerMinusColor = value;
+                                      }
+                                      setState(() {});
+                                },),
                             ),
                           ),
                         );
@@ -95,7 +109,7 @@ class _PriceStyleState extends State<PriceStyle> {
                   ),
                   const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text('※変更した場合、アプリが再起動されます',
+                    child: Text('※色を変更した場合、アプリが再起動されます',
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.red,
@@ -140,9 +154,29 @@ class _PriceStyleState extends State<PriceStyle> {
         width: 50,
         child: Column(
           children: [
-            Expanded(flex: 1,
-              child: Align(alignment:Alignment.topRight,
-                child: Container(),),
+            Container(
+              height: 50/3,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      color: money == 0 ? Colors.red[300] : Colors.transparent ,
+                      child: Center(
+                        child: Text(
+                          '25',
+                          style: TextStyle(
+                            fontSize: Utils.parseSize(context, SharedPrefs.getTextSize()),
+                            color: money == 0 ? Colors.white : Colors.black87,
+                            height: 0.75,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Spacer(flex: 3,)
+                ],
+              ),
             ),
             //　プラス金額
             SharedPrefs.getIsZeroHidden() && money == 0
@@ -174,7 +208,7 @@ class _PriceStyleState extends State<PriceStyle> {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: AutoSizeText(
-                    '-$money${SharedPrefs.getUnit()}',
+                    '${money == 0 ? '' : '-'}$money${SharedPrefs.getUnit()}',
                     style: TextStyle(color: minusColor),
                     minFontSize: 3,
                     maxLines: 1,

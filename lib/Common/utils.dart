@@ -1,4 +1,6 @@
+import 'dart:math';
 
+import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
@@ -44,6 +46,13 @@ class Utils {
     } else {
       return value.toString();
     }
+  }
+
+  // 設定している箇所で四捨五入を行う
+  static double round(double num) {
+    int decimalPlace = SharedPrefs.getDecimalPlace();
+    int digits =  pow(10, decimalPlace).toInt();
+    return (num * digits).round() / digits;
   }
 }
 
