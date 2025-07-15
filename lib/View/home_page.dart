@@ -70,30 +70,30 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return Container(
       color: App.bgColor,
       child: SafeArea(
-        child: BannerBody(
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: _pageWidgets.elementAt(_currentIndex),
-              bottomNavigationBar: BottomNavigationBar(
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                      icon: const Icon(Icons.calendar_today), label: AppLocalizations.of(context).calendar),
-                  BottomNavigationBarItem(
-                      icon: const Icon(Icons.equalizer), label: AppLocalizations.of(context).graph),
-                  BottomNavigationBarItem(
-                      icon: const Icon(Icons.settings), label: AppLocalizations.of(context).setting),
-                ],
-                iconSize: 20.0,
-                selectedFontSize: 10.0,
-                unselectedFontSize: 8.0,
-                elevation: 1.0,
-                currentIndex: _currentIndex,
-                fixedColor: Colors.blueAccent,
-                onTap: _onItemTapped,
-                type: BottomNavigationBarType.fixed,
-              ),
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: BannerBody(
+                child: _pageWidgets.elementAt(_currentIndex)
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                    icon: const Icon(Icons.calendar_today), label: AppLocalizations.of(context).calendar),
+                BottomNavigationBarItem(
+                    icon: const Icon(Icons.equalizer), label: AppLocalizations.of(context).graph),
+                BottomNavigationBarItem(
+                    icon: const Icon(Icons.settings), label: AppLocalizations.of(context).setting),
+              ],
+              iconSize: 20.0,
+              selectedFontSize: 10.0,
+              unselectedFontSize: 8.0,
+              elevation: 1.0,
+              currentIndex: _currentIndex,
+              fixedColor: Colors.blueAccent,
+              onTap: _onItemTapped,
+              type: BottomNavigationBarType.fixed,
             ),
           ),
         ),

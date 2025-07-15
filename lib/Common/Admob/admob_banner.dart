@@ -28,8 +28,7 @@ class _BannerBodyState extends State<BannerBody> {
     List<Widget> _list = <Widget>[AdMob.adContainer(myBanner), Expanded(child: widget.child)];
 
     return Column(
-        children:
-        SharedPrefs.getAdPositionTop()
+        children: SharedPrefs.getAdPositionTop()
             ?
         _list
             :
