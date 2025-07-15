@@ -60,11 +60,10 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
-                  onTap: (){
+                  onTap: () {
                     titleControllerList[i].text = categoryList[i].title ?? '';
                   },
                   controller: titleControllerList[i],
-                  //style: textStyle,
                   decoration: InputDecoration(
                       labelText: categoryList[i].title,
                       border: OutlineInputBorder(
@@ -107,12 +106,12 @@ class _CategoryPageState extends State<CategoryPage> {
       );
     }
 
-    return (titleControllerList.length==0) ? Container() : SingleChildScrollView(
+    return (titleControllerList.length == 0) ? Container() : SingleChildScrollView(
       child: Column(children: _list),
     );
   }
 
-  Future<void> updateListViewCategory(value) async{
+  Future<void> updateListViewCategory(value) async {
 //収支どちらか全てのDBを取得
       this.categoryList = await DatabaseHelper().getCategoryList(value);
       List<TextEditingController> _controllerList = [];

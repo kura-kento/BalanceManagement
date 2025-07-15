@@ -7,8 +7,8 @@ import 'package:intl/intl.dart';
 class Utils {
   //カンマ区切り
   static String commaSeparated(dynamic number) {
-    final formatter = NumberFormat('#,###');
-    return formatter.format(number);
+    final formatter = NumberFormat('#,###.#####');
+    return formatter.format(Utils.round(number));
   }
 
 //int型に変更
@@ -41,6 +41,7 @@ class Utils {
 
   // 小数点0の場合は切り上げする。
   static String formatNumber(value) {
+    // double _double = Utils.round(value);
     if (value == value.roundToDouble()) {
       return value.round().toString();
     } else {
@@ -49,7 +50,7 @@ class Utils {
   }
 
   // 設定している箇所で四捨五入を行う
-  static double round(double num) {
+  static double round(num) { // Utils.round()
     int decimalPlace = SharedPrefs.getDecimalPlace();
     int digits =  pow(10, decimalPlace).toInt();
     return (num * digits).round() / digits;

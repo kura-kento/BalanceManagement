@@ -94,7 +94,7 @@ class DaySquareState extends ConsumerState<DaySquare> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: AutoSizeText(
-                        '${Utils.formatNumber(dayData['PLUS'])}${SharedPrefs.getUnit()}',
+                        '${Utils.commaSeparated(dayData['PLUS'])}${SharedPrefs.getUnit()}',
                         style: TextStyle(color: App.plusColor),
                         minFontSize: 3,
                         maxLines: 1,

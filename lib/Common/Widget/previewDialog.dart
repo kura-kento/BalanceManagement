@@ -17,7 +17,7 @@ class PreviewDialog {
       context: context,
       builder: (_) {
         return AlertDialog(
-          backgroundColor: backgroundColor ?? App.bgColor,
+          backgroundColor: backgroundColor ?? Colors.white,
           title: title == null
             ?
           null
@@ -64,7 +64,7 @@ class PreviewDialog {
       // レビューができない状態なら何もしない
       if (!(await inAppReview.isAvailable())) return;
 
-      TextStyle btnTextStyle = TextStyle(fontSize: App.sizeConvert(context,24), color: Colors.white);
+      TextStyle btnTextStyle = TextStyle(fontSize: App.sizeConvert(context,24), color: Colors.black);
 
       ButtonStyle buttonStyle = ButtonStyle(
         backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),

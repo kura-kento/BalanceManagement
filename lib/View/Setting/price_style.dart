@@ -42,18 +42,48 @@ class _PriceStyleState extends State<PriceStyle> {
               ),
               body: Column(
                 children: [
-                  ListTile(
-                      title: Text('0円を表示させない'),
-                      trailing: CupertinoSwitch(
-                        value: SharedPrefs.getIsZeroHidden(),
-                        onChanged: (bool value) {
-                          setState(() {
-                            SharedPrefs.setIsZeroHidden(value);
-                          });
-                        },
-                      )
+                  SizedBox(height: 20,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Transform.scale(
+                        scale: 1.5,
+                        child: squareText(pickerPlusColor,pickerMinusColor,0),
+                      ),
+                      Container(width: 25),
+                      Transform.scale(
+                        scale: 1.5,
+                        child: squareText(pickerPlusColor,pickerMinusColor,100),
+                      ),
+                    ],),
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6.0),
+                    child: ListTile(
+                        minTileHeight: 40,
+                        leading: Icon(Icons.visibility_off, color: Theme.of(context).iconTheme.color,),
+                        title: Text('0円を表示させない'),
+                        trailing: CupertinoSwitch(
+                          value: SharedPrefs.getIsZeroHidden(),
+                          onChanged: (bool value) {
+                            setState(() {
+                              SharedPrefs.setIsZeroHidden(value);
+                            });
+                          },
+                        )
+                    ),
                   ),
-                  Text('日付サイズ変更 ※不具合解消用', textAlign: TextAlign.start ,style: TextStyle(color: Colors.red),),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6.0),
+                    child: ListTile(
+                      minTileHeight: 40,
+                      leading: Icon(Icons.format_size, color: Theme.of(context).iconTheme.color,),
+                      title: Row(children: [
+                        Text('日付サイズ変更'),
+                        Text(' ※不具合解消用', textAlign: TextAlign.start ,style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
+                      ],),
+                    ),
+                  ),
                   Slider(
                     value: SharedPrefs.getTextSize(),
                     min: 0,
@@ -66,21 +96,14 @@ class _PriceStyleState extends State<PriceStyle> {
                       setState(() {});
                     },
                   ),
-                  SizedBox(height: 5,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                    Transform.scale(
-                      scale: 1.5,
-                      child: squareText(pickerPlusColor,pickerMinusColor,0),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6.0),
+                    child: ListTile(
+                      minTileHeight: 40,
+                      leading: Icon(Icons.color_lens_outlined, color: Theme.of(context).iconTheme.color,),
+                      title: Text('金額の色変更'),
                     ),
-                    Container(width: 25),
-                    Transform.scale(
-                      scale: 1.5,
-                      child: squareText(pickerPlusColor,pickerMinusColor,100),
-                    ),
-                  ],),
-                  SizedBox(height: 15,),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate([pickerPlusColor, pickerMinusColor].length, (index) {
@@ -107,21 +130,10 @@ class _PriceStyleState extends State<PriceStyle> {
                         );
                       }),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('※色を変更した場合、アプリが再起動されます',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      shape: const CircleBorder(),
-                      minimumSize: const Size(60, 60),
+                      backgroundColor: Colors.black54, //ボタンの背景色
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       String _plusColor = '0x${pickerPlusColor.toARGB32().toRadixString(16).toUpperCase()}';
@@ -130,8 +142,18 @@ class _PriceStyleState extends State<PriceStyle> {
                       SharedPrefs.setMinusColor(_minusColor);
                       RestartWidget.restartApp(context);
                     },
-                    child: const Text('変更', style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.bold),),
+                    child: const Text('色変更', style: TextStyle(fontSize: 18,color: Colors.white,fontWeight: FontWeight.bold),),
                     // child: Icon(icon),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('※色を変更した場合、アプリが再起動されます',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),

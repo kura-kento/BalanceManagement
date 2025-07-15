@@ -129,7 +129,7 @@ class _SettingPageState extends State<SettingPage> {
                           trailing: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              foregroundColor: Colors.black,
+                              // foregroundColor: Colors.black,
                               backgroundColor: Colors.black54, //ボタンの背景色
                             ),
                             onPressed: () {

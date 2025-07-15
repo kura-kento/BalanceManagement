@@ -100,7 +100,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                 Expanded(
                   flex: 1,
                   child: IconButton(
-                    icon: const Icon(Icons.add),
+                    icon: Icon(Icons.add, size: 32),
                     onPressed: () async {
                         await Navigator.of(context).push(
                           MaterialPageRoute(
@@ -118,7 +118,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
             ),
           ),
           Container(
-            height: 40,
+            height: App.isSmall(context) ? 40 : 50,
             child: Row(children: <Widget>[
               Expanded(
                 flex:1,
@@ -132,7 +132,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                       );
                     });
                   },
-                  iconSize: 30,
+                  iconSize: App.isSmall(context) ? 30 : 40,
                   icon: const Icon(Icons.arrow_left),
                 ),
               ),
@@ -162,7 +162,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                       );
                     });
                   },
-                  iconSize:30,
+                  iconSize: App.isSmall(context) ? 30 : 40,
                   icon: const Icon(Icons.arrow_right),
                 ),
               ),
@@ -221,14 +221,17 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                       child: InkWell(
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          height: 40,
+                          height: App.isSmall(context) ? 40 : 50,
                           decoration: const BoxDecoration(
-                            border: Border(bottom: BorderSide(width: 1, color: Colors.black26),),),
+                            border: Border(bottom: BorderSide(width: 0.8, color: Colors.black12),),),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(calendarData[index]['title'] ?? ''),
-                              Text('${Utils.formatNumber(calendarData[index]['money'] ?? 0)}${SharedPrefs.getUnit()}'),
+                              Text(
+                                '${Utils.commaSeparated(calendarData[index]['money'] ?? 0)}${SharedPrefs.getUnit()}',
+                                style: TextStyle(color: (calendarData[index]['money'] ?? 0) >= 0 ? App.plusColor : App.minusColor),
+                              ),
                             ],
                           ),
                         ),

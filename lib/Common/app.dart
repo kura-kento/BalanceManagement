@@ -13,7 +13,7 @@ class App {
 
    static Color NoAdsButtonColor = Color(0xffFFD865);
 
-   static int addHours = 40;
+   static int addHours = 60;
 
    static double BTNfontsize = 12;
 
