@@ -53,7 +53,7 @@ class PreviewDialog {
     final InAppReview inAppReview = InAppReview.instance;
 
     // スキップ後の冷却期間（例：30日）
-    final skipDays = 30;
+    final skipDays = 15;
     final lastSkipStr = SharedPrefs.getReviewSkipTime();
     if (lastSkipStr.isNotEmpty) {
       final lastSkip = DateTime.parse(lastSkipStr);

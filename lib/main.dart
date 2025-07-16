@@ -8,10 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import 'i18n/message.dart';
 
-//final myAppKey = GlobalKey<MyApp>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +63,9 @@ class MyApp extends StatelessWidget {
   Future<Widget> setting()async{
     //await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await SharedPrefs.setInstance();
+    // SharedPrefs　キーを値をすべて表示
+    // SharedPrefs.printAllPrefs();
+
     DatabaseHelper.db = await DatabaseHelper.initializeDatabase();
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -109,12 +110,12 @@ class _RestartWidgetState extends State<RestartWidget> {
   }
 }
 
-//todo データ削除時　スナップショット
+//TODO グラフのカテゴリー
+
+//todo　カラーテーマ
 //todo データ削除　月ごとに
 //todo　お問い合わせ(画像、募金)
-//todo　カラーテーマ
-//todo　広告の位置ボタン選択レイアウト
-//todo　固定メモ
+//todo データ削除時　スナップショット
 // ・グラフページ「合計」タブ、マイナスの時もプラス表記の不具合修正
 // ・「編集ページ」整数が小数点表記となる不具合修正
 //小数点追加

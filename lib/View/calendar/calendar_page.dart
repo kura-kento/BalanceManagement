@@ -49,22 +49,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
 
   // 親要素を更新するfunction
   void _setStateFunction(String input) {
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(
-    //     content: Text(input),
-    //   ),
-    // );
-    // print("親要素更新");
     setState(() {});
-  }
-
-  void reviewCount() {
-    print(SharedPrefs.getLoginCount());
-    SharedPrefs.setLoginCount(SharedPrefs.getLoginCount()+1);
-
-    Future.delayed(const Duration(microseconds: 1000), () {
-      PreviewDialog.reviewCount(context); //レビューカウント
-    });
   }
 
   @override
@@ -109,7 +94,10 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                             },
                           ),
                         );
-                        reviewCount();
+
+                        Future.delayed(const Duration(microseconds: 1000), () {
+                          PreviewDialog.reviewCount(context); //レビューカウント
+                        });
                         // setState(() {});
                       },
                     ),
