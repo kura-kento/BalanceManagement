@@ -1,22 +1,17 @@
-buildscript {
-    ext.kotlin_version = '1.6.10'
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.10'
-    }
-}
-
 allprojects {
+//    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '2.0.0'
+    ext.google_services_version = '4.4.0'
+
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:7.1.2'
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//        classpath 'com.google.gms:google-services:4.3.10'
+//    }
 }
 
 rootProject.buildDir = '../build'
@@ -28,12 +23,9 @@ subprojects {
 }
 
 tasks.register("clean", Delete) {
-    delete rootProject.layout.buildDirectory
+    delete rootProject.buildDir
 }
-////追加分
-//configurations.all {
-//    resolutionStrategy {
-//        force 'com.android.support:support-v4:27.0.2'
-//    }
+//tasks.register("clean", Delete) {
+//    delete rootProject.layout.buildDirectory
 //}
 
