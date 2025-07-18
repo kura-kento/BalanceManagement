@@ -57,6 +57,11 @@ class SharedPrefs {
   static Future<bool>? setIsPlusButton(bool value) => _sharedPreferences?.setBool(isPlusButton, value);
   static bool getIsPlusButton() => _sharedPreferences?.getBool(isPlusButton) ?? true;
 
+  // キーボードをカスタム状態か通常か？
+  static const isCustomKeyBoard = 'isCustomKeyBoard';
+  static Future<bool>? setIsCustomKeyBoard(bool value) => _sharedPreferences?.setBool(isCustomKeyBoard, value);
+  static bool getIsCustomKeyBoard() => _sharedPreferences?.getBool(isCustomKeyBoard) ?? false;
+
   // 金額の色
   static const plusColor = 'plusColor';
   static Future<bool>? setPlusColor(String value) => _sharedPreferences?.setString(plusColor, value);
@@ -73,7 +78,6 @@ class SharedPrefs {
   static const decimalPlace = 'decimalPlace';
   static Future<bool>? setDecimalPlace(int value) => _sharedPreferences?.setInt(decimalPlace, value);
   static int getDecimalPlace() => _sharedPreferences?.getInt(decimalPlace) ?? 3;
-  //
 
   // 固定メモ
   static const memo = 'memo';

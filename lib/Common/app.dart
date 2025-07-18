@@ -13,7 +13,7 @@ class App {
 
    static Color NoAdsButtonColor = Color(0xffFFD865);
 
-   static int addHours = 60;
+   static int addHours = 40;
 
    static double BTNfontsize = 12;
 
@@ -23,6 +23,8 @@ class App {
 
    static double appbar_height = 40.0;
    static Color primary_color = Color(0xffFFD865);
+
+   static Color keyboardBackgroundColor  = const Color(0xFFd5d7de);
 
    static Widget title(String title, Color fontColor, {double fontSize = 20.0}) {
       return  Text(

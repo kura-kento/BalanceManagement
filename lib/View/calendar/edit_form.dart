@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../Common/Widget/CustomKeyboardTextField.dart';
 import '../../Common/app.dart';
 import 'calendar_page.dart';
 import 'category_form.dart';
@@ -179,24 +180,25 @@ class EditFormState extends ConsumerState<EditForm> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     flex: 2,
-                                    child: TextFormField(
-                                      //autofocus: true,
-                                        controller: priceController,
-                                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                        inputFormatters: <TextInputFormatter>[
-                                          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
-                                        ],
-                                        decoration: InputDecoration(
-                                            labelText: moneyValue == MoneyValue.income
-                                                ?
-                                            AppLocalizations.of(context).income
-                                                :
-                                            AppLocalizations.of(context).spending,
-                                            border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(5.0)
-                                            )
-                                        )
-                                    ),
+                                      child: CustomKeyboardTextField(),
+                                    // child: TextFormField(
+                                    //   //autofocus: true,
+                                    //     controller: priceController,
+                                    //     keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                    //     inputFormatters: <TextInputFormatter>[
+                                    //       FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
+                                    //     ],
+                                    //     decoration: InputDecoration(
+                                    //         labelText: moneyValue == MoneyValue.income
+                                    //             ?
+                                    //         AppLocalizations.of(context).income
+                                    //             :
+                                    //         AppLocalizations.of(context).spending,
+                                    //         border: OutlineInputBorder(
+                                    //             borderRadius: BorderRadius.circular(5.0)
+                                    //         )
+                                    //     )
+                                    // ),
                                   )
                                 ]),
                           ),

@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:math_expressions/math_expressions.dart';
+
 
 class Utils {
   //カンマ区切り
@@ -55,5 +57,42 @@ class Utils {
     int digits =  pow(10, decimalPlace).toInt();
     return (num * digits).round() / digits;
   }
+
+
+  static String numDel(number) {
+    return number.substring(0, number.length - 1);
+  }
+
+  //四則演算　変換
+  static String parseOperation(value) {
+    if(value == '×') {
+      return '*';
+    }else if(value == '÷') {
+      return '/';
+    }
+    return value;
+  }
+
+  //　文字列を計算する
+  static String calculation(String front,String operation,String back) {
+    double _front = double.parse(front);
+    double _back  = double.parse(back);
+    double? result;
+    try {
+      if(operation == '+') {
+        result = (_front + _back);
+      } else if (operation == '-') {
+        result = (_front - _back);
+      } else if (operation == '×') {
+        result = (_front * _back);
+      } else if (operation == '÷') {
+        result = (_front / _back);
+      }
+      return formatNumber(result);
+    } catch (e) {
+      return 'Error';
+    }
+  }
+
 }
 
