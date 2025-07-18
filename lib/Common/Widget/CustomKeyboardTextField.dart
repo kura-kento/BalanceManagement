@@ -32,7 +32,6 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
   @override
   void initState() {
     super.initState();
-
     // isCustomKeyBoard = true;
   }
 
@@ -85,7 +84,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
 
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
       keyboardBarColor:  App.keyboardBackgroundColor,
       nextFocus: false,
       actions: [
@@ -314,17 +313,22 @@ class _CustomKeyboard2State extends ConsumerState<CustomKeyboard2> {
   Widget _buildKeyboardKey(String value, {flex = 1, height = 45.0}) {
     Widget btn = Container(
       margin: EdgeInsets.all(_margin),
+      padding: EdgeInsets.zero,
       height: height,
-      width: 1000, // 画面いっぱいに
+      // width: 1000, // 画面いっぱいに
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(2),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           backgroundColor: value == widget.selectOperation ? Colors.yellow : Colors.white,
           foregroundColor: Colors.black87,
         ),
         onPressed: () => _onKeyPressed(value),
-        child: Text(
-          value,
-          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+        child: Center(
+          child: Text(
+            value,
+            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );

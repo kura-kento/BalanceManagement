@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               iconSize: 20.0,
               selectedFontSize: 10.0,
               unselectedFontSize: 8.0,
-              elevation: 1.0,
+              elevation: 0,
               currentIndex: _currentIndex,
               fixedColor: Colors.blueAccent,
               onTap: _onItemTapped,

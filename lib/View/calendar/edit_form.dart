@@ -41,7 +41,7 @@ class EditFormState extends ConsumerState<EditForm> {
   int _selectCategory = 0;
 
   late TextEditingController titleController;
-  TextEditingController priceController = TextEditingController(text: '');
+  late TextEditingController priceController; //プロバイダー化
   late TextEditingController memoController;
   late FixedExtentScrollController scrollController;
   late DateTime selectDay;
@@ -76,7 +76,7 @@ class EditFormState extends ConsumerState<EditForm> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // カテゴリーのプルダウンの位置
       var moneyText = widget.calendar == null ? '' : '${Utils.formatNumber(calendarMoney  * (calendarMoney < 0 ? -1:1 ))}';
-      priceController = TextEditingController(text: moneyText);
+      ref.read(priceControllerProvider.notifier).state = TextEditingController(text: moneyText);
       setState(() {});
     });
   }
@@ -88,6 +88,7 @@ class EditFormState extends ConsumerState<EditForm> {
 
   @override
   Widget build(BuildContext context) {
+    priceController = ref.watch(priceControllerProvider);
     selectDay = ref.watch(selectDayProvider);
 
     return Container(
