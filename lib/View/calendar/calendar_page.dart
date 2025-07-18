@@ -50,6 +50,14 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
 
   // 親要素を更新するfunction
   void _setStateFunction(String input) {
+    // if (input != '') {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text(input),
+    //       duration: Duration(seconds: 1),
+    //     ),);
+    // }
+
     if (mounted) {
       setState(() {
         // 状態更新
@@ -92,7 +100,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                   child: IconButton(
                     icon: Icon(Icons.add, size: 32),
                     onPressed: () async {
-                        await Navigator.of(context).push(
+                        String? message = await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) {
                               return EditForm(calendar: null, inputMode: InputMode.create, parentFn:_setStateFunction);
@@ -100,10 +108,17 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           ),
                         );
 
+                        if (message != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(message),
+                                duration: Duration(seconds: 1),
+                              ),);
+                        }
                         Future.delayed(const Duration(microseconds: 1000), () {
                           PreviewDialog.reviewCount(context); //レビューカウント
                         });
-                        // setState(() {});
+                        setState(() {});
                       },
                     ),
                   ),
@@ -231,13 +246,22 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           ),
                         ),
                         onTap: () async {
-                          await Navigator.of(context).push(
+                          String? message = await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
                                 return EditForm(calendar: _calendar, inputMode: InputMode.edit, parentFn: _setStateFunction,);
                               },
                             ),
                           );
+
+                          if (message != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(message),
+                                duration: Duration(seconds: 1),
+                              ),);
+                          }
+
                           Future.delayed(const Duration(microseconds: 1000), () {
                             PreviewDialog.reviewCount(context); //レビューカウント
                           });

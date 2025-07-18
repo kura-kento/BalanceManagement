@@ -2,7 +2,6 @@ import 'package:balancemanagement_app/Common/Admob/admob_banner.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:balancemanagement_app/models/category.dart';
-import 'package:balancemanagement_app/Common/Admob/admob.dart';
 import 'package:balancemanagement_app/models/DB/database_help.dart';
 import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:balancemanagement_app/Common/utils.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import '../../Common/app.dart';
 import 'calendar_page.dart';
@@ -32,8 +30,6 @@ class EditForm extends ConsumerStatefulWidget {
 }
 
 class EditFormState extends ConsumerState<EditForm> {
-  final BannerAd myBanner = AdMob.admobBanner();
-
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Calendar> calendarList = [];
   List<Category> categoryList = [];
@@ -44,7 +40,7 @@ class EditFormState extends ConsumerState<EditForm> {
   int _selectCategory = 0;
 
   late TextEditingController titleController;
-  TextEditingController priceController = TextEditingController(text: '0');
+  TextEditingController priceController = TextEditingController(text: '');
   late TextEditingController memoController;
   late FixedExtentScrollController scrollController;
   late DateTime selectDay;
@@ -66,8 +62,8 @@ class EditFormState extends ConsumerState<EditForm> {
       moneyValue = SharedPrefs.getIsPlusButton() ? MoneyValue.income : MoneyValue.spending;
     }
 
-    titleController = TextEditingController(text: '${widget.calendar?.title}');
-    memoController = TextEditingController(text: '${widget.calendar?.memo}');
+    titleController = TextEditingController(text: widget.calendar?.title ?? '');
+    memoController = TextEditingController(text: widget.calendar?.memo ?? '');
 
     //編集フォームでドロップダウンの位置決め
     List<Category>_categoryItems = await updateListViewCategory(moneyValue == MoneyValue.income);
@@ -78,7 +74,7 @@ class EditFormState extends ConsumerState<EditForm> {
     // 描画完了後？
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // カテゴリーのプルダウンの位置
-      var moneyText = '${Utils.formatNumber(calendarMoney  * (calendarMoney < 0 ? -1:1 ))}';
+      var moneyText = widget.calendar == null ? '' : '${Utils.formatNumber(calendarMoney  * (calendarMoney < 0 ? -1:1 ))}';
       priceController = TextEditingController(text: moneyText);
       setState(() {});
     });
@@ -86,9 +82,6 @@ class EditFormState extends ConsumerState<EditForm> {
 
   @override
   void dispose() {
-    // if (FocusScope.of(context).hasFocus) {
-    //   FocusScope.of(context).requestFocus(new FocusNode());
-    // }
     super.dispose();
   }
 
@@ -111,7 +104,7 @@ class EditFormState extends ConsumerState<EditForm> {
                         flex: 1,
                         child: IconButton(
                           icon: Icon(Icons.arrow_back),
-                          onPressed: () => moveToLastScreen(),
+                          onPressed: () => moveToLastScreen(null),
                         ),
                       ),
                       Expanded(
@@ -222,8 +215,8 @@ class EditFormState extends ConsumerState<EditForm> {
                                 onPressed: _isDisabled ? null : () {
                                   setState(() => _isDisabled = true);
                                   _save();
-                                  moveToLastScreen();
-                                  widget.parentFn('保存に成功しました');
+                                  moveToLastScreen('保存に成功しました');
+                                  // widget.parentFn('保存に成功しました');
                                   // setState(() {});
                                 },
                               ),
@@ -289,13 +282,10 @@ class EditFormState extends ConsumerState<EditForm> {
     return _list;
   }
 
- moveToLastScreen() async {
-    //
-    // await new Future.delayed(new Duration(microseconds: 3000));
-    Future.delayed(Duration(milliseconds: 1000))
-        .then((_) {
-      FocusScope.of(context).unfocus();
-      Navigator.pop(context);
+ moveToLastScreen(String? message) async {
+   FocusScope.of(context).unfocus();
+    Future.delayed(Duration(milliseconds: 300)).then((_) {
+      Navigator.pop(context, message);
     });
   }
 
@@ -343,19 +333,14 @@ class EditFormState extends ConsumerState<EditForm> {
     ];
     setState(() {});
     return _categoryItems;
-
-    // List<Category> _categoryList = await DatabaseHelper().getCategoryList(calendarMoney >= 0);
-    // List<int> _category = _categoryList.map((category) => category.id ?? 0).toList();
-    // _selectCategory = _category.indexOf(widget.calendar?.categoryId ?? 0)+1;
-    // scrollController = FixedExtentScrollController(initialItem: _selectCategory);
   }
 
   Widget dustButton() {
-    if(widget.inputMode == InputMode.edit) {
+    if (widget.inputMode == InputMode.edit) {
       return IconButton(
         onPressed: () {
           _delete(widget.calendar?.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
-          moveToLastScreen();
+          moveToLastScreen('削除に成功しました。');
           setState(() {});
         },
         icon: Icon(Icons.delete),

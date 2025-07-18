@@ -37,7 +37,7 @@ class _SettingPageState extends State<SettingPage> {
         body: Column(
           children: [
             Container(
-                height: 55,
+                height: App.isSmall(context) ? 40 : 50,
                 width: MediaQuery.of(context).size.width,
                 color: App.bgColor,
                 child: Align(

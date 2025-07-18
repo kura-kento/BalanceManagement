@@ -52,11 +52,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       // onResume処理
-      if(SharedPrefs.getIsPassword()){
+      if(SharedPrefs.getIsPassword() && SharedPrefs.getPassword() != '') {
         Navigator.push(
           context,
           SlidePageRoute(
-            page:PassLock(),
+            page: PassLock(),
             settings: RouteSettings(name: '',),
           ),
         );

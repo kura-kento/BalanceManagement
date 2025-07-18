@@ -30,6 +30,7 @@ class _PriceStyleState extends State<PriceStyle> {
           child: BannerBody(
             child: Scaffold(
               appBar: AppBar(
+                toolbarHeight: App.isSmall(context) ? 40 : 50,
                 backgroundColor: Theme.of(context).primaryColor,
                 title: const Text(
                   'カレンダー 詳細設定',
@@ -56,102 +57,116 @@ class _PriceStyleState extends State<PriceStyle> {
                         child: squareText(pickerPlusColor,pickerMinusColor,100),
                       ),
                     ],),
-                  SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6.0),
-                    child: ListTile(
-                        minTileHeight: 40,
-                        leading: Icon(Icons.visibility_off, color: Theme.of(context).iconTheme.color,),
-                        title: Text('0円を表示させない'),
-                        trailing: CupertinoSwitch(
-                          value: SharedPrefs.getIsZeroHidden(),
-                          onChanged: (bool value) {
-                            setState(() {
-                              SharedPrefs.setIsZeroHidden(value);
-                            });
-                          },
-                        )
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6.0),
-                    child: ListTile(
-                      minTileHeight: 40,
-                      leading: Icon(Icons.format_size, color: Theme.of(context).iconTheme.color,),
-                      title: Row(children: [
-                        Text('日付サイズ変更'),
-                        Text(' ※不具合解消用', textAlign: TextAlign.start ,style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
-                      ],),
-                    ),
-                  ),
-                  Slider(
-                    value: SharedPrefs.getTextSize(),
-                    min: 0,
-                    max: 20,
-                    divisions: 40,
-                    activeColor:App.NoAdsButtonColor,
-                    label: SharedPrefs.getTextSize().toString(),
-                    onChanged: (double) {
-                      SharedPrefs.setTextSize(double);
-                      setState(() {});
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6.0),
-                    child: ListTile(
-                      minTileHeight: 40,
-                      leading: Icon(Icons.color_lens_outlined, color: Theme.of(context).iconTheme.color,),
-                      title: Text('金額の色変更'),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate([pickerPlusColor, pickerMinusColor].length, (index) {
-                        Color color = [pickerPlusColor, pickerMinusColor][index];
-                        return  Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(border: Border.all(color:Color(0xff999999), width: 1.5)),
-                              height: App.isSmall(context) ? 200 : 300,
-                              child: MaterialPicker(
-                                pickerColor: color,
-                                onColorChanged: (Color value) {
-                                      if (index == 0) {
-                                        pickerPlusColor = value;
-                                      } else {
-                                        pickerMinusColor = value;
-                                      }
-                                      setState(() {});
-                                },),
+                  SizedBox(height: 15,),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        margin: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey)
+                        ),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6.0),
+                              child: ListTile(
+                                  minTileHeight: 40,
+                                  leading: Icon(Icons.visibility_off, color: Theme.of(context).iconTheme.color,),
+                                  title: Text('0円を表示させない'),
+                                  trailing: CupertinoSwitch(
+                                    value: SharedPrefs.getIsZeroHidden(),
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        SharedPrefs.setIsZeroHidden(value);
+                                      });
+                                    },
+                                  )
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black54, //ボタンの背景色
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                    onPressed: () {
-                      String _plusColor = '0x${pickerPlusColor.toARGB32().toRadixString(16).toUpperCase()}';
-                      SharedPrefs.setPlusColor(_plusColor);
-                      String _minusColor = '0x${pickerMinusColor.toARGB32().toRadixString(16).toUpperCase()}';
-                      SharedPrefs.setMinusColor(_minusColor);
-                      RestartWidget.restartApp(context);
-                    },
-                    child: const Text('色変更', style: TextStyle(fontSize: 18,color: Colors.white,fontWeight: FontWeight.bold),),
-                    // child: Icon(icon),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('※色を変更した場合、アプリが再起動されます',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6.0),
+                              child: ListTile(
+                                minTileHeight: 40,
+                                leading: Icon(Icons.format_size, color: Theme.of(context).iconTheme.color,),
+                                title: Row(children: [
+                                  Text('日付サイズ変更'),
+                                  Text(' ※不具合解消用', textAlign: TextAlign.start ,style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
+                                ],),
+                              ),
+                            ),
+                            Slider(
+                              value: SharedPrefs.getTextSize(),
+                              min: 0,
+                              max: 20,
+                              divisions: 40,
+                              activeColor:App.NoAdsButtonColor,
+                              label: SharedPrefs.getTextSize().toString(),
+                              onChanged: (double) {
+                                SharedPrefs.setTextSize(double);
+                                setState(() {});
+                              },
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6.0),
+                              child: ListTile(
+                                minTileHeight: 40,
+                                leading: Icon(Icons.color_lens_outlined, color: Theme.of(context).iconTheme.color,),
+                                title: Text('金額の色変更'),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: List.generate([pickerPlusColor, pickerMinusColor].length, (index) {
+                                  Color color = [pickerPlusColor, pickerMinusColor][index];
+                                  return  Expanded(
+                                    flex: 1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(border: Border.all(color:Colors.grey)),
+                                        height: App.isSmall(context) ? 200 : 300,
+                                        child: MaterialPicker(
+                                          pickerColor: color,
+                                          onColorChanged: (Color value) {
+                                                if (index == 0) {
+                                                  pickerPlusColor = value;
+                                                } else {
+                                                  pickerMinusColor = value;
+                                                }
+                                                setState(() {});
+                                          },),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black54, //ボタンの背景色
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              ),
+                              onPressed: () {
+                                String _plusColor = '0x${pickerPlusColor.toARGB32().toRadixString(16).toUpperCase()}';
+                                SharedPrefs.setPlusColor(_plusColor);
+                                String _minusColor = '0x${pickerMinusColor.toARGB32().toRadixString(16).toUpperCase()}';
+                                SharedPrefs.setMinusColor(_minusColor);
+                                RestartWidget.restartApp(context);
+                              },
+                              child: const Text('色変更', style: TextStyle(fontSize: 18,color: Colors.white,fontWeight: FontWeight.bold),),
+                              // child: Icon(icon),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('※色を変更した場合、アプリが再起動されます',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
