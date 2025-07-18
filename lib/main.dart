@@ -114,6 +114,8 @@ class _RestartWidgetState extends State<RestartWidget> {
 
 //todo　カラーテーマ
 //todo データ削除　月ごとに
+//todo 新規登録の時に前回使用したカテゴリを選択した状態にする。LastCategory
+
 //todo　お問い合わせ(画像、募金)
 //todo データ削除時　スナップショット
 // ・グラフページ「合計」タブ、マイナスの時もプラス表記の不具合修正

@@ -15,6 +15,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import '../../Common/Widget/drawer.dart';
 import '../../Common/Widget/previewDialog.dart';
+import '../../models/calendar.dart';
 import 'daySquare.dart';
 import 'edit_form.dart';
 
@@ -49,7 +50,11 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
 
   // 親要素を更新するfunction
   void _setStateFunction(String input) {
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        // 状態更新
+      });
+    }
   }
 
   @override
@@ -90,7 +95,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                         await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) {
-                              return EditForm(calendarId: null, inputMode: InputMode.create, parentFn:_setStateFunction);
+                              return EditForm(calendar: null, inputMode: InputMode.create, parentFn:_setStateFunction);
                             },
                           ),
                         );
@@ -185,11 +190,13 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
         future: DatabaseHelper().selectDayList(selectDay), // Future<T> 型を返す非同期処理
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            var  calendarData = snapshot.data;
+            var  calendarList = snapshot.data;
             return Expanded(
               child: ListView.builder(
-                  itemCount: calendarData.length,
+                  itemCount: snapshot.data.length,
                   itemBuilder: (itemBuilder, index) {
+                    Calendar _calendar = calendarList[index]['calendar'];
+                    String full_name = calendarList[index]['full_name'];
                     return Slidable(
                       endActionPane:  ActionPane(
                         extentRatio: 1/5,
@@ -197,7 +204,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                         children: [
                           SlidableAction(
                             onPressed: (_) {
-                              _delete(calendarData[index]['id']);
+                              _delete(_calendar.id ?? 0);
                               _setStateFunction('削除に成功しました');
                             },
                             backgroundColor: Colors.red,
@@ -215,10 +222,10 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(calendarData[index]['title'] ?? ''),
+                              Text(full_name ?? ''),
                               Text(
-                                '${Utils.commaSeparated(calendarData[index]['money'] ?? 0)}${SharedPrefs.getUnit()}',
-                                style: TextStyle(color: (calendarData[index]['money'] ?? 0) >= 0 ? App.plusColor : App.minusColor),
+                                '${Utils.commaSeparated(_calendar.money ?? 0)}${SharedPrefs.getUnit()}',
+                                style: TextStyle(color: (_calendar.money ?? 0) >= 0 ? App.plusColor : App.minusColor),
                               ),
                             ],
                           ),
@@ -227,14 +234,14 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return EditForm(calendarId: calendarData[index]['id'], inputMode: InputMode.edit, parentFn: _setStateFunction,);
+                                return EditForm(calendar: _calendar, inputMode: InputMode.edit, parentFn: _setStateFunction,);
                               },
                             ),
                           );
                           Future.delayed(const Duration(microseconds: 1000), () {
                             PreviewDialog.reviewCount(context); //レビューカウント
                           });
-                          setState(() {});
+                          if (mounted) { setState(() {});}
                         },
                       ),
                     );

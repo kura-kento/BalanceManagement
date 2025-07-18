@@ -130,7 +130,7 @@ class DaySquareState extends ConsumerState<DaySquare> {
                   MaterialPageRoute(
                     builder: (context) {
                       return EditForm(
-                        calendarId: null,
+                        calendar: null,
                         inputMode: InputMode.create,parentFn: widget.parentFn,
                       );
                     },

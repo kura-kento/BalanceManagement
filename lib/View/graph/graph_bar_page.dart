@@ -33,9 +33,9 @@ class _GraphBarPageState extends State<GraphBarPage> {
 
   Future<void> updateListView() async{
     final String _month = DateFormat("yyyy-MM").format(DateTime(DateTime.now().year, DateTime.now().month + selectMonthValue, 1));
-    print(_month);
+    // print(_month);
     List _calendarList = await databaseHelper.getMonthList(_month);
-    print(_calendarList);
+    // print(_calendarList);
     data = await dataSet(_calendarList).reversed.toList();
 
     List _ListPlus = await databaseHelper.getMonthListPlus(_month);
@@ -92,16 +92,9 @@ class _GraphBarPageState extends State<GraphBarPage> {
 
   @override
   Widget build(BuildContext context) {
-    // if(AdMob.isNoAds() == false){
-    //   myBanner.load();
-    //   // myBanner2.load();
-    // }
 
     return Column(
       children: [
-        // SharedPrefs.getAdPositionTop()
-        //     ? AdMob.adContainer(myBanner)
-        //     : Container(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -132,7 +125,7 @@ class _GraphBarPageState extends State<GraphBarPage> {
           ],
         ),
         SelectMonthWidget(
-            tapLeft:(){
+            tapLeft:() {
                 selectMonthValue--;
                 // dataUpdate();
                 updateListView();
@@ -163,9 +156,6 @@ class _GraphBarPageState extends State<GraphBarPage> {
           flex: 1,
           child: Container(),
         ),
-        // SharedPrefs.getAdPositionTop()
-        //     ? Container()
-        //     : AdMob.adContainer(myBanner),
       ],
     );
   }

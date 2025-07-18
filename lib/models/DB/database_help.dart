@@ -22,7 +22,7 @@ class DatabaseHelper {
   static String colCategoryId = 'categoryId';
 
   static String categoryTable = 'category';
-  static String colPlus = 'plus';
+  static String colIsPlus = 'plus';
 
   DatabaseHelper._createInstance(); // DatabaseHelperのインスタンスを作成するための名前付きコンストラクタ
 
@@ -49,7 +49,7 @@ class DatabaseHelper {
     await db.execute('CREATE TABLE $calendarTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
         '$colMoney REAL, $colMemo TEXT, $colDate TEXT, $colCategoryId INTEGER)');
 
-    await db.execute('CREATE TABLE $categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colPlus TEXT)');
+    await db.execute('CREATE TABLE $categoryTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colIsPlus TEXT)');
     await db.insert(categoryTable,Category("売上 ",true).toMap());
     await db.insert(categoryTable,Category("購入 ",false).toMap());
     for(var i=0;i<6;i++){
@@ -171,11 +171,11 @@ class DatabaseHelper {
   /*
   * 【SELECT】 選択日のボトムリストと金額一覧
    */
-  Future<List> selectDayList(DateTime _date) async {
+  Future<List<Map>> selectDayList(DateTime _date) async {
     String date = DateFormat('yyyy-MM-dd').format(_date);
     final result = await database.rawQuery(
         '''
-  SELECT $calendarTable.* , (ifnull($categoryTable.$colTitle, '') || ifnull($calendarTable.$colTitle, '')) AS title
+  SELECT $calendarTable.* , (ifnull($categoryTable.$colTitle, '') || ifnull($calendarTable.$colTitle, '')) AS full_name
   FROM $calendarTable
   LEFT JOIN $categoryTable ON $categoryTable.id = $calendarTable.$colCategoryId
   WHERE $colDate LIKE '$date%'
@@ -185,7 +185,16 @@ class DatabaseHelper {
     }).whenComplete(() {
       print("ATTACH　成功");
     });
-    return result;
+
+    // カレンダークラスとカテゴリ＋タイトルをmapに格納してから返す
+    List<Map> calendarList = result.map((val){
+      return {
+        'calendar' : Calendar.fromMapObject(val),
+        'full_name' : val['full_name'] ?? ''
+      };
+    }).toList();
+
+    return calendarList;
   }
 
   /*
@@ -239,18 +248,10 @@ class DatabaseHelper {
   }
 
   //カテゴリーリストで収支毎の値を取得する。
-  Future<List<Category>> getCategoryList(value) async {
+  Future<List<Category>> getCategoryList(bool isPlus) async {
     //全てのデータを取得
-    final categoryMapList = await getCategoryMapList(); // Get 'Map List' from database
-    final int count = categoryMapList.length;         // Count the number of map entries in db table
-
-    final List<Category> categoryList = [];
-
-    for (var i = 0; i < count; i++) {
-      if(categoryMapList[i]['plus'] == value.toString()){
-        categoryList.add(Category.fromMapObject(categoryMapList[i]));
-      }
-    }
+    final categoryMapList = await this.database.query(categoryTable, where: '$colIsPlus = ?', whereArgs: [isPlus.toString()], orderBy: '$colId ASC');
+    List<Category> categoryList =  categoryMapList.map((val) => Category.fromMapObject(val)).toList();
     return categoryList;
   }
 
@@ -259,10 +260,10 @@ class DatabaseHelper {
     return result;
   }
 
-  Future<List<Map<String, dynamic>>> getCategoryMapList() async {
-    final result = await this.database.query(categoryTable, orderBy: '$colId ASC');
-    return result;
-  }
+  // Future<List<Map<String, dynamic>>> getCategoryMapList() async {
+  //   final result = await this.database.query(categoryTable, orderBy: '$colId ASC');
+  //   return result;
+  // }
 
   Future<List> getMonthList(last_month) async {
     final sql = "select sum($colMoney) as sum, strftime('%Y-%m', $colDate) as month from $calendarTable WHERE strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";

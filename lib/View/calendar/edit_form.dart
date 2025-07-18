@@ -22,10 +22,9 @@ enum InputMode{
 }
 
 class EditForm extends ConsumerStatefulWidget {
-  EditForm({Key? key, this.calendarId, required this.inputMode, required this.parentFn}) : super(key: key);
-
+  EditForm({Key? key, this.calendar, required this.inputMode, required this.parentFn}) : super(key: key);
   final Function parentFn;
-  final int? calendarId;
+  final Calendar? calendar;
   final InputMode inputMode;
 
   @override
@@ -44,72 +43,58 @@ class EditFormState extends ConsumerState<EditForm> {
   List<Category> _categoryItems =[Category.withId(0, "（空白）", true)];
   int _selectCategory = 0;
 
-  TextEditingController titleController = TextEditingController();
-  TextEditingController numberController = TextEditingController();
-  TextEditingController memoController = TextEditingController();
-  FixedExtentScrollController scrollController = FixedExtentScrollController();
-  late Calendar calendar;
+  late TextEditingController titleController;
+  TextEditingController priceController = TextEditingController(text: '0');
+  late TextEditingController memoController;
+  late FixedExtentScrollController scrollController;
   late DateTime selectDay;
 
   @override
   void initState() {
     super.initState();
-    if(widget.inputMode == InputMode.edit) {
-      initData();
-      defaultButton();
-    } else {
-      moneyValue = SharedPrefs.getIsPlusButton() ? MoneyValue.income : MoneyValue.spending;
-    }
-    updateListViewCategory();
-
+    initData();
   }
 
   Future<void> initData() async {
-    calendar = await DatabaseHelper().selectCalendar(widget.calendarId);
-    num calendarMoney = calendar.money ?? 0;
-    //編集フォームでドロップダウンの位置決め
-    List<Category> _categoryList = await DatabaseHelper().getCategoryList(calendarMoney >= 0);
-    List<int> _category = [];
-    _categoryList.forEach((Category category) {
-      _category.add(category.id ?? 0); //TODO [ ?? 0] は違う
-    });
+    num calendarMoney = widget.calendar?.money ?? 0;
+    // print(widget.calendar?.toMap());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _selectCategory = _category.indexOf(calendar.categoryId ?? 0)+1;
-
+    // プラスかマイナスか？
+    if (widget.inputMode == InputMode.edit) { // 編集
       moneyValue = calendarMoney >= 0 ? MoneyValue.income : MoneyValue.spending;
-      numberController = TextEditingController(text: '${Utils.formatNumber(calendarMoney * (calendarMoney < 0 ? -1:1 ))}');
-      titleController = TextEditingController(text: '${calendar.title}');
-      memoController = TextEditingController(text: '${calendar.memo}');
+    } else { // 新規の場合は前回のボタンを同じにする
+      moneyValue = SharedPrefs.getIsPlusButton() ? MoneyValue.income : MoneyValue.spending;
+    }
+
+    titleController = TextEditingController(text: '${widget.calendar?.title}');
+    memoController = TextEditingController(text: '${widget.calendar?.memo}');
+
+    //編集フォームでドロップダウンの位置決め
+    List<Category>_categoryItems = await updateListViewCategory(moneyValue == MoneyValue.income);
+    List<int> _category = _categoryItems.map((category) => category.id ?? 0).toList();
+    _selectCategory = _category.indexOf(widget.calendar?.categoryId ?? 0);
+    scrollController = FixedExtentScrollController(initialItem: _selectCategory);
+
+    // 描画完了後？
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // カテゴリーのプルダウンの位置
+      var moneyText = '${Utils.formatNumber(calendarMoney  * (calendarMoney < 0 ? -1:1 ))}';
+      priceController = TextEditingController(text: moneyText);
       setState(() {});
     });
   }
 
-  //編集フォームでドロップダウンの位置決め
-  Future<void> defaultButton() async {
-    // print(moneyValue == MoneyValue.income ? 'プラス':'マイナス');
-    // print(calendar.money >= 0 ? 'プラス':'マイナス');
-    // List<Category> _categoryList = await DatabaseHelper().getCategoryList(moneyValue == MoneyValue.income);
-    // List<int> _category = [];
-    // _categoryList.forEach((Category category) {
-    //   _category.add(category.id);
-    // });
-    // _selectCategory = _category.indexOf(calendar.categoryId)+1;
-  }
-
   @override
   void dispose() {
-    // TODO: implement dispose
-    // FocusScope.of(context).requestFocus(new FocusNode());
+    // if (FocusScope.of(context).hasFocus) {
+    //   FocusScope.of(context).requestFocus(new FocusNode());
+    // }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     selectDay = ref.watch(selectDayProvider);
-    if(AdMob.isNoAds() == false) {
-      myBanner.load();
-    }
 
     return Container(
       color: App.bgColor,
@@ -203,7 +188,7 @@ class EditFormState extends ConsumerState<EditForm> {
                                     flex: 2,
                                     child: TextFormField(
                                       //autofocus: true,
-                                        controller: numberController,
+                                        controller: priceController,
                                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                         inputFormatters: <TextInputFormatter>[
                                           FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
@@ -281,8 +266,8 @@ class EditFormState extends ConsumerState<EditForm> {
           flex: 1,
           child: ElevatedButton(
             child: Text(
-                index == 0 ? AppLocalizations.of(context).plus : AppLocalizations.of(context).minus,
-                style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+              index == 0 ? AppLocalizations.of(context).plus : AppLocalizations.of(context).minus,
+              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -292,8 +277,9 @@ class EditFormState extends ConsumerState<EditForm> {
             onPressed: () {
               moneyValue = element;
               SharedPrefs.setIsPlusButton(element == MoneyValue.income);
-              updateListViewCategory();
+              updateListViewCategory(element == MoneyValue.income);
               _selectCategory = 0;
+              scrollController = FixedExtentScrollController(initialItem: _selectCategory);
               setState(() {});
             },
           ),
@@ -315,20 +301,19 @@ class EditFormState extends ConsumerState<EditForm> {
 
   Future <void> _save() async {
     if (widget.inputMode == InputMode.edit) {
-      print(calendar);
       // TODO [widget.calendarId ?? 0]ではないかと
       await databaseHelper.updateCalendar(
           Calendar.withId(
-              widget.calendarId ?? 0,
-              Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
+              widget.calendar?.id ?? 0,
+              Utils.toDouble(priceController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
               '${titleController.text}',
               '${memoController.text}',
-              calendar.date,
+              widget.calendar?.date,
               _categoryItems[_selectCategory].id)
       );
 
     } else {
-      await databaseHelper.insertCalendar(Calendar(Utils.toDouble(numberController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
+      await databaseHelper.insertCalendar(Calendar(Utils.toDouble(priceController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
                                                             '${memoController.text}',
                                                               selectDay,
@@ -348,22 +333,28 @@ class EditFormState extends ConsumerState<EditForm> {
     );
   }
 
-  Future<void> updateListViewCategory() async {
+  Future<List<Category>> updateListViewCategory(bool isPlus) async {
     //収支どちらか全てのDBを取得
-    this.categoryList = await DatabaseHelper().getCategoryList(moneyValue == MoneyValue.income);
-    List<Category> _categoryItemsCache =[Category.withId(0, AppLocalizations.of(context).space, moneyValue == MoneyValue.income)];
-    for(int i=0; i < categoryList.length; i++) {
-      _categoryItemsCache.add(categoryList[i]);
-    }
-    _categoryItems= _categoryItemsCache;
+    this.categoryList = await DatabaseHelper().getCategoryList(isPlus);
+
+    _categoryItems = [
+      Category.withId(0, AppLocalizations.of(context).space, moneyValue == MoneyValue.income),
+      ...categoryList
+    ];
     setState(() {});
+    return _categoryItems;
+
+    // List<Category> _categoryList = await DatabaseHelper().getCategoryList(calendarMoney >= 0);
+    // List<int> _category = _categoryList.map((category) => category.id ?? 0).toList();
+    // _selectCategory = _category.indexOf(widget.calendar?.categoryId ?? 0)+1;
+    // scrollController = FixedExtentScrollController(initialItem: _selectCategory);
   }
 
   Widget dustButton() {
     if(widget.inputMode == InputMode.edit) {
       return IconButton(
         onPressed: () {
-          _delete(widget.calendarId ?? 0); // TODO [widget.calendarId ?? 0]ではない
+          _delete(widget.calendar?.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
           moveToLastScreen();
           setState(() {});
         },
@@ -409,7 +400,7 @@ class EditFormState extends ConsumerState<EditForm> {
                             },
                           ),
                         );
-                        updateListViewCategory();
+                        updateListViewCategory(moneyValue == MoneyValue.income);
                         setState1(() {});
                       },
                     ),
@@ -429,7 +420,7 @@ class EditFormState extends ConsumerState<EditForm> {
                 color: Color(0xffffffff),
                 height: MediaQuery.of(context).size.height / 3,
                 child: CupertinoPicker(
-                    scrollController: FixedExtentScrollController(initialItem: _selectCategory),
+                    scrollController: scrollController,
                     diameterRatio: 1.0,
                     itemExtent: 40.0,
                     children: _categoryItems.map(_pickerItem).toList(),
