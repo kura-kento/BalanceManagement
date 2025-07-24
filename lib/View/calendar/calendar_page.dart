@@ -304,21 +304,29 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
 
   //
   Widget sumPriceWidget() {
-    int tapCount = (SharedPrefs.getTapInt() % ['both','monthDouble', 'yearDouble'].length);
+    int tapCount = (SharedPrefs.getTapInt() % ['both','monthDouble','yearDouble','MonthSUM','YearSUM'].length);
     var list = [];
-    var title = [];
+    var listTitle = [];
     switch(tapCount) {
       case 0:
-        title = [AppLocalizations.of(context).monthlyTotal,AppLocalizations.of(context).annualTotal];
+        listTitle = [AppLocalizations.of(context).monthlyTotal,AppLocalizations.of(context).annualTotal];
         list = ['MonthSUM','YearSUM'];
         break;
       case 1:
-        title = [AppLocalizations.of(context).monthlyTotal,AppLocalizations.of(context).monthlyTotal];
+        listTitle = [AppLocalizations.of(context).monthlyTotalPlus,AppLocalizations.of(context).monthlyTotalMinus];
         list = ['MonthPULS','MonthNINUS'];
         break;
       case 2:
-        title = [AppLocalizations.of(context).annualTotal,AppLocalizations.of(context).annualTotal];
+        listTitle = [AppLocalizations.of(context).annualTotalPlus,AppLocalizations.of(context).annualTotalMinus];
         list = ['YearPULS','YearNINUS'];
+        break;
+      case 3:
+        listTitle = [AppLocalizations.of(context).monthlyTotal];
+        list = ['MonthSUM'];
+        break;
+      case 4:
+        listTitle = [AppLocalizations.of(context).annualTotal];
+        list = ['YearSUM'];
         break;
     }
 
@@ -335,22 +343,28 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text('${title[0]}：',style: const TextStyle(fontSize: 12.5)),
-                      Text('${title[1]}：',style: const TextStyle(fontSize: 12.5)),
-                    ],
+                  Container(
+                    padding: EdgeInsets.only(left: 8.0),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: Column( //年合計とか
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: listTitle.map((title) {
+                        return Text('${title}：',style: TextStyle(fontSize: 16.0));
+                      }).toList(),
+                    ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Text("${Utils.commaSeparated(calendarData[list[0]])}${SharedPrefs.getUnit()}",
-                        style: TextStyle(fontSize: 12.5, color: tapCount == 0 ? Colors.black87 : App.plusColor),),
-                      Text("${Utils.commaSeparated(calendarData[list[1]])}${SharedPrefs.getUnit()}",
-                          style: TextStyle(fontSize: 12.5, color: tapCount == 0 ? Colors.black87 : App.minusColor)),
-                    ],
+                  Container(
+                    padding: EdgeInsets.only(right: 8.0),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: Column( //400円とか
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: list.map((col) {
+                        return Text("${Utils.commaSeparated(calendarData[col])}${SharedPrefs.getUnit()}",
+                            style: TextStyle(fontSize: 16.0, color: Utils.getMoneyColor(calendarData[col])));
+                      }).toList(),
+                    ),
                   ),
                 ],
               ),

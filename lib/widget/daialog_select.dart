@@ -29,6 +29,7 @@ class _SelectDialogState extends State<SelectDialog> {
   void AddPositionDialog(context) async {
     await showCupertinoModalPopup<void>(
       context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.7),
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text('選択してください'),
         // message: const Text('Message'),

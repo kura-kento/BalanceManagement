@@ -13,6 +13,8 @@ class Messages
     required this.sunday,
     
     required this.annualTotal,
+    required this.annualTotalPlus,
+    required this.annualTotalMinus,
     required this.monthlyTotal,
     required this.monthlyTotalPlus,
     required this.monthlyTotalMinus,
@@ -63,6 +65,8 @@ class Messages
   final String calendar;
   final String graph;
   final String annualTotal;
+  final String annualTotalPlus;
+  final String annualTotalMinus;
   final String monthlyTotal;
   final String monthlyTotalPlus;
   final String monthlyTotalMinus;
@@ -120,10 +124,12 @@ class Messages
     saturday: '土',
     sunday: '日',
 
-    annualTotal: '年合計',
-    monthlyTotal: '月合計',
-    monthlyTotalPlus: '月合計',
-    monthlyTotalMinus: '月合計',
+    annualTotal: '年-合計',
+    annualTotalPlus: '年-プラス',
+    annualTotalMinus: '年-マイナス',
+    monthlyTotal: '月-合計',
+    monthlyTotalPlus: '月-プラス',
+    monthlyTotalMinus: '月-マイナス',
   //編集ページ
     plus: 'プラス',
     minus: 'マイナス',
@@ -171,6 +177,8 @@ class Messages
     calendar: 'calendar',
     graph: 'graph',
     annualTotal:  'Annual total',
+    annualTotalPlus: 'Annual(+)',
+    annualTotalMinus: 'Annual(-)',
     monthlyTotal: 'Monthly total',
     monthlyTotalPlus: 'Monthly(+)',
     monthlyTotalMinus: 'Monthly(-)',

@@ -2,8 +2,11 @@ import 'dart:math';
 
 import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:math_expressions/math_expressions.dart';
+
+import 'app.dart';
 
 
 class Utils {
@@ -94,5 +97,23 @@ class Utils {
     }
   }
 
+  // 数字が含まれているか
+  static bool isNumber(String value) {
+    RegExp exp = RegExp(r'([0-9.]+)');
+    bool is_number = exp.hasMatch(value);
+    return is_number;
+  }
+
+  static Color getMoneyColor(money) {
+    if (isNumber(money.toString())) {
+      if (formatNumber(money) == '0') {
+        return Colors.black87;
+      };
+      return money >= 0
+          ? App.plusColor : App.minusColor;
+    } else {
+      return Colors.black87;
+    }
+  }
 }
 
