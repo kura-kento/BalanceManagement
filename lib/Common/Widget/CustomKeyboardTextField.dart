@@ -48,7 +48,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
 
   @override
   Widget build(BuildContext context) {
-    print("カスタムキーボード build");
+    // print("カスタムキーボード build");
     priceController = ref.watch(priceControllerProvider);
     selectOperationText = ref.watch(selectOperationTextProvider);
     if(MediaQuery.of(context).size.height > 800){

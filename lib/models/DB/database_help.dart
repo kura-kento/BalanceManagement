@@ -186,7 +186,7 @@ class DatabaseHelper {
     ).catchError((e) {
       print(e);
     }).whenComplete(() {
-      print("ATTACH　成功");
+      // print("ATTACH　成功");
     });
 
     // カレンダークラスとカテゴリ＋タイトルをmapに格納してから返す

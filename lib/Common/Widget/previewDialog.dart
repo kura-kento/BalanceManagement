@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -48,12 +50,22 @@ class PreviewDialog {
     );
   }
 
+  static Future<bool> isInternetConnect() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+    } catch (_) {
+      return false;
+    }
+  }
+
+
   static Future<void> reviewCount(BuildContext context) async {
     SharedPrefs.setLoginCount(SharedPrefs.getLoginCount() + 1);
     final InAppReview inAppReview = InAppReview.instance;
 
-    // スキップ後の冷却期間（例：30日）
-    final skipDays = 15;
+    // スキップ後の冷却期間（例：14日）
+    final skipDays = 14;
     final lastSkipStr = SharedPrefs.getReviewSkipTime();
     if (lastSkipStr.isNotEmpty) {
       final lastSkip = DateTime.parse(lastSkipStr);
@@ -61,6 +73,13 @@ class PreviewDialog {
     }
 
     if (SharedPrefs.getLoginCount() % 10 == 0) {
+      // ネットに繋がっていない場合は無効になる。
+      final bool isConnected = await isInternetConnect();
+      if (!isConnected) {
+        SharedPrefs.setLoginCount(10 - 1); // 次回にレビューが出るように
+        return;
+      }
+
       // レビューができない状態なら何もしない
       if (!(await inAppReview.isAvailable())) return;
 

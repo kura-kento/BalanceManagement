@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../Common/Widget/previewDialog.dart';
 import '../../Common/app.dart';
 import '../../Common/shared_prefs.dart';
 import '../../Common/utils.dart';
@@ -131,12 +132,16 @@ class DaySquareState extends ConsumerState<DaySquare> {
                     builder: (context) {
                       return EditForm(
                         calendar: null,
-                        inputMode: InputMode.create,parentFn: widget.parentFn,
+                        inputMode: InputMode.create, parentFn: widget.parentFn,
                       );
                     },
                   ),
                 );
-                setState(() {});
+
+                Future.delayed(const Duration(microseconds: 1000), () {
+                  PreviewDialog.reviewCount(context); //レビューカウント
+                });
+                widget.parentFn; // 親要素の更新
               } else {
                 ref.read(selectDayProvider.notifier).state = date;
               }

@@ -50,6 +50,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
 
   // 親要素を更新するfunction
   void _setStateFunction(String input) {
+    print("親要素ごと更新");
     // if (input != '') {
     //   ScaffoldMessenger.of(context).showSnackBar(
     //     SnackBar(
@@ -57,11 +58,9 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     //       duration: Duration(seconds: 1),
     //     ),);
     // }
-
+    setState(() {});
     if (mounted) {
-      setState(() {
-        // 状態更新
-      });
+      setState(() {});
     }
   }
 

@@ -54,7 +54,6 @@ class EditFormState extends ConsumerState<EditForm> {
 
   Future<void> initData() async {
     num calendarMoney = widget.calendar?.money ?? 0;
-    // print(widget.calendar?.toMap());
 
     // プラスかマイナスか？
     if (widget.inputMode == InputMode.edit) { // 編集
@@ -79,6 +78,22 @@ class EditFormState extends ConsumerState<EditForm> {
       ref.read(priceControllerProvider.notifier).state = TextEditingController(text: moneyText);
       setState(() {});
     });
+  }
+
+  void handleBack(BuildContext context, String? message) async {
+    // キーボードを閉じる
+    FocusScope.of(context).unfocus();
+
+    // 最大500ms待つ（50ms × 15回）
+    for (int i = 0; i < 15; i++) {
+      await Future.delayed(Duration(milliseconds: 50));
+      // キーボードが閉じたか確認
+      if (MediaQuery.of(context).viewInsets.bottom == 0) {
+        break;
+      }
+    }
+    // 画面を戻す
+    Navigator.of(context).pop(message);
   }
 
   @override
@@ -106,7 +121,7 @@ class EditFormState extends ConsumerState<EditForm> {
                         flex: 1,
                         child: IconButton(
                           icon: Icon(Icons.arrow_back),
-                          onPressed: () => moveToLastScreen(null),
+                          onPressed: () => handleBack(context, null),
                         ),
                       ),
                       Expanded(
@@ -218,7 +233,7 @@ class EditFormState extends ConsumerState<EditForm> {
                                 onPressed: _isDisabled ? null : () {
                                   setState(() => _isDisabled = true);
                                   _save();
-                                  moveToLastScreen('保存に成功しました');
+                                  handleBack(context,'保存に成功しました');
                                   // widget.parentFn('保存に成功しました');
                                   // setState(() {});
                                 },
@@ -285,13 +300,6 @@ class EditFormState extends ConsumerState<EditForm> {
     return _list;
   }
 
- moveToLastScreen(String? message) async {
-   FocusScope.of(context).unfocus();
-    Future.delayed(Duration(milliseconds: 300)).then((_) {
-      Navigator.pop(context, message);
-    });
-  }
-
   Future <void> _save() async {
     if (widget.inputMode == InputMode.edit) {
       // TODO [widget.calendarId ?? 0]ではないかと
@@ -343,7 +351,7 @@ class EditFormState extends ConsumerState<EditForm> {
       return IconButton(
         onPressed: () {
           _delete(widget.calendar?.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
-          moveToLastScreen('削除に成功しました。');
+          handleBack(context,'削除に成功しました。');
           setState(() {});
         },
         icon: Icon(Icons.delete),
