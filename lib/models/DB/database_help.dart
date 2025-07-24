@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:balancemanagement_app/models/calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -6,6 +8,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
+import '../../Common/graph_bar.dart';
 import '../category.dart';
 
 class DatabaseHelper {
@@ -270,6 +273,7 @@ class DatabaseHelper {
     final calendarList = await this.database.rawQuery(sql);
     return calendarList;
   }
+
   //プラス収支を月集計
   Future<List> getMonthListPlus(last_month) async {
     final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $calendarTable where $colMoney >= 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
@@ -281,5 +285,61 @@ class DatabaseHelper {
     final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $calendarTable where $colMoney < 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
     final calendarList = await this.database.rawQuery(sql);
     return calendarList;
+  }
+
+ // カテゴリーよう
+
+  Future<List> getMonthList2(last_month) async {
+    final sql = '''
+      SELECT abs(sum($colMoney)) AS sum, $colCategoryId 
+      FROM $calendarTable 
+      WHERE strftime('%Y-%m', $colDate) = '$last_month' 
+      GROUP BY $colCategoryId
+    ''';
+    final calendarList = await this.database.rawQuery(sql);
+    return calendarList;
+  }
+
+  //プラス収支を月集計
+  Future<List<OrdinalSales>> getMonthListPlus2(last_month) async {
+    final sql = '''
+      SELECT 
+        abs(sum($colMoney)) AS sum,
+        category.title AS title
+      FROM $calendarTable
+      JOIN $categoryTable ON $calendarTable.$colCategoryId = $categoryTable.$colId
+      WHERE $colMoney >= 0 AND strftime('%Y-%m', $colDate) = '$last_month' 
+      GROUP BY $colCategoryId
+      ORDER BY sum DESC
+    ''';
+    final calendarList = await this.database.rawQuery(sql);
+
+    final result = calendarList.map((val) {
+      String title = val["title"] as String;
+      double sum = val["sum"] as double;
+      return  OrdinalSales(title,sum);
+    }).toList();
+    return result;
+  }
+  //マイナス収支を月集計
+  Future<List<OrdinalSales>> getMonthListMinus2(last_month) async {
+    final sql = '''
+      SELECT 
+        abs(sum($colMoney)) AS sum,
+        category.title AS title
+      FROM $calendarTable
+      JOIN $categoryTable ON $calendarTable.$colCategoryId = $categoryTable.$colId
+      WHERE $colMoney < 0 AND strftime('%Y-%m', $colDate) = '$last_month' 
+      GROUP BY $colCategoryId
+      ORDER BY sum DESC
+    ''';
+    final calendarList = await this.database.rawQuery(sql);
+
+    final result = calendarList.map((val) {
+      String title = val["title"] as String;
+      double sum = val["sum"] as double;
+      return  OrdinalSales(title,sum);
+    }).toList();
+    return result;
   }
 }

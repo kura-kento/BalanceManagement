@@ -5,8 +5,6 @@ import 'package:balancemanagement_app/Common/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
-import 'app.dart';
-
 class SimpleBarChart extends StatefulWidget {
   SimpleBarChart(this.seriesList, {this.animate});
   final List<charts.Series<dynamic, String>> seriesList;

@@ -2,7 +2,6 @@ import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 class App {
-   static int graphLength = 10;
 
    static Color bgColor = Color(0xffE0E0E0); // grey[300]
    // static Color plusColor = Colors.lightBlueAccent;
@@ -50,6 +49,4 @@ class App {
       //    return size;
       // }
    }
-
-
 }
