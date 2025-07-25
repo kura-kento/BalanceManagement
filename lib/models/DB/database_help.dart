@@ -305,9 +305,9 @@ class DatabaseHelper {
     final sql = '''
       SELECT 
         abs(sum($colMoney)) AS sum,
-        category.title AS title
+        COALESCE($categoryTable.$colTitle, '(空白)') AS title
       FROM $calendarTable
-      JOIN $categoryTable ON $calendarTable.$colCategoryId = $categoryTable.$colId
+      LEFT JOIN $categoryTable ON $calendarTable.$colCategoryId = $categoryTable.$colId
       WHERE $colMoney >= 0 AND strftime('%Y-%m', $colDate) = '$last_month' 
       GROUP BY $colCategoryId
       ORDER BY sum DESC
@@ -326,9 +326,9 @@ class DatabaseHelper {
     final sql = '''
       SELECT 
         abs(sum($colMoney)) AS sum,
-        category.title AS title
+        COALESCE($categoryTable.$colTitle, '(空白)') AS title
       FROM $calendarTable
-      JOIN $categoryTable ON $calendarTable.$colCategoryId = $categoryTable.$colId
+      LEFT JOIN $categoryTable ON $calendarTable.$colCategoryId = $categoryTable.$colId
       WHERE $colMoney < 0 AND strftime('%Y-%m', $colDate) = '$last_month' 
       GROUP BY $colCategoryId
       ORDER BY sum DESC

@@ -3,13 +3,6 @@ import 'package:flutter/material.dart';
 
 class SelectMonthWidget extends StatelessWidget {
   const SelectMonthWidget({this.tapLeft, this.tapRight, this.text});
-  // setState(() {
-  // selectMonthValue++;
-  // selectDay = selectOfMonth(selectMonthValue);
-  // print(selectMonthValue);
-  // print(selectDay);
-  // dataUpdate();
-  // });
   final tapLeft;
   final tapRight;
   final text;
