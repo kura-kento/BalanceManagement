@@ -10,6 +10,7 @@ import 'package:balancemanagement_app/Common/Widget/reward_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../Common/Widget/previewDialog.dart';
 import '../../Common/app.dart';
 import '../../Common/utils.dart';
 
@@ -96,6 +97,39 @@ class _SettingPageState extends State<SettingPage> {
                             SharedPrefs.setPassword(value);
                           },
                         )
+                      ),
+                      dividerWidget,
+                      ListTile(
+                        title: const Text('お問い合わせ',style: TextStyle(fontWeight: FontWeight.bold),),
+                        leading: const Icon(Icons.info_outline),
+                        onTap: () async {
+                          TextStyle btnTextStyle = TextStyle(fontSize: App.sizeConvert(context,24), color: Colors.black);
+                          ButtonStyle buttonStyle = ButtonStyle(
+                            backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+                            shape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8),),
+                            ),
+                          );
+                          await PreviewDialog.show(
+                              context: context,
+                              content: "外部サイトに移動します、問題ないですか？",
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  style: buttonStyle,
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("いいえ", style: btnTextStyle,),
+                                ),
+                                ElevatedButton(
+                                  style: buttonStyle,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    PreviewDialog.openContactForm();
+                                  },
+                                  child: Text("はい", style: btnTextStyle,),
+                                ),
+                          ],
+                          );
+                        },
                       ),
                       dividerWidget,
                       ListTile(
@@ -205,45 +239,41 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  // void moveToLastScreen(context) {
-  //   Navigator.pop(context);
-  // }
-
-  Future<void> updateListViewCategory() async{
-//全てのDBを取得
-     List<Category> _categoryList = await DatabaseHelper().getCategoryList(true);
-      setState(() {
-        this.categoryList = _categoryList;
-      });
+  Future<void> updateListViewCategory() async {
+    //全てのDBを取得
+    List<Category> _categoryList = await DatabaseHelper().getCategoryList(true);
+    setState(() {
+     this.categoryList = _categoryList;
+    });
   }
 
-  String labelTextCategory(){
+  String labelTextCategory() {
     String _labelTextCategory = "";
-    for(var i = 0;i < categoryList.length;i++){
+    for(var i = 0;i < categoryList.length;i++) {
       if(i == 0){
         _labelTextCategory = categoryList[i].title ?? '';
       }
     }
     return _labelTextCategory;
   }
-//ダイアログ
 
+  //ダイアログ
   Future<void> allDelete(context) async{
       await DatabaseHelper().allDeleteCalendar();
       Navigator.of(context).pop();
   }
 
-//カテゴリーの名前を取得。
+  //カテゴリーの名前を取得。
   List<Category> categories(value) {
     List<Category> _categories = [];
-    if(value){
-      for(var i = 0; i < categoryList.length; i++){
+    if (value) {
+      for(var i = 0; i < categoryList.length; i++) {
         if(categoryList[i].plus == value){
           _categories.add(categoryList[i]);
         }
       }
-    }else{
-      for(var i = 0; i < categoryList.length; i++){
+    } else {
+      for(var i = 0; i < categoryList.length; i++) {
         if(categoryList[i].plus == value){
           _categories.add(categoryList[i]);
         }
@@ -251,9 +281,9 @@ class _SettingPageState extends State<SettingPage> {
     }
     return _categories;
   }
-  String dropDownButton(value){
+  String dropDownButton(value) {
     String? _id;
-    for(var i=0;i<categoryList.length;i++){
+    for(var i=0;i<categoryList.length;i++) {
       if(categoryList[i].plus == value){
         _id = categoryList[i].id.toString();
       }
@@ -262,15 +292,15 @@ class _SettingPageState extends State<SettingPage> {
   }
   String labelText(number,value){
     String? _title;
-      if(number == ""){
-        for(var i = 0; i < categoryList.length; i++){
+      if(number == "") {
+        for(var i = 0; i < categoryList.length; i++) {
           if(categoryList[i].plus == value){
             _title= categoryList[i].title;
           }
         }
-      }else{
+      } else {
         for(var i = 0 ;i < categoryList.length; i++) {
-          if(categoryList[i].id == int.parse(number)){
+          if(categoryList[i].id == int.parse(number)) {
             _title= categoryList[i].title;
           }
         }

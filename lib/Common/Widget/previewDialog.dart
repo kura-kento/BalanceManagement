@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../app.dart' show App;
 
 class PreviewDialog {
-  static Future<void> _show({
+  static Future<void> show({
     required BuildContext context,
     String? title,
     String? content,
@@ -92,7 +92,7 @@ class PreviewDialog {
         ),
       );
 
-      await _show(
+      await show(
         context: context,
         content: "このアプリは満足していますか？",
         actions: <Widget>[
@@ -101,7 +101,7 @@ class PreviewDialog {
             onPressed: () {
               SharedPrefs.setReviewSkipTime(DateTime.now().toIso8601String());
               Navigator.pop(context);
-              _show(
+              show(
                 context: context,
                 title: 'フィードバック',
                 content: "お問い合わせフォームは外部ページの下部にあります。\nこのまま移動してもよろしいですか？",
@@ -115,7 +115,7 @@ class PreviewDialog {
                     style: buttonStyle,
                     onPressed: () {
                       Navigator.pop(context);
-                      _openContactForm();
+                      openContactForm();
                     },
                     child: Text("はい", style: btnTextStyle,),
                   ),
@@ -137,8 +137,8 @@ class PreviewDialog {
     }
   }
 
-  static void _openContactForm() async {
-    final Uri url = Uri.parse('https://peraichi.com/landing_pages/view/k-kura'); // ← ここに自前のURLを指定
+  static void openContactForm() async {
+    final Uri url = Uri.parse('https://form.run/@knt-krmt-Kg0s9ir6HkpmDrTtPHJv'); // ← ここに自前のURLを指定
 
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
