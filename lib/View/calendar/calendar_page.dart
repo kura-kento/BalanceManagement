@@ -50,14 +50,14 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
 
   // 親要素を更新するfunction
   void _setStateFunction(String input) {
-    print("親要素ごと更新");
-    // if (input != '') {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text(input),
-    //       duration: Duration(seconds: 1),
-    //     ),);
-    // }
+    if (input != '') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(input),
+          duration: Duration(milliseconds: 800),
+        ),);
+    }
+
     setState(() {});
     if (mounted) {
       setState(() {});
@@ -199,7 +199,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
   }
 
   // カレンダー下のリスト
-  Widget calendarBottomList()  {
+  Widget calendarBottomList() {
     return FutureBuilder(
         future: DatabaseHelper().selectDayList(selectDay), // Future<T> 型を返す非同期処理
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -217,9 +217,31 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                         motion: const ScrollMotion(),
                         children: [
                           SlidableAction(
-                            onPressed: (_) {
-                              _delete(_calendar.id ?? 0);
-                              _setStateFunction('削除に成功しました');
+                            onPressed: (_) async {
+                              bool result = await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CupertinoAlertDialog(
+                                      title: Text("確認"),
+                                      content: Text("削除します。よろしいですか？"),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: Text('キャンセル'),
+                                          onPressed: () => Navigator.pop(context, false),
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: Text('削除'),
+                                          isDestructiveAction: true,
+                                          onPressed: () => Navigator.pop(context, true),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                              );
+                              if (result) {
+                                _delete(_calendar.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
+                                _setStateFunction('削除に成功しました');
+                              }
                             },
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,

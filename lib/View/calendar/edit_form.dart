@@ -197,24 +197,6 @@ class EditFormState extends ConsumerState<EditForm> {
                                   Expanded(
                                     flex: 2,
                                       child: CustomKeyboardTextField(),
-                                    // child: TextFormField(
-                                    //   //autofocus: true,
-                                    //     controller: priceController,
-                                    //     keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                    //     inputFormatters: <TextInputFormatter>[
-                                    //       FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
-                                    //     ],
-                                    //     decoration: InputDecoration(
-                                    //         labelText: moneyValue == MoneyValue.income
-                                    //             ?
-                                    //         AppLocalizations.of(context).income
-                                    //             :
-                                    //         AppLocalizations.of(context).spending,
-                                    //         border: OutlineInputBorder(
-                                    //             borderRadius: BorderRadius.circular(5.0)
-                                    //         )
-                                    //     )
-                                    // ),
                                   )
                                 ]),
                           ),
@@ -349,10 +331,32 @@ class EditFormState extends ConsumerState<EditForm> {
   Widget dustButton() {
     if (widget.inputMode == InputMode.edit) {
       return IconButton(
-        onPressed: () {
-          _delete(widget.calendar?.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
-          handleBack(context,'削除に成功しました。');
-          setState(() {});
+        onPressed: () async {
+          bool result = await showDialog(
+              context: context,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  title: Text("確認"),
+                  content: Text("削除します。よろしいですか？"),
+                  actions: [
+                    CupertinoDialogAction(
+                      child: Text('キャンセル'),
+                      onPressed: () => Navigator.pop(context, false),
+                    ),
+                    CupertinoDialogAction(
+                      child: Text('削除'),
+                      isDestructiveAction: true,
+                      onPressed: () => Navigator.pop(context, true),
+                    ),
+                  ],
+                );
+              }
+          );
+          if (result) {
+            _delete(widget.calendar?.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
+            handleBack(context,'削除に成功しました。');
+            setState(() {});
+          }
         },
         icon: Icon(Icons.delete),
       );
