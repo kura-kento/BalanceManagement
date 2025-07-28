@@ -1,9 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="work.syuusi365.balancemanagement">
+    <!-- 定期購入アイテム作成のために、請求権限を追加　-->
+    <uses-permission android:name="com.android.vending.BILLING"/>
     <application
         android:name="${applicationName}"
         android:label="収支管理アプリ"
         android:icon="@mipmap/ic_launcher">
+        <!-- 定期購入アイテム作成のために、請求権限を追加　-->
+        <meta-data
+            android:name="com.google.android.play.billingclient.version"
+            android:value="7.1.1" />
         <!-- Google AdMob　-->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
