@@ -290,7 +290,7 @@ class EditFormState extends ConsumerState<EditForm> {
       child: Text(
         category.title ?? '',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 32),
+        style: TextStyle(fontSize: 24),
       ),
     );
   }
@@ -373,6 +373,7 @@ class EditFormState extends ConsumerState<EditForm> {
 
   // プルダウン
   void pullDownVoid() {
+    TextStyle cyanTextStyle = TextStyle(color: Colors.cyan, fontWeight: FontWeight.bold, fontSize: 24);
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -383,20 +384,14 @@ class EditFormState extends ConsumerState<EditForm> {
               Container(
                 decoration: BoxDecoration(
                   color: Color(0xffffffff),
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Color(0xff999999),
-                      width: 0.0,
-                    ),
-                  ),
+                  border: Border(bottom: BorderSide(color: Color(0xff999999), width: 0.0,),),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     CupertinoButton(
                       child: Text(
                         AppLocalizations.of(context).edit,
-                        style: TextStyle(color: Colors.cyan),
+                        style: cyanTextStyle,
                       ),
                       onPressed: () async {
                         await Navigator.of(context).push(
@@ -410,31 +405,33 @@ class EditFormState extends ConsumerState<EditForm> {
                         setState1(() {});
                       },
                     ),
-                    CupertinoButton(
-                      child: Text(
-                        AppLocalizations.of(context).done,
-                        style: TextStyle(color: Colors.cyan),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
                   ],
                 ),
               ),
               Container(
                 color: Color(0xffffffff),
-                height: MediaQuery.of(context).size.height / 3,
-                child: CupertinoPicker(
-                    scrollController: scrollController,
-                    diameterRatio: 1.0,
-                    itemExtent: 40.0,
-                    children: _categoryItems.map(_pickerItem).toList(),
-                    onSelectedItemChanged: (int index) {
-                      setState(() {
-                        _selectCategory = index;
-                      });
-                    }),
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  removeBottom: true,
+                  child: CupertinoActionSheet(
+                    actions: _categoryItems.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final category = entry.value;
+                      return CupertinoUserInterfaceLevel(
+                        data: CupertinoUserInterfaceLevelData.base,
+                        child: CupertinoActionSheetAction(
+                          onPressed: () {
+                            _selectCategory = index;
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          child: _pickerItem(category),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
             ],
           );
