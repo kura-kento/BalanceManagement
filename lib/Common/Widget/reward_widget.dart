@@ -31,7 +31,6 @@ class _RewardWidgetState extends State<RewardWidget> {
     if(Platform.isAndroid) {
       // Android のとき
       BannerUnitId = 'ca-app-pub-7136658286637435/2517114489';
-
       // Android のとき test
       // BannerUnitId =  "ca-app-pub-3940256099942544/5224354917";
     } else if(Platform.isIOS) {
@@ -43,7 +42,6 @@ class _RewardWidgetState extends State<RewardWidget> {
 
   void _createRewardedAd() {
     RewardedAd.load(
-      // adUnitId: RewardedAd.testAdUnitId,
         adUnitId: getRewardedUnitId(),
         request: const AdRequest(),
         rewardedAdLoadCallback: RewardedAdLoadCallback(
@@ -139,26 +137,29 @@ class _RewardWidgetState extends State<RewardWidget> {
               )
             ],
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)
+                ),
+                backgroundColor: App.NoAdsButtonColor, //ボタンの背景色
               ),
-              backgroundColor: App.NoAdsButtonColor, //ボタンの背景色
-            ),
-            onPressed: _rewardedAd == null ? null : () {
-              _showRewardedAd();
-            },
-            // battery_charge
-            child: Container(
-              width: 250,
-              child: Center(
-                child: Text(
-                  "リワード広告視聴で広告\n非表示期間を貯める(${App.addHours}時間)",
-                  textScaleFactor: 1.5,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: App.BTNfontsize,
+              onPressed: _rewardedAd == null ? null : () {
+                _showRewardedAd();
+              },
+              // battery_charge
+              child: Container(
+                width: 250,
+                child: Center(
+                  child: Text(
+                    "リワード広告視聴で広告\n非表示期間を貯める(${App.addHours}時間)",
+                    textScaleFactor: 1.5,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: App.BTNfontsize,
+                    ),
                   ),
                 ),
               ),
