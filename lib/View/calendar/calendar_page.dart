@@ -223,7 +223,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                                   builder: (context) {
                                     return CupertinoAlertDialog(
                                       title: Text("確認"),
-                                      content: Text("削除します。よろしいですか？"),
+                                      content: Text("削除します。よろしいですか？",style: TextStyle(fontFamily: "Noto Sans JP"),),
                                       actions: [
                                         CupertinoDialogAction(
                                           child: Text('キャンセル'),

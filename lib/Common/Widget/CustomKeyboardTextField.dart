@@ -58,7 +58,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
     return Column(
       children: [
         Container(
-          height: 65,
+          height: 60,
           child: KeyboardActions(
             config: _buildConfig(context),
             child: TextField(

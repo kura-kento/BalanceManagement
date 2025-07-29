@@ -20,7 +20,6 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   List<Category> categoryList = [];
-
   List<TextEditingController> titleControllerList = [];
 
   @override
@@ -30,21 +29,22 @@ class _CategoryPageState extends State<CategoryPage> {
   }
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).categoryEditing),
-      ),
-      body:  Column(
-        children: <Widget>[
-          Expanded(
-            child: GestureDetector(
-              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-
-            child: categoryListWidget()
-            ),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).categoryEditing),
+        ),
+        body:  Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: categoryListWidget(),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -56,7 +56,6 @@ class _CategoryPageState extends State<CategoryPage> {
         Row(
           children: <Widget>[
             Expanded(
-              flex: 5,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -73,33 +72,30 @@ class _CategoryPageState extends State<CategoryPage> {
                 ),
               ),
             ),
-            Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: TextButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[400],
-                    ),
-                    // TODO: padding: EdgeInsets.all(20.0),
-                    onPressed: () async{
-                        _update(categoryList[i].id,titleControllerList[i].text, widget.moneyValue);
-                        this.categoryList = await DatabaseHelper().getCategoryList( widget.moneyValue == MoneyValue.income);
-                        setState(() {});
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Center(
-                        child: AutoSizeText(
-                          AppLocalizations.of(context).update,
-                          minFontSize: 4,
-                          maxLines: 1,
-                          style: TextStyle(fontSize: 25),
-                        )
-                      ),
-                    ),
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                backgroundColor: Colors.grey[400],
+              ),
+              onPressed: () async {
+                FocusScope.of(context).requestFocus(FocusNode());
+                _update(categoryList[i].id,titleControllerList[i].text, widget.moneyValue);
+                this.categoryList = await DatabaseHelper().getCategoryList( widget.moneyValue == MoneyValue.income);
+                setState(() {});
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("更新に成功しました。"),
+                    duration: Duration(milliseconds: 800),
                   ),
+                );
+              },
+              child: Center(
+                child: AutoSizeText(
+                  AppLocalizations.of(context).update,
+                  style: TextStyle(color:Colors.black, fontSize: 24),
                 )
+              ),
             ),
           ],
         ),
