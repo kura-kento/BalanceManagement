@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balancemanagement_app/View/Setting/pay_page.dart';
 import 'package:balancemanagement_app/View/Setting/price_style.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/models/category.dart';
@@ -10,6 +11,8 @@ import 'package:balancemanagement_app/Common/Widget/reward_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../Common/RevenueCat/InAppPurchaseManager.dart';
 import '../../Common/Widget/previewDialog.dart';
 import '../../Common/app.dart';
 import '../../Common/utils.dart';
@@ -53,6 +56,15 @@ class _SettingPageState extends State<SettingPage> {
                       RewardWidget(),
                       dividerWidget,
                       SelectDialog(),
+                      dividerWidget,
+                      PayPage(),
+                      // ListTile(
+                      //   title: const Text('広告無効の復元',style: TextStyle(fontWeight: FontWeight.bold),),
+                      //   leading: const Icon(Icons.calendar_month),
+                      //   onTap: () {
+                      //
+                      //   },
+                      // ),
                       dividerWidget,
                       ListTile(
                         title: const Text('カレンダー 詳細設定',style: TextStyle(fontWeight: FontWeight.bold),),

@@ -19,20 +19,29 @@ class InAppPurchaseManager with ChangeNotifier {
       late PurchasesConfiguration configuration;
 
       if (Platform.isAndroid) {
-        configuration = PurchasesConfiguration("appee1c31148b");
+        configuration = PurchasesConfiguration("goog_stzxsffGUBTYsfxreXhPBAmkopS");
       } else if (Platform.isIOS) {
-        configuration = PurchasesConfiguration("appe8ec5fb035"); //ios用のRevenuecat APIキー
+        configuration = PurchasesConfiguration("appl_JNKTMdLweRntJMSqIUzgbNObpLt"); //ios用のRevenuecat APIキー
       }
       await Purchases.configure(configuration);
       //offeringsを取ってくる
       offerings = await Purchases.getOfferings();
+
       // firebaseのidと、revenuecatのuserIdを一緒にしている場合、firebaseAuthのuidでログイン
       // このアプリを使用している人のID
       final result = await Purchases.logIn("unique_user_id");
 
       await getPurchaserInfo(result.customerInfo);
 
+      final package = offerings.current?.availablePackages.first;
+
+      if (package != null) {
+        final purchaseResult = await Purchases.purchasePackage(package);
+        print("購入完了: ${purchaseResult.entitlements.active.keys}");
+      }
+
       //今アクティブになっているアイテムは以下のように取得可能
+      print("アクティブなアイテム ${result.customerInfo.entitlements.all}");
       print("アクティブなアイテム ${result.customerInfo.entitlements.active.keys}");
     } catch (e) {
       print("initInAppPurchase error caught! ${e.toString()}");
@@ -40,8 +49,7 @@ class InAppPurchaseManager with ChangeNotifier {
 
   }
 
-  Future<void> getPurchaserInfo(
-      CustomerInfo customerInfo) async {
+  Future<void> getPurchaserInfo(CustomerInfo customerInfo) async {
     try {
       // RevenueCat内 Product catalog > entitlement > Identifer
       isSubscribed = await updatePurchases(customerInfo, "NoAds");
@@ -51,18 +59,18 @@ class InAppPurchaseManager with ChangeNotifier {
     }
   }
 
-  Future<bool> updatePurchases(
-      CustomerInfo purchaserInfo, String entitlement) async {
+  Future<bool> updatePurchases(CustomerInfo purchaserInfo, String entitlement) async {
     var isPurchased = false;
     final entitlements = purchaserInfo.entitlements.all;
     if (entitlements.isEmpty) {
+      print("entitlements.isEmpty");
       isPurchased = false;
     }
     if (!entitlements.containsKey(entitlement)) {
-      ///そもそもentitlementが設定されて無い場合
+      print("そもそもentitlementが設定されて無い場合");
       isPurchased = false;
     } else if (entitlements[entitlement]!.isActive) {
-      ///設定されていて、activeになっている場合
+      print("設定されていて、activeになっている場合");
       isPurchased = true;
     } else {
       isPurchased = false;
