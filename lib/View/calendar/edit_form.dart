@@ -132,7 +132,7 @@ class EditFormState extends ConsumerState<EditForm> {
                       ),
                       Expanded(
                         flex: 1,
-                        child: dustButton(),
+                        child: saveButton(),
                       ),
                     ],
                   ),
@@ -201,27 +201,6 @@ class EditFormState extends ConsumerState<EditForm> {
                                 ]),
                           ),
                           Padding(
-                              padding: App.padding,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  backgroundColor: Theme.of(context).primaryColorDark,
-                                  foregroundColor: Theme.of(context).primaryColorLight,
-                                ),
-                                child: Text(
-                                  AppLocalizations.of(context).save,
-                                  textScaleFactor: 1.5,
-                                ),
-                                onPressed: _isDisabled ? null : () {
-                                  setState(() => _isDisabled = true);
-                                  _save();
-                                  handleBack(context,'保存に成功しました');
-                                  // widget.parentFn('保存に成功しました');
-                                  // setState(() {});
-                                },
-                              ),
-                          ),
-                          Padding(
                             padding: App.padding,
                             child: TextField(
                               controller: memoController,
@@ -235,6 +214,7 @@ class EditFormState extends ConsumerState<EditForm> {
                               maxLines: null,
                             ),
                           ),
+                          dustButton() ,
                         ],
                       ),
                     ),
@@ -250,7 +230,7 @@ class EditFormState extends ConsumerState<EditForm> {
   List<Widget> btnPlusMinus() {
     List<Widget> _list = [];
     [MoneyValue.income,MoneyValue.spending].asMap().forEach((index,element) {
-      if(index == 1) {
+      if (index == 1) {
         _list.add(SizedBox(width: 8));
       }
       final baseColor = (index == 0) ? App.plusColor : App.minusColor;
@@ -294,7 +274,6 @@ class EditFormState extends ConsumerState<EditForm> {
               widget.calendar?.date,
               _categoryItems[_selectCategory].id)
       );
-
     } else {
       await databaseHelper.insertCalendar(Calendar(Utils.toDouble(priceController.text)*(moneyValue == MoneyValue.income ? 1 : -1),
                                                             '${titleController.text}',
@@ -328,37 +307,64 @@ class EditFormState extends ConsumerState<EditForm> {
     return _categoryItems;
   }
 
+  Widget saveButton() {
+    return IconButton(
+      onPressed: _isDisabled ? null : () {
+        setState(() => _isDisabled = true);
+        _save();
+        handleBack(context,'保存に成功しました');
+      },
+      icon: Icon(Icons.save,size: 32,),
+    );
+  }
+
   Widget dustButton() {
     if (widget.inputMode == InputMode.edit) {
-      return IconButton(
-        onPressed: () async {
-          bool result = await showDialog(
-              context: context,
-              builder: (context) {
-                return CupertinoAlertDialog(
-                  title: Text("確認"),
-                  content: Text("削除します。よろしいですか？"),
-                  actions: [
-                    CupertinoDialogAction(
-                      child: Text('キャンセル'),
-                      onPressed: () => Navigator.pop(context, false),
-                    ),
-                    CupertinoDialogAction(
-                      child: Text('削除'),
-                      isDestructiveAction: true,
-                      onPressed: () => Navigator.pop(context, true),
-                    ),
-                  ],
-                );
-              }
-          );
-          if (result) {
-            _delete(widget.calendar?.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
-            handleBack(context,'削除に成功しました。');
-            setState(() {});
-          }
-        },
-        icon: Icon(Icons.delete),
+      return Padding(
+        padding: App.padding,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            side: BorderSide(color: Colors.grey,),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            backgroundColor: Colors.white,
+            foregroundColor: Theme.of(context).primaryColorLight,
+          ),
+          child: Text(
+            AppLocalizations.of(context).delete,
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.redAccent
+            ),
+          ),
+          onPressed: _isDisabled ? null : () async {
+            bool result = await showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text("確認"),
+                    content: Text("削除します。よろしいですか？"),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: Text('キャンセル'),
+                        onPressed: () => Navigator.pop(context, false),
+                      ),
+                      CupertinoDialogAction(
+                        child: Text('削除'),
+                        isDestructiveAction: true,
+                        onPressed: () => Navigator.pop(context, true),
+                      ),
+                    ],
+                  );
+                }
+            );
+            if (result) {
+              _delete(widget.calendar?.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
+              handleBack(context,'削除に成功しました。');
+              setState(() {});
+            }
+          },
+        ),
       );
     } else {
       return SizedBox.shrink();
