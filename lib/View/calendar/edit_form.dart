@@ -245,7 +245,7 @@ class EditFormState extends ConsumerState<EditForm> {
     return Text(
       category.title ?? '',
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 24, fontFamily: "Noto Sans JP"),
+      style: TextStyle(fontSize: 24, fontFamily: "Noto Sans JP",color: category.id == 0  ? Colors.grey : Colors.black),
     );
   }
 
@@ -276,13 +276,25 @@ class EditFormState extends ConsumerState<EditForm> {
     return InkWell(
       child: Container(
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 10),
+        padding: EdgeInsets.only(left: 10,right: 2),
         height: 56,
         decoration: BoxDecoration(
           border: Border.all(color: false ? Theme.of(context).colorScheme.primary : Color(0x99666666), width: 1.3,),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Text(_categoryItems[_selectCategory].title ?? "", style: TextStyle(fontWeight: FontWeight.normal),),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                _categoryItems[_selectCategory].title ?? "",
+                style: TextStyle(color:_categoryItems[_selectCategory].id == 0  ? Colors.grey : Colors.black, fontWeight: FontWeight.normal),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Icon(Icons.arrow_drop_down_outlined)
+          ],
+        ),
       ),
       // カテゴリボタンを押した時のプルダウンボタン
       onTap: () => pullDownVoid(),

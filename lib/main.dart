@@ -110,9 +110,7 @@ class _RestartWidgetState extends State<RestartWidget> {
 }
 
 //TODO グラフのカテゴリー
-
 //todo　カラーテーマ
-
 //todo 新規登録の時に前回使用したカテゴリを選択した状態にする。LastCategory
 
 // ロングタップでプルダウンで選べるように　＋　全期間の収支
