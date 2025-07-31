@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../Common/RevenueCat/InAppPurchaseManager.dart';
+import '../../Common/RevenueCat/pay_page.dart';
 import '../../Common/Widget/previewDialog.dart';
 import '../../Common/app.dart';
 import '../../Common/utils.dart';
@@ -53,18 +54,24 @@ class _SettingPageState extends State<SettingPage> {
               child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
+                      // PayPageTest(),
+                      ListTile(
+                        title: const Text('広告無効 & 追加機能（有料）',style: TextStyle(fontWeight: FontWeight.bold),),
+                        leading: const Icon(Icons.monetization_on_outlined),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const PayPage();
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      dividerWidget,
                       RewardWidget(),
                       dividerWidget,
                       SelectDialog(),
-                      dividerWidget,
-                      PayPage(),
-                      // ListTile(
-                      //   title: const Text('広告無効の復元',style: TextStyle(fontWeight: FontWeight.bold),),
-                      //   leading: const Icon(Icons.calendar_month),
-                      //   onTap: () {
-                      //
-                      //   },
-                      // ),
                       dividerWidget,
                       ListTile(
                         title: const Text('カレンダー 詳細設定',style: TextStyle(fontWeight: FontWeight.bold),),

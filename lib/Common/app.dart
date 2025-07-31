@@ -25,7 +25,7 @@ class App {
 
    static Color keyboardBackgroundColor  = const Color(0xFFd5d7de);
 
-   static Widget title(String title, Color fontColor, {double fontSize = 20.0}) {
+   static Widget title(String title,{ Color fontColor = Colors.black, double fontSize = 20.0}) {
       return  Text(
          title,
          style: TextStyle(

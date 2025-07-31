@@ -77,5 +77,19 @@ class InAppPurchaseManager with ChangeNotifier {
     }
     return isPurchased;
   }
-
+  // 復元
+  Future<void> restorePurchase(String entitlement) async {
+    try {
+      CustomerInfo customerInfo = await Purchases.restorePurchases();
+      final isActive = await updatePurchases(customerInfo, entitlement);
+      if (!isActive) {
+        print("購入情報なし");
+      } else {
+        await getPurchaserInfo(customerInfo);
+        print("${entitlement} 購入情報あり　復元する");
+      }
+    } on PlatformException catch (e) {
+      print("purchase repo  restorePurchase error ${e.toString()}");
+    }
+  }
 }

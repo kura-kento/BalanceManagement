@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/RevenueCat/InAppPurchaseManager.dart';
 
-class PayPage extends StatelessWidget {
-  const PayPage({Key? key}) : super(key: key);
+class PayPageTest extends StatelessWidget {
+  const PayPageTest({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
