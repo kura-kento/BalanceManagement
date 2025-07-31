@@ -30,9 +30,7 @@ class InAppPurchaseManager with ChangeNotifier {
       // firebaseのidと、revenuecatのuserIdを一緒にしている場合、firebaseAuthのuidでログイン
       // このアプリを使用している人のID
       final result = await Purchases.logIn("unique_user_id");
-
       await getPurchaserInfo(result.customerInfo);
-
       final package = offerings.current?.availablePackages.first;
 
       if (package != null) {

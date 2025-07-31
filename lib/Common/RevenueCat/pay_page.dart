@@ -37,7 +37,7 @@ class _PayPageState extends State<PayPage> {
                             icon: Icon(Icons.arrow_back),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
-                          title: "広告"
+                          title: "プレミアム登録"
                       ),
                       Container(),
                       // 購入

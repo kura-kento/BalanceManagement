@@ -40,6 +40,7 @@ dependencies:
   material_design_icons_flutter: ^7.0.7296
   passcode_screen: ^2.0.1
   purchases_flutter: ^8.10.6 #サブスク
+  firebase_core: ^4.0.0
 
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
