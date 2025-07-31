@@ -108,16 +108,12 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                         );
 
                         if (message != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(message),
-                                duration: Duration(seconds: 1),
-                              ),);
+                          _setStateFunction(message);
                         }
+
                         Future.delayed(const Duration(microseconds: 1000), () {
                           PreviewDialog.reviewCount(context); //レビューカウント
                         });
-                        setState(() {});
                       },
                     ),
                   ),

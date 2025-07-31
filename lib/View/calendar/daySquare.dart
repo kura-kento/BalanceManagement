@@ -127,7 +127,7 @@ class DaySquareState extends ConsumerState<DaySquare> {
             ),
             onTap: () async {
               if (selectDay == date) {
-                await Navigator.of(context).push(
+                String? message = await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
                       return EditForm(
@@ -138,13 +138,17 @@ class DaySquareState extends ConsumerState<DaySquare> {
                   ),
                 );
 
-                Future.delayed(const Duration(microseconds: 1000), () {
-                  PreviewDialog.reviewCount(context); //レビューカウント
-                });
-                widget.parentFn; // 親要素の更新
+                if (message != null) {
+                  Future.delayed(const Duration(microseconds: 1000), () {
+                    PreviewDialog.reviewCount(context); //レビューカウント
+                  });
+                  widget.parentFn(message); // 親要素の更新
+                }
               } else {
                 ref.read(selectDayProvider.notifier).state = date;
               }
+              // 応急処置(根本解決ではない)
+              setState(() {});
             },
           );
         } else {
