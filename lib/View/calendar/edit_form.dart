@@ -109,118 +109,72 @@ class EditFormState extends ConsumerState<EditForm> {
     return Container(
       color: App.bgColor,
       child: SafeArea(
-        child: BannerBody(
-          child: Scaffold(
-            body: Column(
-              children: <Widget>[
-                Container(
-                  color: App.bgColor,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () => handleBack(context, null),
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+          child: BannerBody(
+            child: Scaffold(
+              resizeToAvoidBottomInset: true, // キーボードを避ける
+              body: Column(
+                children: <Widget>[
+                  Container(
+                    color: App.bgColor,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_back),
+                            onPressed: () => handleBack(context, null),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: Align(
-                           alignment: Alignment.bottomCenter,
-                           child: Text(DateFormat('yyyy年MM月dd日').format(selectDay),style: TextStyle(fontSize: 18),),),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: saveButton(),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                      child: ListView(
-                        children: <Widget>[
-                          Row(children: btnPlusMinus()),
-                          Padding(
-                            padding: App.padding,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: InkWell(
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding: EdgeInsets.only(left: 10),
-                                      height: 55,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: false ? Theme.of(context).colorScheme.primary : Color(0x99666666), width: 1.3,),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Text(_categoryItems[_selectCategory].title ?? "", style: TextStyle(fontWeight: FontWeight.normal),),
-                                    ),
-                                    // カテゴリボタンを押した時のプルダウンボタン
-                                    onTap: () {
-                                      pullDownVoid();
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    child: TextField(
-                                      controller: titleController,
-                                      decoration: InputDecoration(
-                                          labelText: AppLocalizations.of(context).title,
-                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          /*
-                          * 金額　フォーム
-                          */
-                          Padding(
-                            padding: App.padding,
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Spacer(flex: 1,),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    flex: 2,
-                                      child: CustomKeyboardTextField(),
-                                  )
-                                ]),
-                          ),
-                          Padding(
-                            padding: App.padding,
-                            child: TextField(
-                              controller: memoController,
-                              minLines: 5,
-                              maxLength: 1000,
-                              decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).memo,
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0)),
-                              ),
-                              maxLines: null,
-                            ),
-                          ),
-                          dustButton() ,
-                        ],
-                      ),
+                        Expanded(
+                          flex: 5,
+                          child: Align(
+                             alignment: Alignment.bottomCenter,
+                             child: Text(DateFormat('yyyy年MM月dd日').format(selectDay),style: TextStyle(fontSize: 18),),),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: saveButton(),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: LayoutBuilder(
+                        builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0,),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(children: btnPlusMinus()),
+                              Padding(
+                                padding: App.padding,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Expanded(flex: 1,
+                                      child: categoryWidget(),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(flex: 2,
+                                        child: titleWidget()
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              moneyWidget(),
+                              memoWidget(),
+                              dustButton(),
+                            ],
+                          ),
+                        );
+                      }
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -282,16 +236,16 @@ class EditFormState extends ConsumerState<EditForm> {
                                                             _categoryItems[_selectCategory].id));
     }
   }
+
   Future <void> _delete(int id) async {
     await databaseHelper.deleteCalendar(id);
   }
+
   Widget _pickerItem(Category category) {
-    return Center(
-      child: Text(
-        category.title ?? '',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 32),
-      ),
+    return Text(
+      category.title ?? '',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 24, fontFamily: "Noto Sans JP",color: category.id == 0  ? Colors.grey : Colors.black),
     );
   }
 
@@ -318,32 +272,105 @@ class EditFormState extends ConsumerState<EditForm> {
     );
   }
 
+  Widget categoryWidget() {
+    return InkWell(
+      child: Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 10,right: 2),
+        height: 56,
+        decoration: BoxDecoration(
+          border: Border.all(color: false ? Theme.of(context).colorScheme.primary : Color(0x99666666), width: 1.3,),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                _categoryItems[_selectCategory].title ?? "",
+                style: TextStyle(color:_categoryItems[_selectCategory].id == 0  ? Colors.grey : Colors.black, fontWeight: FontWeight.normal),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Icon(Icons.arrow_drop_down_outlined)
+          ],
+        ),
+      ),
+      // カテゴリボタンを押した時のプルダウンボタン
+      onTap: () => pullDownVoid(),
+    );
+  }
+
+  Widget titleWidget() {
+    return Container(
+      height: 60,
+      child: Center(
+        child: TextField(
+          controller: titleController,
+          decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).title,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+        ),
+      ),
+    );
+  }
+
+  Widget moneyWidget() {
+    return Padding(
+      padding: App.padding,
+      child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Spacer(flex: 1,),
+            const SizedBox(width: 8),
+            Expanded(flex: 2, child: CustomKeyboardTextField(),)
+          ]
+      ),
+    );
+  }
+
+  Widget memoWidget() {
+    return Padding(
+      padding: App.padding,
+      child: TextField(
+        controller: memoController,
+        minLines: 5,
+        maxLength: 1000,
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context).memo,
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0)),
+        ),
+        maxLines: null,
+      ),
+    );
+  }
+
   Widget dustButton() {
     if (widget.inputMode == InputMode.edit) {
-      return Padding(
-        padding: App.padding,
-        child: ElevatedButton(
+      return Container(
+        padding: EdgeInsets.only(top: 10),
+        alignment: Alignment.bottomRight,
+        child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            side: BorderSide(color: Colors.grey,),
+            backgroundColor: Colors.red,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            backgroundColor: Colors.white,
-            foregroundColor: Theme.of(context).primaryColorLight,
           ),
-          child: Text(
+          icon: Container(
+            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+            child: Icon(Icons.delete, color: Colors.white,size: 20,)
+          ),
+          label: Text(
             AppLocalizations.of(context).delete,
-            style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.redAccent
-            ),
+            style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),
           ),
           onPressed: _isDisabled ? null : () async {
             bool result = await showDialog(
                 context: context,
                 builder: (context) {
                   return CupertinoAlertDialog(
-                    title: Text("確認"),
-                    content: Text("削除します。よろしいですか？"),
+                    title: Text("確認", style: TextStyle(fontFamily: "Noto Sans JP")),
+                    content: Text("削除します。よろしいですか？", style: TextStyle(fontFamily: "Noto Sans JP")),
                     actions: [
                       CupertinoDialogAction(
                         child: Text('キャンセル'),
@@ -373,6 +400,7 @@ class EditFormState extends ConsumerState<EditForm> {
 
   // プルダウン
   void pullDownVoid() {
+    TextStyle cyanTextStyle = TextStyle(color: Colors.cyan, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: "Noto Sans JP");
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -383,12 +411,7 @@ class EditFormState extends ConsumerState<EditForm> {
               Container(
                 decoration: BoxDecoration(
                   color: Color(0xffffffff),
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Color(0xff999999),
-                      width: 0.0,
-                    ),
-                  ),
+                  border: Border(bottom: BorderSide(color: Color(0xff999999), width: 0.0,),),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -396,7 +419,7 @@ class EditFormState extends ConsumerState<EditForm> {
                     CupertinoButton(
                       child: Text(
                         AppLocalizations.of(context).edit,
-                        style: TextStyle(color: Colors.cyan),
+                        style: cyanTextStyle,
                       ),
                       onPressed: () async {
                         await Navigator.of(context).push(
@@ -412,29 +435,39 @@ class EditFormState extends ConsumerState<EditForm> {
                     ),
                     CupertinoButton(
                       child: Text(
-                        AppLocalizations.of(context).done,
-                        style: TextStyle(color: Colors.cyan),
+                        AppLocalizations.of(context).close,
+                        style: cyanTextStyle,
                       ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
                 ),
               ),
               Container(
                 color: Color(0xffffffff),
-                height: MediaQuery.of(context).size.height / 3,
-                child: CupertinoPicker(
-                    scrollController: scrollController,
-                    diameterRatio: 1.0,
-                    itemExtent: 40.0,
-                    children: _categoryItems.map(_pickerItem).toList(),
-                    onSelectedItemChanged: (int index) {
-                      setState(() {
-                        _selectCategory = index;
-                      });
-                    }),
+                height: MediaQuery.of(context).size.height / 2,
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  removeBottom: true,
+                  child: CupertinoActionSheet(
+                    actions: _categoryItems.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final category = entry.value;
+                      return CupertinoUserInterfaceLevel(
+                        data: CupertinoUserInterfaceLevelData.base,
+                        child: CupertinoActionSheetAction(
+                          onPressed: () {
+                            _selectCategory = index;
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          child: _pickerItem(category),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
             ],
           );

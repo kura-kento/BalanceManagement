@@ -79,7 +79,6 @@ class MyApp extends StatelessWidget {
 
 class RestartWidget extends StatefulWidget {
   RestartWidget({required this.child});
-
   final Widget child;
 
   static void restartApp(BuildContext context) {
@@ -110,12 +109,17 @@ class _RestartWidgetState extends State<RestartWidget> {
   }
 }
 
-//TODO グラフのカテゴリー
+// TODO グラフのカテゴリー
+// todo　カラーテーマ
+// todo 新規登録の時に前回使用したカテゴリを選択した状態にする。LastCategory
+// TODO 表示する年月を直接指定して移動できるようにして欲しいです。
+// TODO 質問フォーム　困ったら？
+// TODO バックアップ　機種変
+// TODO 全期間の収支
+// 入力履歴　編集画面 使いまわせるように
 
-//todo　カラーテーマ
-//todo データ削除　月ごとに
-//todo 新規登録の時に前回使用したカテゴリを選択した状態にする。LastCategory
-
+// サブスク管理
+//
 //todo　お問い合わせ(画像、募金)
 //todo データ削除時　スナップショット
 // ・グラフページ「合計」タブ、マイナスの時もプラス表記の不具合修正

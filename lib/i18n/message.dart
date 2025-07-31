@@ -30,7 +30,7 @@ class Messages
     required this.memo,
     required this.totalValue,
     required this.done,
-
+    required this.close,
     required this.edit,
     required this.spending,
     required this.newAdditionPage,
@@ -79,6 +79,7 @@ class Messages
   final String memo;
   final String totalValue;
   final String done;
+  final String close;
 
   final String edit;
   final String spending;
@@ -143,6 +144,7 @@ class Messages
     memo: 'メモ',
     totalValue: '合計値：月',
     done: '決定',
+    close: '閉じる',
     edit: '編集',
     newAdditionPage: '新規追加ページ',
     editPage: '編集ページ',
@@ -192,6 +194,7 @@ class Messages
     memo: 'memo',
     totalValue: 'Total value: Month',
     done: 'done',
+    close: 'close',
     edit: 'edit',
     newAdditionPage: 'newAdditionPage',
     editPage: 'editPage',
