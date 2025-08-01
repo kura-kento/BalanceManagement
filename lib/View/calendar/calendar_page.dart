@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/View/calendar/week.dart';
@@ -319,7 +318,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     await DatabaseHelper().deleteCalendar(id);
   }
 
-  //
   Widget sumPriceWidget() {
     int tapCount = (SharedPrefs.getTapInt() % ['both','monthDouble','yearDouble','MonthSUM','YearSUM'].length);
     var list = [];
