@@ -47,22 +47,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     super.dispose();
   }
 
-  // 親要素を更新するfunction
-  void _setStateFunction(String input) {
-    if (input != '') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(input),
-          duration: Duration(milliseconds: 800),
-        ),);
-    }
-
-    setState(() {});
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
   // 編集画面に遷移する処理
   Future<void> _editPageFunction(Calendar? calendar, InputMode mode) async {
       String? message = await Navigator.of(context).push(
@@ -254,7 +238,11 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                               );
                               if (result) {
                                 _delete(_calendar.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
-                                _setStateFunction('削除に成功しました');
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("削除に成功しました"), duration: Duration(milliseconds: 800),),
+                                );
+                                setState(() {});
                               }
                             },
                             backgroundColor: Colors.red,
@@ -272,11 +260,15 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(full_name ?? ''),
+                              Row(children: [
+                                ...(_calendar.memo == '' ? [] : [Padding(padding: const EdgeInsets.only(left: 8.0), child: Icon(Icons.note_outlined, size: App.isSmall(context) ? 20 : 25,),
+                                )]),
+                                Text(full_name ?? ''),
+                              ],),
                               Text(
                                 '${Utils.commaSeparated(_calendar.money ?? 0)}${SharedPrefs.getUnit()}',
                                 style: TextStyle(color: (_calendar.money ?? 0) >= 0 ? App.plusColor : App.minusColor),
-                              ),
+                              )
                             ],
                           ),
                         ),

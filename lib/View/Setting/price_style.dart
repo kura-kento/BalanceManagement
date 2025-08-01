@@ -22,6 +22,8 @@ class _PriceStyleState extends State<PriceStyle> {
   Color pickerMinusColor = Color(int.parse(SharedPrefs.getMinusColor()));
   Color currentMinusColor = Color(int.parse(SharedPrefs.getMinusColor()));
 
+  TextStyle listTileStyle = TextStyle(fontWeight: FontWeight.bold);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -72,7 +74,7 @@ class _PriceStyleState extends State<PriceStyle> {
                               child: ListTile(
                                   minTileHeight: 40,
                                   leading: Icon(Icons.visibility_off, color: Theme.of(context).iconTheme.color,),
-                                  title: Text('0円を表示させない'),
+                                  title: Text('0円を表示させない', style: listTileStyle),
                                   trailing: CupertinoSwitch(
                                     value: SharedPrefs.getIsZeroHidden(),
                                     onChanged: (bool value) {
@@ -83,13 +85,25 @@ class _PriceStyleState extends State<PriceStyle> {
                                   )
                               ),
                             ),
+                            ListTile(
+                                title: Text('メモのアイコンを非表示', style: listTileStyle),
+                                leading: Icon(Icons.note_outlined, color: Theme.of(context).iconTheme.color,),
+                                trailing: CupertinoSwitch(
+                                  value: SharedPrefs.getIsMemoHidden(),
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      SharedPrefs.setIsMemoHidden(value);
+                                    });
+                                  },
+                                )
+                            ),
                             Padding(
                               padding: const EdgeInsets.only(top: 6.0),
                               child: ListTile(
                                 minTileHeight: 40,
                                 leading: Icon(Icons.format_size, color: Theme.of(context).iconTheme.color,),
                                 title: Row(children: [
-                                  Text('日付サイズ変更'),
+                                  Text('日付サイズ変更', style: listTileStyle),
                                   Text(' ※不具合解消用', textAlign: TextAlign.start ,style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
                                 ],),
                               ),
@@ -111,7 +125,7 @@ class _PriceStyleState extends State<PriceStyle> {
                               child: ListTile(
                                 minTileHeight: 40,
                                 leading: Icon(Icons.color_lens_outlined, color: Theme.of(context).iconTheme.color,),
-                                title: Text('金額の色変更'),
+                                title: Text('金額の色変更', style: listTileStyle),
                               ),
                             ),
                             Row(
@@ -191,29 +205,32 @@ class _PriceStyleState extends State<PriceStyle> {
         width: 50,
         child: Column(
           children: [
-            Container(
-              height: 50/3,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      color: money == 0 ? Colors.red[300] : Colors.transparent ,
-                      child: Center(
-                        child: Text(
-                          '25',
-                          style: TextStyle(
-                            fontSize: Utils.parseSize(context, SharedPrefs.getTextSize()),
-                            color: money == 0 ? Colors.white : Colors.black87,
-                            height: 0.75,
-                          ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    height: 50/3,
+                    color: money == 0 ? Colors.red[300] : Colors.transparent ,
+                    child: Center(
+                      child: Text(
+                        '25',
+                        style: TextStyle(
+                          fontSize: Utils.parseSize(context, SharedPrefs.getTextSize()),
+                          color: money == 0 ? Colors.white : Colors.black87,
+                          height: 0.75,
                         ),
                       ),
                     ),
                   ),
-                  Spacer(flex: 3,)
-                ],
-              ),
+                ),
+                Expanded(flex: 3,
+                  child: Container(
+                    padding: EdgeInsets.only(right: 2),
+                    alignment: Alignment.centerRight,
+                    child: (!SharedPrefs.getIsMemoHidden()) ? Icon(Icons.note_outlined, size: 13,) : Container(),),
+                ),
+              ],
             ),
             //　プラス金額
             SharedPrefs.getIsZeroHidden() && money == 0

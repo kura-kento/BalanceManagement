@@ -163,9 +163,11 @@ class DatabaseHelper {
     String date = DateFormat('yyyy-MM-dd').format(_date);
     final result = await database.rawQuery(
         '''
-        SELECT sum($colMoney) AS SUM,
-        COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,
-        COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS 
+        SELECT 
+          sum($colMoney) AS SUM,
+          COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,
+          COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS,
+          COALESCE(SUM(CASE WHEN $colMemo <> ""  THEN 1 ELSE 0 END),0) AS IsMemo
         FROM $calendarTable
         WHERE $colDate LIKE '$date%'
       '''
