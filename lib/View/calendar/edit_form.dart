@@ -21,8 +21,8 @@ enum InputMode{
 }
 
 class EditForm extends ConsumerStatefulWidget {
-  EditForm({Key? key, this.calendar, required this.inputMode, required this.parentFn}) : super(key: key);
-  final Function parentFn;
+  EditForm({Key? key, this.calendar, required this.inputMode}) : super(key: key);
+  // final Function parentFn;
   final Calendar? calendar;
   final InputMode inputMode;
 

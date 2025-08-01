@@ -127,23 +127,7 @@ class DaySquareState extends ConsumerState<DaySquare> {
             ),
             onTap: () async {
               if (selectDay == date) {
-                String? message = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return EditForm(
-                        calendar: null,
-                        inputMode: InputMode.create, parentFn: widget.parentFn,
-                      );
-                    },
-                  ),
-                );
-
-                if (message != null) {
-                  Future.delayed(const Duration(microseconds: 1000), () {
-                    PreviewDialog.reviewCount(context); //レビューカウント
-                  });
-                  widget.parentFn(message); // 親要素の更新
-                }
+                widget.parentFn(null, InputMode.create);
               } else {
                 ref.read(selectDayProvider.notifier).state = date;
               }
