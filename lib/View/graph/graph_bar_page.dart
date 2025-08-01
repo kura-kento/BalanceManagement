@@ -4,6 +4,7 @@ import 'package:balancemanagement_app/Common/graph_bar.dart';
 import 'package:balancemanagement_app/widget/select_month_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../Common/shared_prefs.dart';
@@ -12,12 +13,14 @@ import '../../models/calendar.dart';
 
 enum RadioValue { ALL, Twice }
 
-class GraphBarPage extends StatefulWidget {
+class GraphBarPage extends ConsumerStatefulWidget {
   @override
   _GraphBarPageState createState() => _GraphBarPageState();
 }
 
-class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMixin {
+final ordinalSalesProvider = StateProvider<OrdinalSales?>((ref) => null);
+
+class _GraphBarPageState extends ConsumerState<GraphBarPage> with TickerProviderStateMixin {
   late TabController _tabController;
   final int graphLength = 10;
   RadioValue _radioValue = RadioValue.ALL;
@@ -33,6 +36,7 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
   final ChartMinusColor = charts.ColorUtil.fromDartColor(App.minusColor);
 
   int? selectCategoryId;
+  OrdinalSales? selectChart;
 
   @override
   void initState() {
@@ -106,6 +110,8 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    selectChart = ref.watch(ordinalSalesProvider);
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -148,7 +154,6 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
             ),
             Text('収支'),
             Radio<RadioValue>(
-              // title: Text('収支・支出'),
               value: RadioValue.Twice,
               groupValue: _radioValue,
               onChanged: (RadioValue? value) {
@@ -167,7 +172,7 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
               updateListView();
               setState(() {  });
             },
-            tapRight: (){
+            tapRight: () {
               selectMonthValue++;
               updateListView();
               setState(() { });
@@ -256,7 +261,7 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
         Expanded(
           flex: 1,
           child: FutureBuilder(
-            future: DatabaseHelper().getChartCalendarList(DateTime.now(),false,0),
+            future: getChartList(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
@@ -301,5 +306,10 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
         ),
       ],
     );
+  }
+
+  Future<List> getChartList() async {
+    final DateTime _month = DateTime(DateTime.now().year, DateTime.now().month + selectMonthValue, 1);
+    return selectChart == null ? Future.value([]) : DatabaseHelper().getChartCalendarList(_month, _radioValue == RadioValue.ALL, selectChart?.categoryId);
   }
 }

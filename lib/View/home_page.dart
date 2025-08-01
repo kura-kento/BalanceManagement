@@ -67,6 +67,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 //メインのページ
   @override
   Widget build(BuildContext context) {
+    double iconSize = App.isSmall(context) ? 28.0 : 36.0;
+
     return Container(
       color: App.bgColor,
       child: SafeArea(
@@ -77,23 +79,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             body: BannerBody(
                 child: _pageWidgets.elementAt(_currentIndex)
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: const Icon(Icons.calendar_today), label: AppLocalizations.of(context).calendar),
-                BottomNavigationBarItem(
-                    icon: const Icon(Icons.equalizer), label: AppLocalizations.of(context).graph),
-                BottomNavigationBarItem(
-                    icon: const Icon(Icons.settings), label: AppLocalizations.of(context).setting),
-              ],
-              iconSize: 20.0,
-              selectedFontSize: 10.0,
-              unselectedFontSize: 8.0,
-              elevation: 0,
-              currentIndex: _currentIndex,
-              fixedColor: Colors.blueAccent,
-              onTap: _onItemTapped,
-              type: BottomNavigationBarType.fixed,
+            bottomNavigationBar: SizedBox(
+              height: App.isSmall(context) ? 48 : 60,
+              child: BottomNavigationBar(
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.calendar_today,size: iconSize), label: AppLocalizations.of(context).calendar),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.equalizer,size: iconSize), label: AppLocalizations.of(context).graph),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.settings,size: iconSize), label: AppLocalizations.of(context).setting),
+                ],
+                iconSize: App.isSmall(context) ?  16.0 : 20.0,
+                selectedFontSize: App.isSmall(context) ?  0.0 : 10.0,
+                unselectedFontSize: App.isSmall(context) ?  0.0 : 8.0,
+                elevation: 0,
+                currentIndex: _currentIndex,
+                fixedColor: Colors.blueAccent,
+                onTap: _onItemTapped,
+                type: BottomNavigationBarType.fixed,
+              ),
             ),
           ),
         ),

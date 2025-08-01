@@ -116,6 +116,7 @@ class _RestartWidgetState extends State<RestartWidget> {
 // TODO 質問フォーム　困ったら？
 // TODO バックアップ　機種変
 // TODO 全期間の収支
+// TODO カレンダーの収支を合算にして１行で表示するようにしたい。
 // 入力履歴　編集画面 使いまわせるように
 
 // サブスク管理

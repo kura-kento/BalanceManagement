@@ -291,20 +291,11 @@ class DatabaseHelper {
   }
 
   //カテゴリ一覧
-  Future<List<Calendar>> getChartCalendarList(month, bool isPlus, int? categoryId, ) async {
+  Future<List<Calendar>> getChartCalendarList(DateTime month, bool isPlus, int? categoryId) async {
     String date = DateFormat('yyyy-MM').format(month);
-    date = "2025-07";
-    // late var result;
-    // if (categoryId != null) {
-    //   result =
-    // } else {
-    //   result = await this.database.query(calendarTable, orderBy: '$colId ASC');
-    // }
-   final result = await this.database.query(calendarTable, where: "strftime('%Y-%m', $colDate) = ? AND $colMoney ${isPlus ? ">=" : "<" } 0 AND $categoryId = ?", whereArgs: [date,categoryId], orderBy: '$colDate ASC');
+   final result = await this.database.query(calendarTable, where: "strftime('%Y-%m', $colDate) = ? AND $colMoney ${isPlus ? ">=" : "<" } 0 AND $colCategoryId = ?", whereArgs: [date,categoryId], orderBy: '$colDate ASC');
 
     List<Calendar> calendarList =  result.map((val) => Calendar.fromMapObject(val)).toList();
-    // print(calendarList.last.title);
-    // print(calendarList.first.title);
     return calendarList;
   }
 }

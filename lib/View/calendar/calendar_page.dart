@@ -75,7 +75,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
         //上から合計額、カレンダー、メモ
         children: <Widget>[
           Container(
-            height: 55,
+            height: App.isSmall(context) ? 46 : 55,
             color: App.bgColor,
             child: Row(
               children: <Widget>[
