@@ -117,7 +117,7 @@ class _RestartWidgetState extends State<RestartWidget> {
 // todo 新規登録の時に前回使用したカテゴリを選択した状態にする。LastCategory
 // TODO 表示する年月を直接指定して移動できるようにして欲しいです。
 // TODO 質問フォーム　困ったら？
-// TODO バックアップ　機種変
+// TODO バックアップ 機種変（有料）
 // 入力履歴　編集画面 使いまわせるように
 // サブスク管理
 //

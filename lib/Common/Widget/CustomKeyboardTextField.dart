@@ -33,6 +33,9 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
   void initState() {
     super.initState();
     // isCustomKeyBoard = true;
+    _focusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   void didChangeDependencies() {
@@ -71,6 +74,7 @@ class _CustomKeyboardTextFieldState extends ConsumerState<CustomKeyboardTextFiel
               // showCursor: false,
               decoration: InputDecoration(
                 labelText: selectOperationText == '' ? '金額' : selectOperationText,
+                labelStyle: TextStyle(color: (priceController.text != '' || _focusNode.hasFocus) ? Colors.black : Colors.grey),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0)
                 ),
