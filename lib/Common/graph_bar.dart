@@ -1,26 +1,29 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/Common/shared_prefs.dart';
 import 'package:balancemanagement_app/Common/utils.dart';
-
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SimpleBarChart extends StatefulWidget {
+import '../View/graph/graph_bar_page.dart';
+
+class SimpleBarChart extends ConsumerStatefulWidget {
   SimpleBarChart(this.seriesList, {this.animate});
-  final List<charts.Series<dynamic, String>> seriesList;
+  final List<charts.Series<OrdinalSales, String>> seriesList;
   final bool? animate;
 
   @override
   _SimpleBarChartState createState() => _SimpleBarChartState();
 }
 
-class _SimpleBarChartState extends State<SimpleBarChart> {
+class _SimpleBarChartState extends ConsumerState<SimpleBarChart> {
   double sum = 0;
   String month = '';
   bool isMinus = false;
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         Expanded(
@@ -44,9 +47,10 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
                       final color = series.colorFn!(index);
                       final value = series.measureFn(index);
                       final domain = series.domainFn(index);
-                      // print(color);
-                      // print(charts.ColorUtil.fromDartColor(App.plusColor));
-                      // print(series.id);
+
+                      final salesData = selectedDatum[0].datum as OrdinalSales;
+                      ref.read(ordinalSalesProvider.notifier).state = salesData;
+
                       // TODO 間違っているけど問題なさそう
                       isMinus = (color.toString() != '#1976d2ff' && series.id == 'payout');
                       // isMinus = true;
@@ -59,7 +63,6 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
             ],
           ),
         ),
-
         Container(
             height: 40,
             child: Center(
@@ -70,7 +73,6 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
                 ),
             ),
         ),
-
       ],
     );
   }
@@ -78,8 +80,14 @@ class _SimpleBarChartState extends State<SimpleBarChart> {
 
 /// Sample ordinal data type.
 class OrdinalSales {
-  final String year;
-  final double sales;
+  final String title;
+  final double sumPrice;
+  final int? categoryId;
 
-  OrdinalSales(this.year, this.sales);
+  OrdinalSales(this.title, this.sumPrice, {this.categoryId = null});
+  Map<String, dynamic> toJson() => {
+    'title': title,
+    'sumPrice': sumPrice,
+    'categoryId': categoryId,
+  };
 }

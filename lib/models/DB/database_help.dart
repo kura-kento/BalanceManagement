@@ -90,11 +90,14 @@ class DatabaseHelper {
     final result = await this.database.rawQuery('SELECT * FROM $calendarTable WHERE $colDate LIKE ?', [_month + '%']);
     return result;
   }
-  // Fetch Operation: データベースからすべてのカレンダーオブジェクトを取得します
-  Future<List<Map<String, dynamic>>> getCalendarMapList() async {
-    final result = await this.database.query(calendarTable, orderBy: '$colId ASC');
-    return result;
-  }
+
+  // データベースから全てのデータを取得
+  // Future<List<Calendar>> getCalendarList() async {
+  //   final result = await this.database.query(calendarTable, orderBy: '$colId ASC');
+  //   List<Calendar> calendarList =  result.map((val) => Calendar.fromMapObject(val)).toList();
+  //   return calendarList;
+  // }
+
   //選択月を全て持ってくる
   Future<Map<String,dynamic>> getCalendarMonthInt(date) async {
     final _text = DateFormat('yyyy-MM').format(date);
@@ -105,7 +108,7 @@ class DatabaseHelper {
     return  result[0];
   }
 
-  Future<dynamic> getCalendarYearDouble(date) async{
+  Future<dynamic> getCalendarYearDouble(date) async {
     var _text = DateFormat('yyyy').format(date);
     final result = await this.database.rawQuery('SELECT COALESCE(SUM($colMoney),0) AS MONEY FROM $calendarTable WHERE $colDate LIKE ?' ,[_text+'%']);
     return result[0]['MONEY'];
@@ -149,7 +152,6 @@ class DatabaseHelper {
     );
     map.addAll(monthSum[0]);
     map.addAll(yearSum[0]);
-    // print(map);
     return map;
   }
 
@@ -161,9 +163,11 @@ class DatabaseHelper {
     String date = DateFormat('yyyy-MM-dd').format(_date);
     final result = await database.rawQuery(
         '''
-        SELECT sum($colMoney) AS SUM,
-        COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,
-        COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS 
+        SELECT 
+          sum($colMoney) AS SUM,
+          COALESCE(SUM(CASE WHEN $colMoney >= 0 THEN $colMoney ELSE 0 END),0) AS PLUS,
+          COALESCE(SUM(CASE WHEN $colMoney <  0 THEN $colMoney ELSE 0 END),0) AS MINUS,
+          COALESCE(SUM(CASE WHEN $colMemo <> ""  THEN 1 ELSE 0 END),0) AS IsMemo
         FROM $calendarTable
         WHERE $colDate LIKE '$date%'
       '''
@@ -178,10 +182,10 @@ class DatabaseHelper {
     String date = DateFormat('yyyy-MM-dd').format(_date);
     final result = await database.rawQuery(
         '''
-  SELECT $calendarTable.* , (ifnull($categoryTable.$colTitle, '') || ifnull($calendarTable.$colTitle, '')) AS full_name
-  FROM $calendarTable
-  LEFT JOIN $categoryTable ON $categoryTable.id = $calendarTable.$colCategoryId
-  WHERE $colDate LIKE '$date%'
+          SELECT $calendarTable.* , (ifnull($categoryTable.$colTitle, '') || ifnull($calendarTable.$colTitle, '')) AS full_name
+          FROM $calendarTable
+          LEFT JOIN $categoryTable ON $categoryTable.id = $calendarTable.$colCategoryId
+          WHERE $colDate LIKE '$date%'
       '''
     ).catchError((e) {
       print(e);
@@ -201,7 +205,7 @@ class DatabaseHelper {
   }
 
   /*
-  * 【SELECT】 選択した収支
+   * 【SELECT】 選択した収支
    */
   Future<Calendar> selectCalendar(int? id) async {
     final calendar = await this.database.query(calendarTable, where: 'id = ${id ?? -1}');
@@ -209,7 +213,7 @@ class DatabaseHelper {
     return result;
   }
 
-//挿入　更新　削除
+  // 挿入　更新　削除
   Future<int> insertCalendar(Calendar calendar) async {
     var result = await this.database.insert(calendarTable, calendar.toMap());
     return result;
@@ -238,18 +242,6 @@ class DatabaseHelper {
     return result ?? 0;
   }
 
-  Future<List<Calendar>> getCalendarList() async {
-    //全てのデータを取得
-    final calendarMapList = await getCalendarMapList(); // Get 'Map List' from database
-    final int count = calendarMapList.length;         // Count the number of map entries in db table
-
-    final List<Calendar> calendarList = [];
-    for (var i = 0; i < count; i++) {
-      calendarList.add(Calendar.fromMapObject(calendarMapList[i]));
-    }
-    return calendarList;
-  }
-
   //カテゴリーリストで収支毎の値を取得する。
   Future<List<Category>> getCategoryList(bool isPlus) async {
     //全てのデータを取得
@@ -263,52 +255,29 @@ class DatabaseHelper {
     return result;
   }
 
-  // Future<List<Map<String, dynamic>>> getCategoryMapList() async {
-  //   final result = await this.database.query(categoryTable, orderBy: '$colId ASC');
-  //   return result;
-  // }
-
   Future<List> getMonthList(last_month) async {
     final sql = "select sum($colMoney) as sum, strftime('%Y-%m', $colDate) as month from $calendarTable WHERE strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
     final calendarList = await this.database.rawQuery(sql);
     return calendarList;
   }
 
-  //プラス収支を月集計
-  Future<List> getMonthListPlus(last_month) async {
-    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $calendarTable where $colMoney >= 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
-    final calendarList = await this.database.rawQuery(sql);
-    return calendarList;
-  }
- //マイナス収支を月集計
-  Future<List> getMonthListMinus(last_month) async {
-    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $calendarTable where $colMoney < 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
+  // 収支を月集計
+  Future<List> getChartMonth(last_month, bool isPlus) async {
+    final sql = "select abs(sum($colMoney)) as sum, strftime('%Y-%m', $colDate) as month from $calendarTable where $colMoney ${isPlus ? ">=" : "<" } 0 AND strftime('%Y-%m', $colDate) <= '$last_month' group by month order by month desc;";
     final calendarList = await this.database.rawQuery(sql);
     return calendarList;
   }
 
- // カテゴリーよう
-
-  Future<List> getMonthList2(last_month) async {
-    final sql = '''
-      SELECT abs(sum($colMoney)) AS sum, $colCategoryId 
-      FROM $calendarTable 
-      WHERE strftime('%Y-%m', $colDate) = '$last_month' 
-      GROUP BY $colCategoryId
-    ''';
-    final calendarList = await this.database.rawQuery(sql);
-    return calendarList;
-  }
-
-  //プラス収支を月集計
-  Future<List<OrdinalSales>> getMonthListPlus2(last_month) async {
+  // グラフカテゴリ 収支を月集計
+  Future<List<OrdinalSales>> getChartCategory(last_month, bool isPlus) async {
     final sql = '''
       SELECT 
         abs(sum($colMoney)) AS sum,
-        COALESCE($categoryTable.$colTitle, '(空白)') AS title
+        COALESCE($categoryTable.$colTitle, '(空白)') AS title,
+        $colCategoryId
       FROM $calendarTable
       LEFT JOIN $categoryTable ON $calendarTable.$colCategoryId = $categoryTable.$colId
-      WHERE $colMoney >= 0 AND strftime('%Y-%m', $colDate) = '$last_month' 
+      WHERE $colMoney ${isPlus ? ">=" : "< "} 0 AND strftime('%Y-%m', $colDate) = '$last_month' 
       GROUP BY $colCategoryId
       ORDER BY sum DESC
     ''';
@@ -317,29 +286,18 @@ class DatabaseHelper {
     final result = calendarList.map((val) {
       String title = val["title"] as String;
       double sum = val["sum"] as double;
-      return  OrdinalSales(title,sum);
+      int? categoryId = val["$colCategoryId"] as int;
+      return  OrdinalSales(title, sum, categoryId: categoryId);
     }).toList();
     return result;
   }
-  //マイナス収支を月集計
-  Future<List<OrdinalSales>> getMonthListMinus2(last_month) async {
-    final sql = '''
-      SELECT 
-        abs(sum($colMoney)) AS sum,
-        COALESCE($categoryTable.$colTitle, '(空白)') AS title
-      FROM $calendarTable
-      LEFT JOIN $categoryTable ON $calendarTable.$colCategoryId = $categoryTable.$colId
-      WHERE $colMoney < 0 AND strftime('%Y-%m', $colDate) = '$last_month' 
-      GROUP BY $colCategoryId
-      ORDER BY sum DESC
-    ''';
-    final calendarList = await this.database.rawQuery(sql);
 
-    final result = calendarList.map((val) {
-      String title = val["title"] as String;
-      double sum = val["sum"] as double;
-      return  OrdinalSales(title,sum);
-    }).toList();
-    return result;
+  //カテゴリ一覧
+  Future<List<Calendar>> getChartCalendarList(DateTime month, bool isPlus, int? categoryId) async {
+    String date = DateFormat('yyyy-MM').format(month);
+   final result = await this.database.query(calendarTable, where: "strftime('%Y-%m', $colDate) = ? AND $colMoney ${isPlus ? ">=" : "<" } 0 AND $colCategoryId = ?", whereArgs: [date,categoryId], orderBy: '$colDate ASC');
+
+    List<Calendar> calendarList =  result.map((val) => Calendar.fromMapObject(val)).toList();
+    return calendarList;
   }
 }

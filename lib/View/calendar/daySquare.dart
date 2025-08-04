@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../Common/Widget/previewDialog.dart';
 import '../../Common/app.dart';
 import '../../Common/shared_prefs.dart';
 import '../../Common/utils.dart';
@@ -20,8 +19,7 @@ class DaySquare extends ConsumerStatefulWidget {
 
 class DaySquareState extends ConsumerState<DaySquare> {
   final DateTime _today = DateTime.now();
-  // //選択している日
-  late DateTime selectDay;
+  late DateTime selectDay; //選択している日
   late int addMonth;
 
   @override
@@ -52,19 +50,13 @@ class DaySquareState extends ConsumerState<DaySquare> {
       return Container(
         color: Colors.grey[100],
         height: 50.0,
-        child: Stack(
-          children: <Widget>[
-            Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.white),
-                  color:  DateFormat.yMMMd().format(selectDay) ==  DateFormat.yMMMd().format(date)  ? Colors.yellow[300] : Colors.transparent ,
-                ),
-                child: squareValue(date)
+        child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(width: 1, color: Colors.white),
+              color:  DateFormat.yMMMd().format(selectDay) ==  DateFormat.yMMMd().format(date)  ? Colors.yellow[300] : Colors.transparent ,
             ),
-            dayText(date),// 日付
-            //クリック時選択表示する。
-          ],
+            child: squareValue(date)
         ),
       );
     }else{
@@ -82,66 +74,14 @@ class DaySquareState extends ConsumerState<DaySquare> {
           return InkWell(
             child: Column(
               children: [
-                const Spacer(flex: 1),
-                //　プラス金額
-                Expanded(
-                  flex: 1,
-                  child:
-                  SharedPrefs.getIsZeroHidden() &&  dayData['PLUS'] == 0
-                      ?
-                  Container()
-                      :
-                  Container(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: AutoSizeText(
-                        '${Utils.commaSeparated(dayData['PLUS'])}${SharedPrefs.getUnit()}',
-                        style: TextStyle(color: App.plusColor),
-                        minFontSize: 3,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ),
-                ),
-                //　マイナス金額
-                Expanded(
-                  flex: 1,
-                  child:
-                  SharedPrefs.getIsZeroHidden() &&  dayData['MINUS'] == 0
-                      ?
-                  Container()
-                      :
-                  Container(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: AutoSizeText(
-                        '${Utils.commaSeparated(dayData['MINUS'])}${SharedPrefs.getUnit()}',
-                        style: TextStyle(color: App.minusColor),
-                        minFontSize: 3,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ),
-                ),
+                dayText(date,dayData['IsMemo']), // 日付
+                priceWidget(dayData['PLUS'], App.plusColor), //プラス金額
+                priceWidget(dayData['MINUS'], App.minusColor), //マイナス金額
               ],
             ),
             onTap: () async {
               if (selectDay == date) {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return EditForm(
-                        calendar: null,
-                        inputMode: InputMode.create, parentFn: widget.parentFn,
-                      );
-                    },
-                  ),
-                );
-
-                Future.delayed(const Duration(microseconds: 1000), () {
-                  PreviewDialog.reviewCount(context); //レビューカウント
-                });
-                widget.parentFn; // 親要素の更新
+                widget.parentFn(null, InputMode.create);
               } else {
                 ref.read(selectDayProvider.notifier).state = date;
               }
@@ -153,30 +93,58 @@ class DaySquareState extends ConsumerState<DaySquare> {
     });
   }
 
-  Widget dayText(date) {
-    return Container(
-      height: 50/3,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: Container(
-              color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(_today) ? Colors.red[300] : Colors.transparent ,
-              child: Center(
-                child: Text(
-                  '${Utils.toInt(date.day)}',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: Utils.parseSize(context, SharedPrefs.getTextSize()),
-                    color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(_today) ? Colors.white : Colors.black87 ,
-                    height: 0.75,
+  Widget dayText(date,memoCount) {
+    bool isMemo = memoCount > 0;
+    return Expanded(
+      flex: 1,
+      child: Container(
+        height: 50/3,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Container(
+                color: DateFormat.yMMMd().format(date) == DateFormat.yMMMd().format(_today) ? Colors.red[300] : Colors.transparent ,
+                child: Center(
+                  child: Text('${Utils.toInt(date.day)}',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: Utils.parseSize(context, SharedPrefs.getTextSize()),
+                      color: DateFormat.yMMMd().format(date) ==  DateFormat.yMMMd().format(_today) ? Colors.white : Colors.black87,
+                      height: 0.75,
+                    ),
                   ),
                 ),
               ),
             ),
+            Expanded(flex: 3,
+              child: Container(
+                padding: EdgeInsets.only(right: 4),
+                alignment: Alignment.centerRight,
+                child: (!SharedPrefs.getIsMemoHidden() && isMemo) ? Icon(Icons.note_outlined, size: 13,) : Container(),),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget priceWidget(price, Color? color) {
+    return Expanded(
+      flex: 1,
+      child:
+      SharedPrefs.getIsZeroHidden() && price == 0
+          ?
+      Container()
+          :
+      Container(
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: AutoSizeText(
+            '${Utils.commaSeparated(price)}${SharedPrefs.getUnit()}',
+            style: TextStyle(color: color),
+            minFontSize: 3,
+            maxLines: 1,
           ),
-          Spacer(flex: 3,)
-        ],
+        ),
       ),
     );
   }

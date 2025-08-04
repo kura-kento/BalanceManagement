@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balancemanagement_app/i18n/message.dart';
 import 'package:balancemanagement_app/View/calendar/week.dart';
@@ -48,20 +47,29 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     super.dispose();
   }
 
-  // 親要素を更新するfunction
-  void _setStateFunction(String input) {
-    if (input != '') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(input),
-          duration: Duration(milliseconds: 800),
-        ),);
-    }
+  // 編集画面に遷移する処理
+  Future<void> _editPageFunction(Calendar? calendar, InputMode mode) async {
+      String? message = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return EditForm(calendar: calendar, inputMode: mode);
+          },
+        ),
+      );
 
-    setState(() {});
-    if (mounted) {
+      if (message != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            duration: Duration(milliseconds: 800),
+          ),);
+      }
+
+      Future.delayed(const Duration(microseconds: 1000), () {
+        PreviewDialog.reviewCount(context); //レビューカウント
+      });
+
       setState(() {});
-    }
   }
 
   @override
@@ -73,108 +81,10 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
       key: _scaffoldKey,
       drawer: DrawerWidget(),
       body: Column(
-        //上から合計額、カレンダー、メモ
         children: <Widget>[
-          Container(
-            height: 55,
-            color: App.bgColor,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    width: 50,
-                    child: IconButton(
-                      onPressed: () {_scaffoldKey.currentState?.openDrawer();},
-                      icon: Icon(Icons.note_alt_outlined, size: 32,),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: sumPriceWidget(),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    icon: Icon(Icons.add, size: 32),
-                    onPressed: () async {
-                        String? message = await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return EditForm(calendar: null, inputMode: InputMode.create, parentFn:_setStateFunction);
-                            },
-                          ),
-                        );
-
-                        if (message != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(message),
-                                duration: Duration(seconds: 1),
-                              ),);
-                        }
-                        Future.delayed(const Duration(microseconds: 1000), () {
-                          PreviewDialog.reviewCount(context); //レビューカウント
-                        });
-                        setState(() {});
-                      },
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          Container(
-            height: App.isSmall(context) ? 40 : 50,
-            child: Row(children: <Widget>[
-              Expanded(
-                flex:1,
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      pageController.animateToPage(
-                        App.infinityPage + addMonth - 1, // 変更したいページのインデックス
-                        duration: const Duration(milliseconds: 300), // アニメーションの時間
-                        curve: Curves.ease, // アニメーションのカーブ
-                      );
-                    });
-                  },
-                  iconSize: App.isSmall(context) ? 30 : 40,
-                  icon: const Icon(Icons.arrow_left),
-                ),
-              ),
-              Expanded(
-                flex:5,
-                //アイコン
-                child:Align(
-                  alignment: Alignment.center,
-                  child: AutoSizeText(
-                        DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(addMonth)),
-                        style: const TextStyle(
-                          fontSize: 30
-                        ),
-                    ),
-                ),
-              ),
-              Expanded(
-                flex:1,
-                //アイコン
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      pageController.animateToPage(
-                        App.infinityPage + addMonth + 1, // 変更したいページのインデックス
-                        duration: const Duration(milliseconds: 300), // アニメーションの時間
-                        curve: Curves.ease, // アニメーションのカーブ
-                      );
-                    });
-                  },
-                  iconSize: App.isSmall(context) ? 30 : 40,
-                  icon: const Icon(Icons.arrow_right),
-                ),
-              ),
-            ]),
-          ),
+          appBar(), // 合計金額
+          monthWidget(), // 月選択
+          // カレンダー
           Expanded(
             child: PageView.builder(
               controller: pageController,
@@ -186,7 +96,7 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                 return Column(
                   children: [
                     Week(),
-                    DaySquare(parentFn: _setStateFunction,),
+                    DaySquare(parentFn: _editPageFunction,),
                     calendarBottomList(),
                   ],
                 ); // 日付ごとの四角の枠;
@@ -198,7 +108,95 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     );
   }
 
-  // カレンダー下のリスト
+  Widget appBar() {
+    return Container(
+      height: App.isSmall(context) ? 46 : 55,
+      color: App.bgColor,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(
+              width: 50,
+              child: IconButton(
+                onPressed: () {_scaffoldKey.currentState?.openDrawer();},
+                icon: Icon(Icons.note_alt_outlined, size: 32,),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 5,
+            child: sumPriceWidget(),
+          ),
+          Expanded(
+            flex: 1,
+            child: IconButton(
+              icon: Icon(Icons.add, size: 32),
+              onPressed: () async {
+                _editPageFunction(null, InputMode.create);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget monthWidget() {
+    return Container(
+      height: App.isSmall(context) ? 40 : 50,
+      child: Row(children: <Widget>[
+        Expanded(
+          flex:1,
+          child: IconButton(
+            onPressed: () {
+              setState(() {
+                pageController.animateToPage(
+                  App.infinityPage + addMonth - 1, // 変更したいページのインデックス
+                  duration: const Duration(milliseconds: 300), // アニメーションの時間
+                  curve: Curves.ease, // アニメーションのカーブ
+                );
+              });
+            },
+            iconSize: App.isSmall(context) ? 30 : 40,
+            icon: const Icon(Icons.arrow_left),
+          ),
+        ),
+        Expanded(
+          flex:5,
+          //アイコン
+          child:Align(
+            alignment: Alignment.center,
+            child: AutoSizeText(
+              DateFormat.yMMM(Localizations.localeOf(context).languageCode == 'ja' ? 'ja_JP': 'en_JP').format(selectOfMonth(addMonth)),
+              style: const TextStyle(
+                  fontSize: 30
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          flex:1,
+          //アイコン
+          child: IconButton(
+            onPressed: () {
+              setState(() {
+                pageController.animateToPage(
+                  App.infinityPage + addMonth + 1, // 変更したいページのインデックス
+                  duration: const Duration(milliseconds: 300), // アニメーションの時間
+                  curve: Curves.ease, // アニメーションのカーブ
+                );
+              });
+            },
+            iconSize: App.isSmall(context) ? 30 : 40,
+            icon: const Icon(Icons.arrow_right),
+          ),
+        ),
+      ]),
+    );
+  }
+
+    // カレンダー下のリスト
   Widget calendarBottomList() {
     return FutureBuilder(
         future: DatabaseHelper().selectDayList(selectDay), // Future<T> 型を返す非同期処理
@@ -240,7 +238,11 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                               );
                               if (result) {
                                 _delete(_calendar.id ?? 0); // TODO [widget.calendarId ?? 0]ではない
-                                _setStateFunction('削除に成功しました');
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("削除に成功しました"), duration: Duration(milliseconds: 800),),
+                                );
+                                setState(() {});
                               }
                             },
                             backgroundColor: Colors.red,
@@ -258,35 +260,20 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(full_name ?? ''),
+                              Row(children: [
+                                ...(_calendar.memo == '' ? [] : [Padding(padding: const EdgeInsets.only(left: 8.0), child: Icon(Icons.note_outlined, size: App.isSmall(context) ? 20 : 25,),
+                                )]),
+                                Text(full_name ?? ''),
+                              ],),
                               Text(
                                 '${Utils.commaSeparated(_calendar.money ?? 0)}${SharedPrefs.getUnit()}',
                                 style: TextStyle(color: (_calendar.money ?? 0) >= 0 ? App.plusColor : App.minusColor),
-                              ),
+                              )
                             ],
                           ),
                         ),
                         onTap: () async {
-                          String? message = await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return EditForm(calendar: _calendar, inputMode: InputMode.edit, parentFn: _setStateFunction,);
-                              },
-                            ),
-                          );
-
-                          if (message != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(message),
-                                duration: Duration(seconds: 1),
-                              ),);
-                          }
-
-                          Future.delayed(const Duration(microseconds: 1000), () {
-                            PreviewDialog.reviewCount(context); //レビューカウント
-                          });
-                          if (mounted) { setState(() {});}
+                          _editPageFunction(_calendar, InputMode.edit);
                         },
                       ),
                     );
@@ -323,7 +310,6 @@ class CalendarPageState extends ConsumerState<CalendarPage> {
     await DatabaseHelper().deleteCalendar(id);
   }
 
-  //
   Widget sumPriceWidget() {
     int tapCount = (SharedPrefs.getTapInt() % ['both','monthDouble','yearDouble','MonthSUM','YearSUM'].length);
     var list = [];

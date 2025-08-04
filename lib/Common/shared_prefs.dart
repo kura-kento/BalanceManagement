@@ -89,6 +89,11 @@ class SharedPrefs {
   static Future<bool>? setIsZeroHidden(bool value) => _sharedPreferences?.setBool(isZeroHidden, value);
   static bool getIsZeroHidden() => _sharedPreferences?.getBool(isZeroHidden) ?? false;
 
+
+  static const isMemoHidden = 'isMemoHidden'; // 旧名称のまま
+  static Future<bool>? setIsMemoHidden(bool value) => _sharedPreferences?.setBool(isMemoHidden, value);
+  static bool getIsMemoHidden() => _sharedPreferences?.getBool(isMemoHidden) ?? false;
+
   //共通
   static const password = 'password';
   static Future<bool>? setPassword(String value) => _sharedPreferences?.setString(password, value);

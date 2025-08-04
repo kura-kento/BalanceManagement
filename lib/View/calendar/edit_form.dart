@@ -21,8 +21,8 @@ enum InputMode{
 }
 
 class EditForm extends ConsumerStatefulWidget {
-  EditForm({Key? key, this.calendar, required this.inputMode, required this.parentFn}) : super(key: key);
-  final Function parentFn;
+  EditForm({Key? key, this.calendar, required this.inputMode}) : super(key: key);
+  // final Function parentFn;
   final Calendar? calendar;
   final InputMode inputMode;
 
@@ -40,6 +40,8 @@ class EditFormState extends ConsumerState<EditForm> {
   List<Category> _categoryItems =[Category.withId(0, "（空白）", true)];
   int _selectCategory = 0;
 
+  FocusNode _titleFocus = FocusNode();
+
   late TextEditingController titleController;
   late TextEditingController priceController; //プロバイダー化
   late TextEditingController memoController;
@@ -49,6 +51,7 @@ class EditFormState extends ConsumerState<EditForm> {
   @override
   void initState() {
     super.initState();
+    _titleFocus.addListener(() {setState(() {});});
     initData();
   }
 
@@ -135,7 +138,8 @@ class EditFormState extends ConsumerState<EditForm> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: saveButton(),
+                          child: Container(),
+                          // child: saveButton(),
                         ),
                       ],
                     ),
@@ -165,6 +169,27 @@ class EditFormState extends ConsumerState<EditForm> {
                                 ),
                               ),
                               moneyWidget(),
+                              Container(
+                                width: double.infinity,
+                                padding: App.padding,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    backgroundColor: Theme.of(context).primaryColorDark,
+                                    foregroundColor: Theme.of(context).primaryColorLight,
+                                  ),
+                                  child: Text(
+                                    AppLocalizations.of(context).save,
+                                    textScaleFactor: 1.5,
+                                  ),
+                                  onPressed: _isDisabled ? null : () {
+                                    setState(() => _isDisabled = true);
+                                    _save();
+                                    handleBack(context,'保存に成功しました');
+                                    // setState(() {});
+                                  },
+                                ),
+                              ),
                               memoWidget(),
                               dustButton(),
                             ],
@@ -307,8 +332,10 @@ class EditFormState extends ConsumerState<EditForm> {
       child: Center(
         child: TextField(
           controller: titleController,
+          focusNode: _titleFocus,
           decoration: InputDecoration(
               labelText: AppLocalizations.of(context).title,
+              labelStyle: TextStyle(color: (titleController.text != '' || _titleFocus.hasFocus) ? Colors.black : Colors.grey),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
         ),
       ),

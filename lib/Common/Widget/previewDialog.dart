@@ -138,7 +138,7 @@ class PreviewDialog {
   }
 
   static void openContactForm() async {
-    final Uri url = Uri.parse('https://form.run/@knt-krmt-Kg0s9ir6HkpmDrTtPHJv'); // ← ここに自前のURLを指定
+    final Uri url = Uri.parse('https://ssl.form-mailer.jp/fms/51fe335f861838'); // ← ここに自前のURLを指定
 
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);

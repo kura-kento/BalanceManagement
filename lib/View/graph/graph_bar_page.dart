@@ -4,16 +4,23 @@ import 'package:balancemanagement_app/Common/graph_bar.dart';
 import 'package:balancemanagement_app/widget/select_month_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
+import '../../Common/shared_prefs.dart';
+import '../../Common/utils.dart';
+import '../../models/calendar.dart';
 
 enum RadioValue { ALL, Twice }
 
-class GraphBarPage extends StatefulWidget {
+class GraphBarPage extends ConsumerStatefulWidget {
   @override
   _GraphBarPageState createState() => _GraphBarPageState();
 }
 
-class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMixin {
+final ordinalSalesProvider = StateProvider<OrdinalSales?>((ref) => null);
+
+class _GraphBarPageState extends ConsumerState<GraphBarPage> with TickerProviderStateMixin {
   late TabController _tabController;
   final int graphLength = 10;
   RadioValue _radioValue = RadioValue.ALL;
@@ -28,6 +35,9 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
   final chartPlusColor = charts.ColorUtil.fromDartColor(App.plusColor);
   final ChartMinusColor = charts.ColorUtil.fromDartColor(App.minusColor);
 
+  int? selectCategoryId;
+  OrdinalSales? selectChart;
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
@@ -41,14 +51,14 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
     List _calendarList = await DatabaseHelper().getMonthList(_month);
     data = await dataSet(_calendarList).reversed.toList();
 
-    List _ListPlus = await DatabaseHelper().getMonthListPlus(_month);
-    List _ListMinus = await DatabaseHelper().getMonthListMinus(_month);
+    List _ListPlus = await DatabaseHelper().getChartMonth(_month, true);
+    List _ListMinus = await DatabaseHelper().getChartMonth(_month, false);
 
     ListPlus = await dataSet(_ListPlus).reversed.toList();
     ListMinus = await dataSet(_ListMinus).reversed.toList();
 
-    categoryPlus = await DatabaseHelper().getMonthListPlus2(_month);
-    categoryMinus = await DatabaseHelper().getMonthListMinus2(_month);
+    categoryPlus = await DatabaseHelper().getChartCategory(_month, true);
+    categoryMinus = await DatabaseHelper().getChartCategory(_month, false);
     setState(() {});
   }
 
@@ -75,9 +85,9 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
       if (data != null)
        charts.Series<OrdinalSales, String>(
         id: 'income',
-        colorFn: (OrdinalSales sales,i) => sales.sales >= 0 ? chartPlusColor:ChartMinusColor,
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
+        colorFn: (OrdinalSales sales,i) => sales.sumPrice >= 0 ? chartPlusColor : ChartMinusColor,
+        domainFn: (OrdinalSales sales, _) => sales.title,
+        measureFn: (OrdinalSales sales, _) => sales.sumPrice,
         data: data,
       ),
 
@@ -85,8 +95,8 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
         charts.Series<OrdinalSales, String>(
           id: 'payout',
           colorFn: (_, i) => charts.MaterialPalette.red.shadeDefault,
-          domainFn: (OrdinalSales sales, _) => sales.year,
-          measureFn: (OrdinalSales sales, _) => sales.sales,
+          domainFn: (OrdinalSales sales, _) => sales.title,
+          measureFn: (OrdinalSales sales, _) => sales.sumPrice,
           data: payout,
         )
     ];
@@ -100,6 +110,8 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    selectChart = ref.watch(ordinalSalesProvider);
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -142,7 +154,6 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
             ),
             Text('収支'),
             Radio<RadioValue>(
-              // title: Text('収支・支出'),
               value: RadioValue.Twice,
               groupValue: _radioValue,
               onChanged: (RadioValue? value) {
@@ -161,7 +172,7 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
               updateListView();
               setState(() {  });
             },
-            tapRight: (){
+            tapRight: () {
               selectMonthValue++;
               updateListView();
               setState(() { });
@@ -178,6 +189,7 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
               _createSampleData(data)
                   :
               _createSampleData(ListPlus,payout: ListMinus),
+
             ),
           ),
         ),
@@ -242,16 +254,62 @@ class _GraphBarPageState extends State<GraphBarPage> with TickerProviderStateMix
                   ?
               _createSampleData(categoryPlus)
                   :
-              _createSampleData(null,payout: categoryMinus),
-              // _createSampleData(categoryMinus)
+              _createSampleData(null,payout: categoryMinus)
             ),
           ),
         ),
         Expanded(
           flex: 1,
-          child: Container(),
+          child: FutureBuilder(
+            future: getChartList(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (itemBuilder, index) {
+                  Calendar calendar = snapshot.data[index];
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    height: App.isSmall(context) ? 40 : 50,
+                    decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(width: 0.8, color: Colors.black12),),),
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            DateFormat("yyyy-MM-dd").format(calendar.date!),
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(calendar.title ?? ''),
+                              Text(
+                                '${Utils.commaSeparated(calendar.money ?? 0)}${SharedPrefs.getUnit()}',
+                                style: TextStyle(color: (calendar.money ?? 0) >= 0 ? App.plusColor : App.minusColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                });
+              } else {
+                return Container();
+              }
+            },
+          ),
         ),
       ],
     );
+  }
+
+  Future<List> getChartList() async {
+    final DateTime _month = DateTime(DateTime.now().year, DateTime.now().month + selectMonthValue, 1);
+    return selectChart == null ? Future.value([]) : DatabaseHelper().getChartCalendarList(_month, _radioValue == RadioValue.ALL, selectChart?.categoryId);
   }
 }
