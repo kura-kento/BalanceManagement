@@ -12,6 +12,8 @@ class App {
 
    static Color NoAdsButtonColor = Color(0xffFFD865);
 
+   static Color premiumColor = Color(0xffF9B700);
+
    static int addHours = 40;
 
    static double BTNfontsize = 12;

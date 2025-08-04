@@ -55,18 +55,47 @@ class _SettingPageState extends State<SettingPage> {
                   child: Column(
                     children: <Widget>[
                       // PayPageTest(),
-                      ListTile(
-                        title: const Text('広告無効 & 追加機能（有料）',style: TextStyle(fontWeight: FontWeight.bold),),
-                        leading: const Icon(Icons.monetization_on_outlined),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const PayPage();
-                              },
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)
                             ),
-                          );
-                        },
+                            backgroundColor: Colors.indigo.shade900, //ボタンの背景色
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return const PayPage();
+                                },
+                              ),
+                            );
+                          },
+                          // battery_charge
+                          child: Container(
+                            height: 50,
+                            width: 250,
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.diamond_outlined, color: Colors.white, size: 24,),
+                                  Text(
+                                    "プレミアム",
+                                    style: TextStyle(
+                                      textBaseline:TextBaseline.ideographic,
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       dividerWidget,
                       RewardWidget(),

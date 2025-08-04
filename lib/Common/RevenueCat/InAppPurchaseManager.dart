@@ -11,6 +11,8 @@ class InAppPurchaseManager with ChangeNotifier {
   bool isSubscribed = false;
   late Offerings offerings;
 
+
+  // 初期値
   Future<void> initInAppPurchase() async {
 
     try {
@@ -28,6 +30,8 @@ class InAppPurchaseManager with ChangeNotifier {
       offerings = await Purchases.getOfferings();
 
       // firebaseのidと、revenuecatのuserIdを一緒にしている場合、firebaseAuthのuidでログイン
+
+
       // このアプリを使用している人のID
       final result = await Purchases.logIn("unique_user_id");
       await getPurchaserInfo(result.customerInfo);
